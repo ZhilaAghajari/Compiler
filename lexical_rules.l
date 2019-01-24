@@ -27,7 +27,7 @@ void errHandling(int);
 
 
 %%
-<comment>\/\* {BEGIN comment;}
+\/\* {BEGIN comment;}
 <comment>\*\/ {BEGIN 0;return COMMENT;}
 <comment>\n {lineNumber++;columnNumber=0;}
 <comment><<EOF>> {errHandling(errComment);return EOFnum;} /*test it for return error*/
