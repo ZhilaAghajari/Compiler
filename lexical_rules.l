@@ -8,8 +8,8 @@
 #include <string.h>
 #include "tokens.h"
 #include <regex.h>
-int lineNumber;
-int columnNumber;
+int lineNumber=1;
+int columnNumber=1;
 char stringtable[4096];
 int location;
 void updatestrTable(char*);
@@ -29,10 +29,10 @@ void errHandling(int);
 %%
 \/\* {BEGIN comment;}
 <comment>\*\/ {BEGIN 0;return COMMENT;}
-<comment>\n {lineNumber++;columnNumber=0;}
+<comment>\n {lineNumber++;columnNumber=1;}
 <comment><<EOF>> {errHandling(errComment);return EOFnum;} /*test it for return error*/
 <comment>. /*observe anything between starting and ending of comment*/
-[\n] {lineNumber++; columnNumber=0;}
+[\n] {lineNumber++; columnNumber=1;}
 "&&" {columnNumber+=yyleng; return ANDnum;}
 ":=" {columnNumber+=yyleng;return ASSGNum;}
 "declarations" {columnNumber+=yyleng;return DECLARATIONnum;}
@@ -86,7 +86,7 @@ void updatestrTable(char* yytext)
 
 	// first check the table for existance of the current string
 	if(strstr(temptable, yytext) != NULL) 
-	{	
+	{
 		//we loop until we make sure we find substring of the looking variable, not inside another string mistaken substring
 		//for this purpose we check if the substr we get is start of string_table && there is a space before/after that || it is end of string
 		//we Finnally make sure if we reach end of string 
@@ -96,7 +96,57 @@ void updatestrTable(char* yytext)
 			char *result = strstr(temptable,yytext);
 			location = result-temptable;
 			//if the looking substr is in starting point of string && (there is a space after it || it is end of stringtable) --> you found it correctly
-			if(location==0 && (strcmp(temptable[location+strlen(yytext)]," " ) ==0 || strcmp(temptable[location+strlen(yytext)],"\0" ) ))
+			if(location==0 && (strcmp(temptable[location+strlen(yytext)]," " ) ==0 || strcmp(temptable[location+strlen(yytext)],"\0" )==0 ))
+				break;
+			//if the substr we are looking for is somewhere in the middle of string, &&  there is an space before && there is (space || \0) after
+			if(location>0 && temptable[location-1]==' ' && (temptable[location+strlen(yytext)]=='\0' || temptable[location+strlen(yytext)]==' '))// && strcmp(temptable[location-1]," " ) ==0 && (strcmp(temptable[location+strlen(yytext)],"\0" ) ==0 || strcmp(temptable[location+strlen(yytext)]," " ) ==0 ))
+				break;
+			//if it is not broke yet, that means the substr we found was not what we wanted...
+			//split the string from where we are to check again for any possible match
+			strcpy(temptable," "); //copy a fake string to reset current string
+			int counter = 0;//create a counter for temptableß
+			for(int i=location+strlen(yytext);stringtable[i]!='\0';i++)
+			{
+				//temptable[counter++] = stringtable[i];
+				//we want to split stringtable from current location to the end and put it to temptable. We do this to check the rest of stringtable
+				//for this purpose the easiest way is to add char by char to pevent error, and since there is no char to string concatation in C,
+				// we make each char of stringtable(stringable[i]) a 2-len string and then add it to temptable
+				char tmp[2]; tmp[0] = stringtable[i]; tmp[1] = '\0';
+				strcat(temptable,tmp); 
+			}
+
+			if(counter<=1 || result == NULL) //it is end of string --> no match, store current substr as new token in stringtable
+			{
+				location =strlen(stringtable)+1;
+				strcat(stringtable," ");
+				strcat(stringtable,yytext);
+				break;
+			}
+			//else while should continue 
+			
+		}
+	}
+	else // else there is no match, add to the end of stringtablen
+	{
+		location =strlen(stringtable)+1;
+		strcat(stringtable," ");
+		strcat(stringtable,yytext);
+	}
+/*
+	// first check the table for existance of the current string
+	if(strstr(temptable, yytext) != NULL) 
+	{	
+		//we loop until we make sure we find substring of the looking variable, not inside another string mistaken substring
+		//for this purpose we check if the substr we get is start of string_table && there is a space before/after that || it is end of string
+		//we Finnally make sure if we reach end of string 
+		while(1)
+		{
+			
+			//search for substr, and then return its location
+			char *result = strstr(temptable,yytext);
+			location = result-temptable;
+			//if the looking substr is in starting point of string && (there is a space after it || it is end of stringtable) --> you found it correctly
+			if(location==0 && (strcmp(temptable[location+strlen(yytext)]," " ) ==0 || strcmp(temptable[location+strlen(yytext)],"\0" )==0 ))
 				break;
 
 			//if the substr we are looking for is somewhere in the middle of string, &&  there is an space before && there is (space || \0) after
@@ -128,8 +178,9 @@ void updatestrTable(char* yytext)
 		strcat(stringtable,yytext);
 
 	}
+*/
     /* ... */
-    char str1[4096];
+    /*char str1[4096];
     char str2[4096];
     strcpy(str1,stringtable);
     strcpy(str2,yytext);
@@ -137,7 +188,7 @@ void updatestrTable(char* yytext)
     int i;
     int j;
     int table_size;
-    for(l=0;str2[l]!='\0';l++); /*to find length of current string*/
+    for(l=0;str2[l]!='\0';l++); //to find length of current string
 
     for(i=0,j=0;str1[i]!='\0' && str2[j]!='\0'; i++)
     {
@@ -152,7 +203,7 @@ void updatestrTable(char* yytext)
     		for(table_size=0;str1[table_size]!='\0';table_size++);
     		location = table_size;
     		strcat(stringtable,yytext);
-    	}
+    	}*/
 
 }
 void errHandling(int err)
@@ -259,7 +310,7 @@ int main(int argc, char *argv[])
 		if(z == IDnum || z == SCONSTnum)
 		{
 			//printf("lineNumber= %d lineColumn=%d Index_in_string_Table=%d , value=%s \n",lineNumber,columnNumber,location, yytext);
-			printf("%d\t%d\t%s\t%d \n",lineNumber,columnNumber,TOKEN, location);
+			printf("%d\t%d\t%s\t\t%d \n",lineNumber,columnNumber,TOKEN, location);
 
 		}
 
