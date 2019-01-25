@@ -84,6 +84,30 @@ void updatestrTable(char* yytext)
 	char temptable[4096];
 	strcpy(temptable,stringtable);
 
+	int yc = 0;
+	int newVar = 1;
+	for (int i=0;i<strlen(stringtable);i++)
+	{
+		if(stringtable[i]==yytext[yc])
+		{
+			yc++;
+			printf("injam-%s-%d",(yytext),i);
+		}
+		if(yc==strlen(yytext)) //hala baiad shareit ro check konim
+		{
+			//1-agar ghablesh harf bashe va badesh
+			
+			if(i-yc>=0 && stringtable[i-yc]!='\s' && stringtable[i+1]!='\s')
+			{
+				printf("ooonjam-%c-%c-",stringtable[i-yc],stringtable[i+1]);
+				newVar = 0;
+				break;
+			}
+		}
+	}
+	printf("newVar=%d\n",newVar);
+
+
 	// first check the table for existance of the current string
 	if(strstr(temptable, yytext) != NULL) 
 	{
@@ -95,11 +119,15 @@ void updatestrTable(char* yytext)
 			//search for substr, and then return its location
 			char *result = strstr(temptable,yytext);
 			location = result-temptable;
+
+
+
+
 			//if the looking substr is in starting point of string && (there is a space after it || it is end of stringtable) --> you found it correctly
 			if(location==0 && (strcmp(temptable[location+strlen(yytext)]," " ) ==0 || strcmp(temptable[location+strlen(yytext)],"\0" )==0 ))
 				break;
 			//if the substr we are looking for is somewhere in the middle of string, &&  there is an space before && there is (space || \0) after
-			if(location>0 && temptable[location-1]==' ' && (temptable[location+strlen(yytext)]=='\0' || temptable[location+strlen(yytext)]==' '))// && strcmp(temptable[location-1]," " ) ==0 && (strcmp(temptable[location+strlen(yytext)],"\0" ) ==0 || strcmp(temptable[location+strlen(yytext)]," " ) ==0 ))
+			if(location>0 && temptable[location-1]==' ')// && (temptable[location+strlen(yytext)]=='\0' || temptable[location+strlen(yytext)]==' '))// && strcmp(temptable[location-1]," " ) ==0 && (strcmp(temptable[location+strlen(yytext)],"\0" ) ==0 || strcmp(temptable[location+strlen(yytext)]," " ) ==0 ))
 				break;
 			//if it is not broke yet, that means the substr we found was not what we wanted...
 			//split the string from where we are to check again for any possible match
@@ -107,13 +135,16 @@ void updatestrTable(char* yytext)
 			int counter = 0;//create a counter for temptableß
 			for(int i=location+strlen(yytext);stringtable[i]!='\0';i++)
 			{
-				//temptable[counter++] = stringtable[i];
 				//we want to split stringtable from current location to the end and put it to temptable. We do this to check the rest of stringtable
 				//for this purpose the easiest way is to add char by char to pevent error, and since there is no char to string concatation in C,
 				// we make each char of stringtable(stringable[i]) a 2-len string and then add it to temptable
 				char tmp[2]; tmp[0] = stringtable[i]; tmp[1] = '\0';
 				strcat(temptable,tmp); 
 			}
+
+			printf("result= %s--",result);
+			printf("b4=%c-",temptable[location-1]);
+			printf("a4=%c\n",temptable[location+strlen(yytext)]);
 
 			if(counter<=1 || result == NULL) //it is end of string --> no match, store current substr as new token in stringtable
 			{
