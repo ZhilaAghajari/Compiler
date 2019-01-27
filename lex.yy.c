@@ -351,8 +351,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 48
-#define YY_END_OF_BUFFER 49
+#define YY_NUM_RULES 49
+#define YY_END_OF_BUFFER 50
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -362,7 +362,7 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[124] =
     {   0,
-        0,    0,    0,    0,   49,   48,    5,   37,   48,   45,
+        0,    0,    0,    0,   50,   48,    5,   37,   48,   45,
        15,   21,   41,   38,   26,   36,   10,   27,   31,   31,
        48,   22,   35,   11,   12,   43,   14,   20,   43,   43,
        43,   43,   43,   43,   43,   43,   43,   33,   48,   39,
@@ -1072,10 +1072,15 @@ case YY_STATE_EOF(INITIAL):
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 80 "lexical_rules.l"
+#line 79 "lexical_rules.l"
+{columnNumber++;}
+	YY_BREAK
+case 49:
+YY_RULE_SETUP
+#line 81 "lexical_rules.l"
 ECHO;
 	YY_BREAK
-#line 1079 "lex.yy.c"
+#line 1084 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2078,7 +2083,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 80 "lexical_rules.l"
+#line 81 "lexical_rules.l"
 
 void updatestrTable(char* yytext)
 {
@@ -2106,45 +2111,42 @@ void updatestrTable(char* yytext)
 		else 
 			yc = 0;
 
-
-
-		if(yc==strlen(yytext)) //hala baiad shareit ro check konim
+		//if yc counter == strlen(yytext) that means we extract and find a pattern...therefore we should check if it is and independant words
+		// or a word inside another word
+		if(yc==strlen(yytext)) 
 		{
-			//1-agar vasate string table bashe && ghablesh harf bashe va badesh
+			//if i-yc>=0 that means the word is not at the start of stringtable, so there must be spaces one before and one after the word
+			// if everythings goes right, then we can say this variable is not new and we can return the location and searching is finished
 			if(i-yc>=0 && stringtable[i-yc]==' ' && (stringtable[i+1]==' '))
 			{
-				printf("ooonjam-%c-%c-",stringtable[i-yc],stringtable[i+1]);
 				newVar = 0;
 				location = i; //set the current location of variable
 				break;
 			}
-			//agar variable akhare stringtable bood yani tahesh bood dige ghablesh ' ' hast vali badesh nist
+			//in other case if i-yc>=0 but the found variable is at the end of string there is no space afterward but instead we have 
+			// i+1 == strlen(stringtable), since there is end of string
 			if(i-yc>=0 && stringtable[i-yc]==' ' && i+1==strlen(stringtable))
 			{
-				printf("ooonjam-%c-%c-",stringtable[i-yc],stringtable[i+1]);
 				newVar = 0;
 				location = i; //set the current location of variable
 				break;
 			}
 			
-			//agar avalin kalame dar string table hast
+			//if i-yc<0 then it the word we found is at the start of string table so ther must be a space just aftewards not befor
 			if(i-yc<0 && stringtable[i+1]==' ')
 			{
-				printf("uuunjam-%c-%c-",stringtable[i-yc],stringtable[i+1]);
 				newVar = 0;
 				location = i;
 				break;
 			}
 
-			//hala agar peida nakardim baiad yc sefr beshe dige
+			//if there is no break, that means the word we found wasn't an independant one or correct one, so we should search again
 			yc = 0;
 		}
 	}
-	printf("newVar=%d\n",newVar);
 
 
 	//if it is a new variable add it to string table, otherwise just set the location
-
 	if(newVar)
 	{
 		location =strlen(stringtable)+1;
