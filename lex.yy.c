@@ -2084,159 +2084,73 @@ void updatestrTable(char* yytext)
 {
 	//reference string table to another string
 	char temptable[4096];
-	strcpy(temptable,stringtable);
+	//strcpy(temptable,stringtable);
 
-	int yc = 0;
-	int newVar = 1;
+	//we devised a manual searching and did not use strstr for searching
+	//in the proposed method we start with the start of string and go a for-loop over all chars. if we see a similar patterns over a 
+	// seen set of chars we check 3-if to make sure this pattern is exactly the same with the variable we were looking for or not
+	int yc = 0;//counter of matching string
+	int newVar = 1; //if the searching variable is newVar=1 then we should add it to stringtable, otherwise we have to return location
+
+	//searching string begins here
 	for (int i=0;i<strlen(stringtable);i++)
 	{
+		//if we see similar char we increased yc to check other chars of this variable
 		if(stringtable[i]==yytext[yc])
 		{
 			yc++;
-			printf("injam-%s-%d",(yytext),i);
 		}
+		//we set yc =0 everytime we can't see a similar char. The reason is, if we see "interest" and "interesting" respectively
+		// in stringtable and yytext we will increase yc 8 times (as interest in stringtable). then we have to reset yc since two
+		// words are different and we want to check other words, too.
+		else 
+			yc = 0;
+
+
+
 		if(yc==strlen(yytext)) //hala baiad shareit ro check konim
 		{
-			//1-agar ghablesh harf bashe va badesh
-			
-			if(i-yc>=0 && stringtable[i-yc]!='\s' && stringtable[i+1]!='\s')
+			//1-agar vasate string table bashe && ghablesh harf bashe va badesh
+			if(i-yc>=0 && stringtable[i-yc]==' ' && (stringtable[i+1]==' '))
 			{
 				printf("ooonjam-%c-%c-",stringtable[i-yc],stringtable[i+1]);
 				newVar = 0;
+				location = i; //set the current location of variable
 				break;
 			}
+			//agar variable akhare stringtable bood yani tahesh bood dige ghablesh ' ' hast vali badesh nist
+			if(i-yc>=0 && stringtable[i-yc]==' ' && i+1==strlen(stringtable))
+			{
+				printf("ooonjam-%c-%c-",stringtable[i-yc],stringtable[i+1]);
+				newVar = 0;
+				location = i; //set the current location of variable
+				break;
+			}
+			
+			//agar avalin kalame dar string table hast
+			if(i-yc<0 && stringtable[i+1]==' ')
+			{
+				printf("uuunjam-%c-%c-",stringtable[i-yc],stringtable[i+1]);
+				newVar = 0;
+				location = i;
+				break;
+			}
+
+			//hala agar peida nakardim baiad yc sefr beshe dige
+			yc = 0;
 		}
 	}
 	printf("newVar=%d\n",newVar);
 
 
-	// first check the table for existance of the current string
-	if(strstr(temptable, yytext) != NULL) 
-	{
-		//we loop until we make sure we find substring of the looking variable, not inside another string mistaken substring
-		//for this purpose we check if the substr we get is start of string_table && there is a space before/after that || it is end of string
-		//we Finnally make sure if we reach end of string 
-		while(1)
-		{
-			//search for substr, and then return its location
-			char *result = strstr(temptable,yytext);
-			location = result-temptable;
+	//if it is a new variable add it to string table, otherwise just set the location
 
-
-
-
-			//if the looking substr is in starting point of string && (there is a space after it || it is end of stringtable) --> you found it correctly
-			if(location==0 && (strcmp(temptable[location+strlen(yytext)]," " ) ==0 || strcmp(temptable[location+strlen(yytext)],"\0" )==0 ))
-				break;
-			//if the substr we are looking for is somewhere in the middle of string, &&  there is an space before && there is (space || \0) after
-			if(location>0 && temptable[location-1]==' ')// && (temptable[location+strlen(yytext)]=='\0' || temptable[location+strlen(yytext)]==' '))// && strcmp(temptable[location-1]," " ) ==0 && (strcmp(temptable[location+strlen(yytext)],"\0" ) ==0 || strcmp(temptable[location+strlen(yytext)]," " ) ==0 ))
-				break;
-			//if it is not broke yet, that means the substr we found was not what we wanted...
-			//split the string from where we are to check again for any possible match
-			strcpy(temptable," "); //copy a fake string to reset current string
-			int counter = 0;//create a counter for temptableß
-			for(int i=location+strlen(yytext);stringtable[i]!='\0';i++)
-			{
-				//we want to split stringtable from current location to the end and put it to temptable. We do this to check the rest of stringtable
-				//for this purpose the easiest way is to add char by char to pevent error, and since there is no char to string concatation in C,
-				// we make each char of stringtable(stringable[i]) a 2-len string and then add it to temptable
-				char tmp[2]; tmp[0] = stringtable[i]; tmp[1] = '\0';
-				strcat(temptable,tmp); 
-			}
-
-			printf("result= %s--",result);
-			printf("b4=%c-",temptable[location-1]);
-			printf("a4=%c\n",temptable[location+strlen(yytext)]);
-
-			if(counter<=1 || result == NULL) //it is end of string --> no match, store current substr as new token in stringtable
-			{
-				location =strlen(stringtable)+1;
-				strcat(stringtable," ");
-				strcat(stringtable,yytext);
-				break;
-			}
-			//else while should continue 
-			
-		}
-	}
-	else // else there is no match, add to the end of stringtablen
+	if(newVar)
 	{
 		location =strlen(stringtable)+1;
 		strcat(stringtable," ");
 		strcat(stringtable,yytext);
 	}
-/*
-	// first check the table for existance of the current string
-	if(strstr(temptable, yytext) != NULL) 
-	{	
-		//we loop until we make sure we find substring of the looking variable, not inside another string mistaken substring
-		//for this purpose we check if the substr we get is start of string_table && there is a space before/after that || it is end of string
-		//we Finnally make sure if we reach end of string 
-		while(1)
-		{
-			
-			//search for substr, and then return its location
-			char *result = strstr(temptable,yytext);
-			location = result-temptable;
-			//if the looking substr is in starting point of string && (there is a space after it || it is end of stringtable) --> you found it correctly
-			if(location==0 && (strcmp(temptable[location+strlen(yytext)]," " ) ==0 || strcmp(temptable[location+strlen(yytext)],"\0" )==0 ))
-				break;
-
-			//if the substr we are looking for is somewhere in the middle of string, &&  there is an space before && there is (space || \0) after
-			if(location>0 && strcmp(temptable[location-1]," " ) ==0 && (strcmp(temptable[location+strlen(yytext)],"\0" ) ==0 || strcmp(temptable[location+strlen(yytext)]," " ) ==0 ))
-				break;
-
-			//if it is not broke yet, that means the substr we found was not what we wanted...
-			//split the string from where we are to check again for any possible match
-			strcpy(temptable,""); //copy a fake string to reset current string
-			int counter = 0;//create a counter for temptableß
-			for(int i=location+strlen(yytext);strcmp(stringtable[i],"\0")!=0;i++)
-				temptable[counter++] = stringtable[i];
-			
-			if(counter<=1) //it is end of string --> no match, store current substr as new token in stringtable
-			{
-				location =strlen(stringtable)+1;
-				strcat(stringtable," ");
-				strcat(stringtable,yytext);
-			}
-			//else while should continue 
-
-		}
-
-	}
-	else
-	{
-		location =strlen(stringtable)+1;
-		strcat(stringtable," ");
-		strcat(stringtable,yytext);
-
-	}
-*/
-    /* ... */
-    /*char str1[4096];
-    char str2[4096];
-    strcpy(str1,stringtable);
-    strcpy(str2,yytext);
-    int l;
-    int i;
-    int j;
-    int table_size;
-    for(l=0;str2[l]!='\0';l++); //to find length of current string
-
-    for(i=0,j=0;str1[i]!='\0' && str2[j]!='\0'; i++)
-    {
-    	if(str1[i]==str2[j])
-    		j++;
-    	else
-    		j=0;
-    }
-    if(j==1)
-    	location = i-j+1;
-    else{
-    		for(table_size=0;str1[table_size]!='\0';table_size++);
-    		location = table_size;
-    		strcat(stringtable,yytext);
-    	}*/
 
 }
 void errHandling(int err)
@@ -2354,6 +2268,6 @@ int main(int argc, char *argv[])
 		}
 	}
 	/* now I should print string table at the end of program like in the example: */
-	printf("String Table: %s" ,stringtable);
+	printf("String Table: %s\n" ,stringtable);
 
 }
