@@ -201,8 +201,12 @@ int main(int argc, char *argv[])
 {
 	FILE *input;
 	//FILE *yyin;
-
-	input = fopen("test2.mjava","r");
+	if(argc==3)
+	{
+		input = fopen(argv[1],"r");
+	}
+	else
+		input = fopen("test2.mjava","r");
 	yyin = input;
 
 	//call yylex to identify tokens
