@@ -34,6 +34,8 @@ void errHandling(int);
 <comment><<EOF>> {errHandling(errComment);return EOFnum;} /*test it for return error*/
 <comment>. /*observe anything between starting and ending of comment*/
 [\n] {lineNumber++; columnNumber=1;}
+[ ] {columnNumber++;}
+[\t] {columnNumber+=8;}
 "&&" {columnNumber+=yyleng; return ANDnum;}
 ":=" {columnNumber+=yyleng;return ASSGNum;}
 "declarations" {columnNumber+=yyleng;return DECLARATIONnum;}
@@ -77,7 +79,7 @@ void errHandling(int);
 0+[0-9]+ {columnNumber+=yyleng; errHandling(errIntzero);return errIntzero;}
 ([0-9]+(([a-zA-Z_]|[0-9]))*) {columnNumber+=yyleng; errHandling(errIdentifier);return errIdentifier;}; /* identifier starts with number*/
 <<EOF>> {columnNumber+=yyleng-1;return EOFnum;}
-. {columnNumber++;}
+. {errHandling(errOther);}
 
 %%
 void updatestrTable(char* yytext)
@@ -86,8 +88,9 @@ void updatestrTable(char* yytext)
 	if(isStr && strlen(yytext)==2)
 	{
 		//printf("print it ....%d----%s---",strlen(stringtable),stringtable);
-		location =strlen(stringtable)+1;
+		location =strlen(stringtable);
 		strcat(stringtable," ");
+		isStr = 0;
 		return;
 	}
 
@@ -174,23 +177,23 @@ void errHandling(int err)
 	{
 		case errIntzero:
 			{
-				printf("the integer %s starts with zero, at line %d, and collumn %d  '\n", yytext, lineNumber, columnNumber);
+				printf("ERROR : the integer %s starts with zero, at line %d, and collumn %d  \n", yytext, lineNumber, columnNumber);
 				break;
 			}
 		case errString:
 			{
-				printf("Unmached String Constant %s , at line %d column %d \n", yytext, lineNumber, columnNumber-strlen(yytext));
+				printf("ERROR : Unmached String Constant %s , at line %d column %d \n", yytext, lineNumber, columnNumber-strlen(yytext));
 				//printf("the string %s in line %d and collumn %d has been detected which is malformed and not closed!'\n", yytext, lineNumber, columnNumber-strlen(yytext));	
 				break;
 			}
 		case errIdentifier:
 		{
-			printf("Malformed identifier %s, at line %d and collumn %d '\n", yytext, lineNumber, columnNumber-strlen(yytext));
+			printf("ERROR : Malformed identifier %s, at line %d and collumn %d \n", yytext, lineNumber, columnNumber-strlen(yytext));
 			break;
 		}
 		case errOther:
 		{
-			printf("The wrong typo %s happend at line %d and collumn %d \n",yytext, lineNumber, columnNumber);
+			printf("ERROR : The wrong typo %s happend at line %d and collumn %d \n",yytext, lineNumber, columnNumber);
 			break;
 		}
 		case errComment:
