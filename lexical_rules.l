@@ -174,22 +174,23 @@ void errHandling(int err)
 	{
 		case errIntzero:
 			{
-				printf("the integer %s in line %d, and collumn %d starts with a zero '\n", yytext, lineNumber, columnNumber);
+				printf("the integer %s starts with zero, at line %d, and collumn %d  '\n", yytext, lineNumber, columnNumber);
 				break;
 			}
 		case errString:
 			{
-				printf("the string %s in line %d and collumn %d has been detected which is malformed and not closed!'\n", yytext, lineNumber, columnNumber-strlen(yytext));	
+				printf("Unmached String Constant %s , at line %d column %d \n", yytext, lineNumber, columnNumber-strlen(yytext));
+				//printf("the string %s in line %d and collumn %d has been detected which is malformed and not closed!'\n", yytext, lineNumber, columnNumber-strlen(yytext));	
 				break;
 			}
 		case errIdentifier:
 		{
-			printf("so called identifier %s in line %d and collumn %d is malformed '\n", yytext, lineNumber, columnNumber-strlen(yytext));
+			printf("Malformed identifier %s, at line %d and collumn %d '\n", yytext, lineNumber, columnNumber-strlen(yytext));
 			break;
 		}
 		case errOther:
 		{
-			printf("The wrong typo %s happend in line %d and collumn %d \n",yytext, lineNumber, columnNumber);
+			printf("The wrong typo %s happend at line %d and collumn %d \n",yytext, lineNumber, columnNumber);
 			break;
 		}
 		case errComment:
@@ -267,11 +268,7 @@ int main(int argc, char *argv[])
 			case 296:		{TOKEN="malformedComment"; break;}
 			case 297:		{TOKEN="COMMENT"; break;}
 			case 0:			{TOKEN="EOFnum"; break;}
-			case 500:		{TOKEN="errIdentifier"; break;}
-			case 501:		{TOKEN="errComment"; break;}
-			case 502:		{TOKEN="errString"; break;}
-			case 503:		{TOKEN="errIntzero"; break;}
-			case 504:		{TOKEN="errOther"; break;}
+	
 
 		}
 
