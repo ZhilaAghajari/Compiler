@@ -147,6 +147,8 @@ void updatestrTable(char* yytext)
 		strcat(stringtable," ");
 		strcat(stringtable,yytext);
 	}
+	//since we add " " each time we want to put a new variable into stringtable, then we decide to return location-1 instead of location
+	location--;
 
 }
 void errHandling(int err)
