@@ -85,7 +85,7 @@ void updatestrTable(char* yytext)
 
 	if(isStr && strlen(yytext)==2)
 	{
-		printf("print it ....%d----%s---",strlen(stringtable),stringtable);
+		//printf("print it ....%d----%s---",strlen(stringtable),stringtable);
 		location =strlen(stringtable)+1;
 		strcat(stringtable," ");
 		return;
@@ -131,7 +131,7 @@ void updatestrTable(char* yytext)
 			if(i-yc>=0 && stringtable[i-yc]==' ' && (stringtable[i+1]==' '))
 			{
 				newVar = 0;
-				location = i; //set the current location of variable
+				location = i-yc+1; //set the current location of variable
 				break;
 			}
 			//in other case if i-yc>=0 but the found variable is at the end of string there is no space afterward but instead we have 
@@ -139,7 +139,7 @@ void updatestrTable(char* yytext)
 			if(i-yc>=0 && stringtable[i-yc]==' ' && i+1==strlen(stringtable))
 			{
 				newVar = 0;
-				location = i; //set the current location of variable
+				location = i-yc+1; //set the current location of variable
 				break;
 			}
 			
@@ -147,7 +147,7 @@ void updatestrTable(char* yytext)
 			if(i-yc<0 && stringtable[i+1]==' ')
 			{
 				newVar = 0;
-				location = i;
+				location = i-yc+1;
 				break;
 			}
 
@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
 	FILE *input;
 	//FILE *yyin;
 
-	input = fopen("strings.mjava","r");
+	input = fopen("test2.mjava","r");
 	yyin = input;
 
 	//call yylex to identify tokens
