@@ -2196,6 +2196,11 @@ void errHandling(int err)
 			printf("The wrong typo %s happend in line %d and collumn %d \n",yytext, lineNumber, columnNumber);
 			break;
 		}
+		case errComment:
+		{
+			printf("Error: EOF found in comment, at line %d column %d \n", lineNumber, columnNumber);
+			break;	
+		}
 		default:
 			break;
 	}
