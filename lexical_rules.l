@@ -12,6 +12,7 @@ int lineNumber=1;
 int columnNumber=1;
 char stringtable[4096];
 int location;
+int isStr = 0;
 void updatestrTable(char*);
 void errHandling(int);
 
@@ -71,19 +72,35 @@ void errHandling(int);
 "*" {columnNumber+=yyleng;return TIMESnum;}
 "void" {columnNumber+=yyleng;return VOIDnum;}
 [a-zA-Z_][a-zA-Z_0-9]* {columnNumber+=yyleng;updatestrTable(yytext);return IDnum;}
-\'([^"\\\n]|\\(.|\n|\f|\r|\n\r))*\' {columnNumber+=yyleng; updatestrTable(yytext);return SCONSTnum;} 
-\'([^"\\\n]|\\(.|\n|\f|\r|\n\r))*\\? {columnNumber+=yyleng; errHandling(errString);return errString;}
+\'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\' {columnNumber+=yyleng; isStr = 1;updatestrTable(yytext);return SCONSTnum;} 
+\'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\\? {columnNumber+=yyleng; errHandling(errString);return errString;}
 0+[0-9]+ {columnNumber+=yyleng; errHandling(errIntzero);return errIntzero;}
 ([0-9]+(([a-zA-Z_]|[0-9]))*) {columnNumber+=yyleng; errHandling(errIdentifier);return errIdentifier;}; /* identifier starts with number*/
-<<EOF>> {columnNumber+=yyleng;return EOFnum;}
+<<EOF>> {columnNumber+=yyleng-1;return EOFnum;}
 . {columnNumber++;}
 
 %%
 void updatestrTable(char* yytext)
 {
-	//reference string table to another string
+
+	if(isStr && strlen(yytext)==2)
+	{
+		printf("print it ....%d----%s---",strlen(stringtable),stringtable);
+		location =strlen(stringtable)+1;
+		strcat(stringtable," ");
+		return;
+	}
+
+	//copy yytext to another char* if it is string
 	char temptable[4096];
-	//strcpy(temptable,stringtable);
+	if(isStr)//we want to cut off '' at the start and end of string
+	{
+		for(int i=1;i<strlen(yytext)-1;i++)
+			temptable[i-1] = yytext[i];		
+		strcpy(yytext,temptable);
+		isStr = 0;
+	}
+	
 
 	//we devised a manual searching and did not use strstr for searching
 	//in the proposed method we start with the start of string and go a for-loop over all chars. if we see a similar patterns over a 
@@ -162,12 +179,12 @@ void errHandling(int err)
 			}
 		case errString:
 			{
-				printf("the string %s in line %d and collumn %d has been detected which is malformed and not closed!'\n", yytext, lineNumber, columnNumber);	
+				printf("the string %s in line %d and collumn %d has been detected which is malformed and not closed!'\n", yytext, lineNumber, columnNumber-strlen(yytext));	
 				break;
 			}
 		case errIdentifier:
 		{
-			printf("so called identifier %s in line %d and collumn %d is malformed '\n", yytext, lineNumber, columnNumber);
+			printf("so called identifier %s in line %d and collumn %d is malformed '\n", yytext, lineNumber, columnNumber-strlen(yytext));
 			break;
 		}
 		case errOther:
@@ -185,7 +202,7 @@ int main(int argc, char *argv[])
 	FILE *input;
 	//FILE *yyin;
 
-	input = fopen("test.mjava","r");
+	input = fopen("strings.mjava","r");
 	yyin = input;
 
 	//call yylex to identify tokens
