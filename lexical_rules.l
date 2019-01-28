@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
 {
 	FILE *input;
 	//FILE *yyin;
-	if(argc==3)
+	if(argc>=2)
 	{
 		input = fopen(argv[1],"r");
 	}
