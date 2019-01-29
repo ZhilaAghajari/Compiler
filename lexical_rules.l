@@ -102,8 +102,40 @@ void updatestrTable(char* yytext)
 	char temptable[4096];
 	if(isStr)//we want to cut off '' at the start and end of string
 	{
-		for(int i=1;i<strlen(yytext)-1;i++)
-			temptable[i-1] = yytext[i];		
+		//for(int i=1;i<strlen(yytext)-1;i++)
+		int tempIndex = 0;//counter for temptable
+		int i=1; //counter of yytext
+		while(i<strlen(yytext)-1)
+		{
+			//if it is special character, replace the character and increase i twice
+			if(yytext[i] == '\\' && yytext[i+1]=='n')
+			{
+				temptable[tempIndex++] = '\n';
+				i++;
+			}
+			else if(yytext[i] == '\\' && yytext[i+1]=='t')
+			{
+				temptable[tempIndex++] = '\t';
+				i++;
+			}
+			else if(yytext[i] == '\\' && yytext[i+1]=='\'')
+			{
+				temptable[tempIndex++] = '\'';
+				i++;
+			}
+			else if(yytext[i] == '\\' && yytext[i+1]=='\\')
+			{
+				temptable[tempIndex++] = '\\';
+				i++;
+			}
+			else
+			{
+				temptable[tempIndex++] = yytext[i];
+
+			}
+
+			i++;//increase i by one
+		}
 		strcpy(yytext,temptable);
 		isStr = 0;
 	}
