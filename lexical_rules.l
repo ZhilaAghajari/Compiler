@@ -1,5 +1,9 @@
 /*
-* token rules.. they will be given later on to lex 
+* Zhila Aghajari (zha6@pitt.edu)
+* token rules are written here to be give to the lex
+* As explaiend in the slides, the first part is for defining variable and importing libraries and other header that I need in this FILE
+* Tokens are also included to be used here 
+*in the second part rules are definied. I put them based on their priorities so that it won't misclassifies tokens
 */
 
 %{ 
@@ -75,9 +79,9 @@ void errHandling(int);
 "void" {columnNumber+=yyleng;return VOIDnum;}
 [a-zA-Z_][a-zA-Z_0-9]* {columnNumber+=yyleng;updatestrTable(yytext);return IDnum;}
 \'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\' {columnNumber+=yyleng; isStr = 1;updatestrTable(yytext);return SCONSTnum;} 
-\'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\\? {columnNumber+=yyleng; errHandling(errString);return errString;}
-0+[0-9]+ {columnNumber+=yyleng; errHandling(errIntzero);return errIntzero;}
-([0-9]+(([a-zA-Z_]|[0-9]))*) {columnNumber+=yyleng; errHandling(errIdentifier);return errIdentifier;}; /* identifier starts with number*/
+\'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\\? {columnNumber+=yyleng; errHandling(errString);}
+0+[0-9]+ {columnNumber+=yyleng; errHandling(errIntzero);}
+([0-9]+(([a-zA-Z_]|[0-9]))*) {columnNumber+=yyleng; errHandling(errIdentifier);}; /* identifier starts with number*/
 <<EOF>> {columnNumber+=yyleng-1;return EOFnum;}
 . {errHandling(errOther);}
 
@@ -206,8 +210,12 @@ void errHandling(int err)
 	}
 }
 
+
 int main(int argc, char *argv[])
 {
+/* I included my main function here, input file could be given to the program or it can be executed on the defult one */
+/* which is set here in the program */
+/* tokens are determiend based on rules I gave to the lex, then untill geting to the end of file, it reads and tokenizes the input file*/
 	FILE *input;
 	//FILE *yyin;
 	if(argc>=2)
@@ -271,6 +279,11 @@ int main(int argc, char *argv[])
 			case 296:		{TOKEN="malformedComment"; break;}
 			case 297:		{TOKEN="COMMENT"; break;}
 			case 0:			{TOKEN="EOFnum"; break;}
+			case 500:		{TOKEN="errIdentifier"; break;}
+			case 501:		{TOKEN="errComment"; break;}
+			case 502:		{TOKEN="errString"; break;}
+			case 503:		{TOKEN="errIntzero"; break;}
+			case 504:		{TOKEN="errOther"; break;}
 	
 
 		}
