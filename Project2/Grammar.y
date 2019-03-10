@@ -1,6 +1,7 @@
 %{ /*Definition*/
 #include "proj2.h"
 #inlcude <stdio.h>
+int yycolumn, yyline;
 %}
 
 %token <intg> PROGRAMnum IDnum SEMInum CLASSnum
@@ -20,12 +21,11 @@ ClassDecl: CLASSnum IDnum
 
 %%
 
-int yycolumn, yyline;
-FILE *treelst;
 
-main()
+int main(int argc, char *argv[])
 {
-	
+	FILE *treelst;	
+	return 0;
 }
 yyerror(char *str)
 {
