@@ -3,11 +3,20 @@
 #inlcude <stdio.h>
 %}
 
-%toekn <intg> PROGRAMnum
+%toekn <intg> PROGRAMnum IDnum SEMInum
+%type <tptr> Program
 
 %% /*yacc specification */
-
-
+Program : PROGRAMnum IDnum SEMInum ClassDecl
+{
+	$$ = MakeTree(ProgramOp,$3,MakeLeaf(IDNode,$2));
+	printtree($$,0);
+};
+ClassDecl: CLASSnum IDnum
+{
+	printf("here");
+}
+;
 
 %%
 
