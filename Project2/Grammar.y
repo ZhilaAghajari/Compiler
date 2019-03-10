@@ -1,6 +1,9 @@
 %{ /*Definition*/
 #include "proj2.h"
 #inlcude <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "tokens.h"
 int yycolumn, yyline;
 %}
 
