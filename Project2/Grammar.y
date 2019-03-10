@@ -3,7 +3,7 @@
 #inlcude <stdio.h>
 %}
 
-%toekn <intg> PROGRAMnum IDnum SEMInum
+%token <intg> PROGRAMnum IDnum SEMInum
 %type <tptr> Program
 
 %% /*yacc specification */
