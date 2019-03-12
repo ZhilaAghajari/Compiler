@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "tokens.h"
+//#include "tokens.h"
+//#include "proj2.h"
+//#include "y.tab.h"
 #include <regex.h>
 int lineNumber=1;
 int columnNumber=1;
@@ -240,103 +242,4 @@ void errHandling(int err)
 		default:
 			break;
 	}
-}
-
-
-int main(int argc, char *argv[])
-{
-/* I included my main function here, input file could be given to the program or it can be executed on the defult one */
-/* which is set here in the program */
-/* tokens are determiend based on rules I gave to the lex, then untill geting to the end of file, it reads and tokenizes the input file*/
-	FILE *input;
-	//FILE *yyin;
-	if(argc>=2)
-	{
-		input = fopen(argv[1],"r");
-	}
-	else
-		input = fopen("test2.mjava","r");
-	yyin = input;
-
-	//call yylex to identify tokens
-	int z = 1;
-	char *TOKEN;
-	printf("Line   Column   Token    Index_in_String_Table\n");
-	while(z!=0)
-	{
-		//yylex();
-		//z = yylex();
-		//printf("%d...\n", z);
-
-		switch(z=yylex()) // convert token numbers to their corresponding type..
-		{
-			case 257:		{TOKEN = "ANDnum"; break;}
-			case 258:		{TOKEN="ASSGNum"; break;}
-			case 259:		{TOKEN = "DECLARATIONnum"; break;}
-			case 260:		{TOKEN = "DOTnum"; break;}
-			case 261:		{TOKEN = "ENDDECLARATIONSnum"; break;}
-			case 262:		{TOKEN = "EQUALnum"; break;}
-			case 263:		{TOKEN="GTnum"; break;}
-			case 264:		{TOKEN ="IDnum"; break;}
-			case 265:		{TOKEN="INTnum"; break;}
-			case 266:		{TOKEN = "LBRACnum"; break;}
-			case 267:		{TOKEN="LPARENnum"; break;}
-			case 268:		{TOKEN="METHODnum"; break;}
-			case 269:		{TOKEN="NEnum"; break;}
-			case 270:		{TOKEN="ORnum"; break;}
-			case 271:		{TOKEN="PROGRAMnum"; break;}
-			case 272:		{TOKEN="RBRACnum"; break;}
-			case 273:		{TOKEN="RPARENnum"; break;}
-			case 274:		{TOKEN="SEMInum"; break;}
-			case 275:		{TOKEN="VALnum"; break;}
-			case 276:		{TOKEN="WHILEnum"; break;}
-			case 277:		{TOKEN="CLASSnum"; break;}
-			case 278:		{TOKEN="COMMAnum"; break;}
-			case 279:		{TOKEN="DIVIDEnum"; break;}
-			case 280:		{TOKEN="ELSEnum"; break;}
-			case 281:		{TOKEN="EQnum"; break;}
-			case 282:		{TOKEN="GEnum"; break;}
-			case 283:		{TOKEN="ICONSTnum"; break;}
-			case 284:		{TOKEN="IFnum"; break;}
-			case 285:		{TOKEN="LBRACEnum"; break;}
-			case 286:		{TOKEN="LEnum"; break;}
-			case 287:		{TOKEN="LTnum"; break;}
-			case 289:		{TOKEN="NOTnum"; break;}
-			case 290:		{TOKEN="PLUSnum"; break;}
-			case 291:		{TOKEN="RBRACEnum"; break;}
-			case 292:		{TOKEN="RETURNnum"; break;}
-			case 293:		{TOKEN="SCONSTnum"; break;}
-			case 294:		{TOKEN="TIMESnum"; break;}
-			case 295:		{TOKEN="VOIDnum"; break;}
-			case 296:		{TOKEN="malformedComment"; break;}
-			case 297:		{TOKEN="COMMENT"; break;}
-			case 0:			{TOKEN="EOFnum"; break;}
-			case 500:		{TOKEN="errIdentifier"; break;}
-			case 501:		{TOKEN="errComment"; break;}
-			case 502:		{TOKEN="errString"; break;}
-			case 503:		{TOKEN="errIntzero"; break;}
-			case 504:		{TOKEN="errOther"; break;}
-	
-
-		}
-
-		//printf("%d...\n", z);
-
-
-		if(z == IDnum || z == SCONSTnum)
-		{
-			//printf("lineNumber= %d lineColumn=%d Index_in_string_Table=%d , value=%s \n",lineNumber,columnNumber,location, yytext);
-			printf("%d\t%d\t%s\t\t%d \n",lineNumber,columnNumber,TOKEN, location);
-
-		}
-
-		else
-		{
-			printf("%d\t%d\t%s\n",lineNumber,columnNumber,TOKEN);
-
-		}
-	}
-	/* now I should print string table at the end of program like in the example: */
-	printf("String Table: %s\n" ,stringtable);
-
 }

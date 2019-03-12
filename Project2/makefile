@@ -1,17 +1,28 @@
 #MAKEFILE
-
-all : LEXcompile GccCompiler YACC
+#last step I was in, cannot run YACC completely, since there is
+#no yac.tab.y for us!
+all : LEXcompile YACC GccCompiler
 
 LEXcompile : lexical_rules.l
 	lex lexical_rules.l
 	
-GccCompiler: lex.yy.c 
-	gcc -std=c99 lex.yy.c -o runfile -ll
+GccCompiler: y.tab.c lex.yy.c proj2.c
+	gcc  -g -o runparser y.tab.c proj2.c -lfl
 
 YACC : Grammar.y
-	bison -v Grammar.y
-	gcc Grammar.tab.c proj2.c lex.yy.c -o runpars -ll
+	yacc -v Grammar.y
 
 
 clean: 
-	rm lex.yy.c runfile
+	rm -rf lex.yy.c runfile
+	rm -rf Grammar.output
+	rm -rf Grammar.tab.c
+
+# parser:   y.tab.c lex.yy.c proj2.c
+# 	gcc  -g -o parser y.tab.c proj2.c -lfl
+
+# y.tab.c:  grammar.y
+# 	yacc -v grammar.y
+
+# lex.yy.c: lexical_rules.l 
+# 	lex lexical_rules.l
