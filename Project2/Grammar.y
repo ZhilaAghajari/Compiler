@@ -11,7 +11,7 @@ tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for tempora
 
 %token <intg> errIdentifier errComment errString errIntzero errOther COMMENT EOFnum DECLARATIONnum ASSGNum PROGRAMnum IDnum SEMInum ANDnum DOTnum ENDDECLARATIONSnum EQUALnum GTnum INTnum LBRACnum LPARENnum METHODnum NEnum ORnum RBRACnum RPARENnum VALnum WHILEnum CLASSnum COMMAnum DIVIDEnum ELSEnum EQnum GEnum ICONSTnum IFnum LBRACEnum LEnum LTnum MINUSnum NOTnum PLUSnum RBRACEnum RETURNnum SCONSTnum TIMESnum VOIDnum malformedComment
 
-%type  <tptr>  Program ClassDecl ClassDeclLoop ClassBody Decls FieldDeclLoop FieldDecl MethodDecl Type FormalParameterList Block MethodDeclLoop VariableDecId FieldDeclLoop2 VariableDeclId VariableInitializer BrackLoop Expression ArrayIntializer ArrayCreationExpression VariableInitializerLoop ArrayCreationExpressionLoop FormalParameterListLoop1 FormalParameterListLoop2
+%type  <tptr>  Program ClassDecl ClassDeclLoop ClassBody Decls FieldDeclLoop FieldDecl MethodDecl Type Block MethodDeclLoop FieldDeclLoop2 VariableDeclId VariableInitializer BrackLoop Expression ArrayIntializer ArrayCreationExpression VariableInitializerLoop ArrayCreationExpressionLoop FormalParameterListLoopNoVal FormalParameterListLoopWithVal ValLoop FormalParameterListNoType FormalParameterListWithType StatementList TypeList StatementLoop Statement AssignmentStatement MethodCallStatement ReturnStatement IfStatement WhileStatement Variable SimpleExpression SimpleExpressionList Term FactorList Factor
 
 
 %% /*yacc specification */
@@ -61,7 +61,12 @@ ClassBody: LBRACEnum RBRACEnum
 Decls: DECLARATIONnum FieldDeclLoop ENDDECLARATIONSnum
 {
 	$$ = $2;
-};
+}
+	| /*nothing for decls is acceptable, too*/
+{
+	$$ = NullExp();
+}
+;
 
 FieldDeclLoop: /*no Declaration inside*/
 {
@@ -125,15 +130,16 @@ MethodDeclLoop: MethodDeclLoop MethodDecl
 	$$ = MakeTree(BodyOp,NullExp(),$1);	
 }
 ;
-MethodDecl : METHODnum VOIDnum IDnum LPARENnum FormalParameterList RPARENnum Block /*this is first modle with VOID */
+MethodDecl : METHODnum VOIDnum IDnum LPARENnum FormalParameterListNoType RPARENnum Block /*this is first modle with VOID */
 {
-	/*left leaf is a tree of FormalParameterList and right leaf is Block */
-	$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),$5),$7);
+	/*left leaf is a tree of FormalParameterListNoType and right leaf is Block */
+	/*$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),$5),$7);*/
+	$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),MakeTree(SpecOp,$5,type_tree)),$7);
 }
-			| METHODnum Type IDnum LPARENnum FormalParameterList RPARENnum Block /*this is first modle with type as return value */
+			| METHODnum Type IDnum LPARENnum FormalParameterListWithType RPARENnum Block /*this is first modle with type as return value */
 {
-	/*left leaf is a tree of FormalParameterList and right leaf is Block */
-	$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),$5),$7);	
+	/*left leaf is a tree of FormalParameterListWithType and right leaf is Block */
+	$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),MakeTree(SpecOp,$5,type_tree)),$7);	
 }
 ;
 
@@ -200,58 +206,349 @@ ArrayCreationExpressionLoop: ArrayCreationExpressionLoop LBRACnum Expression RBR
 }
 ;
 
-FormalParameterList: /*nothing for FormalParameterList*/
+FormalParameterListNoType: /*empty call*/
 {
-	$$ = MakeTree(SpecOp, NullExp(),type_tree);
+	/*no leaf and end tree here*/
+	$$ = MakeTree(SpecOp, NullExp(),NullExp());	
 }
-					| FormalParameterListLoop1 SEMInum FormalParameterList
+							| FormalParameterListLoopWithVal
 {
-	/*make a tree and make a right child for left child, since we don't want the left child here of the new leaf*/
-	$$ = MakeTree(SpecOp,MkRightC($3,$1),type_tree);	
+	$$ = MakeTree(SpecOp, $1,NullExp());		
 }
-					| FormalParameterListLoop1
+							| FormalParameterListLoopNoVal
+{
+	$$ = MakeTree(SpecOp, $1,NullExp());		
+}
+;
+
+FormalParameterListWithType: /*empty call*/
+{
+	$$ = MakeTree(SpecOp, NullExp(),type_tree);	
+}
+							| FormalParameterListLoopWithVal
+{
+	$$ = MakeTree(SpecOp, $1,type_tree);		
+}
+							| FormalParameterListLoopNoVal
+{
+	$$ = MakeTree(SpecOp, $1,type_tree);		
+}
+;
+
+FormalParameterListLoopWithVal: VALnum INTnum IDnum
+{
+	$$ = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, $3), MakeLeaf(INTEGERTNode, INTnum)), NullExp());
+}
+						| VALnum INTnum IDnum SEMInum FormalParameterListLoopWithVal
+{
+	$$ = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, $3), MakeLeaf(INTEGERTNode, INTnum)), $5);
+}
+						| VALnum INTnum IDnum SEMInum FormalParameterListLoopNoVal
+{
+	$$ = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, $3), MakeLeaf(INTEGERTNode, INTnum)), $5);
+}
+						| VALnum INTnum IDnum COMMAnum ValLoop
+{
+	$$ = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, $3), MakeLeaf(INTEGERTNode, INTnum)), $5);	
+}
+						| VALnum INTnum IDnum COMMAnum ValLoop SEMInum FormalParameterListLoopWithVal
+{
+	$$ = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, $3), MakeLeaf(INTEGERTNode, INTnum)), $7);
+}
+						| VALnum INTnum IDnum COMMAnum ValLoop SEMInum FormalParameterListLoopNoVal
+{
+	$$ = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, $3), MakeLeaf(INTEGERTNode, INTnum)), $7);
+}
+;
+
+
+FormalParameterListLoopNoVal: INTnum IDnum
+{
+	$$ = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, $2), MakeLeaf(INTEGERTNode, INTnum)), NullExp());	
+}
+						| INTnum IDnum SEMInum FormalParameterListLoopWithVal
+{
+	$$ = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, $2), MakeLeaf(INTEGERTNode, INTnum)), $4);
+}
+						| INTnum IDnum SEMInum FormalParameterListLoopNoVal
+{
+	$$ = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, $2), MakeLeaf(INTEGERTNode, INTnum)), $4);
+}
+						| INTnum IDnum COMMAnum ValLoop
+{
+	$$ = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, $2), MakeLeaf(INTEGERTNode, INTnum)), $4);	
+}
+						| INTnum IDnum COMMAnum ValLoop SEMInum FormalParameterListLoopNoVal
+{
+	$$ = MakeTree(VArgTypeOp,MakeTree(VArgTypeOp, MakeTree(CommaOp, MakeLeaf(IDNode, $2), MakeLeaf(INTEGERTNode, INTnum)), $4), $6);
+}
+						| INTnum IDnum COMMAnum ValLoop SEMInum FormalParameterListLoopWithVal
+{
+	$$ = MakeTree(VArgTypeOp,MakeTree(VArgTypeOp, MakeTree(CommaOp, MakeLeaf(IDNode, $2), MakeLeaf(INTEGERTNode, INTnum)), $4), $6);
+}
+;
+ValLoop: IDnum COMMAnum ValLoop
+{
+	/* make a loop to continue*/
+	$$ = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode,$1),MakeLeaf(INTEGERTNode,INTnum)),$3);
+}
+		| IDnum
+{
+	$$ = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode,$1),MakeLeaf(INTEGERTNode,INTnum)),NullExp());
+}
+;
+
+
+Block: StatementList
+{
+	$$ = MakeTree(BodyOp,NullExp(),$1);
+}	
+	| Decls StatementList
+{
+	$$ = MakeTree(BodyOp,$1,$2);
+}
+;
+
+Type: INTnum
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,$1),NullExp());
+	$$ = type_tree;
+}	
+	| IDnum 
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(IDNode,$1),NullExp());
+	$$ = type_tree;
+}
+	|INTnum BrackLoop
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,$1),$2);
+	$$ = type_tree;
+}
+	| IDnum BrackLoop
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(IDNode,$1),$2);
+	$$ = type_tree;
+}
+	| IDnum TypeList
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(IDNode,$1),$2);
+	$$ = type_tree;
+}
+	| INTnum TypeList
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,$1),$2);
+	$$ = type_tree;
+}
+;
+
+TypeList: DOTnum Type
+{
+	$$ = MakeTree(FieldOp,$2,NullExp());
+}
+		| BrackLoop TypeList
+{
+	$$ = MakeTree(IndexOp,NullExp(),NullExp());
+}
+;
+
+
+StatementList: LBRACEnum StatementLoop RBRACEnum
+{
+	$$ = $2;
+};
+
+StatementLoop: Statement
+{
+	$$ = MakeTree(StmtOp,NullExp(),$1);
+}
+			| StatementLoop SEMInum Statement
+{
+	/*if there is nothing as for statment, then just return StatementLoop. Otherwise, return the whole tree*/
+	if($3 == NullExp()){$$ = $1;}
+	else {$$ = MakeTree(StmtOp,$1,$3);}
+}
+;
+
+Statement: /*nothing/
+{
+	$$ = NullExp();	
+}
+		| AssignmentStatement
+{
+	$$ = $1;
+}
+		| MethodCallStatement
+{
+	$$ = $1;
+}
+		| ReturnStatement
+{
+	$$ = $1;
+}
+		| IfStatement
+{
+	$$ = $1;
+}
+		| WhileStatement
 {
 	$$ = $1;
 }
 ;
 
-FormalParameterListLoop1: VALnum INTnum FormalParameterListLoop2
+AssignmentStatement: Variable ASSGNum Expression
 {
-	/*make the right child a value equal to VarargOp*/
-	$$ = MakeVal($3);
+	$$ = MakeTree(AssignOp,MakeTree(AssignOp,Nullexp(),$1),$3);
+};
+
+MethodCallStatement: Variable LPARENnum ExpressionLoop RPARENnum
+{
+	$$ = MakeTree(RoutineCallOp,$1,$3);
+};
+
+ExpressionLoop: Expression
+{
+	$$ = MakeTree(CommaOp,$1,NullExp());	
 }
-						| INTnum FormalParameterListLoop2
+				| ExpressionLoop COMMAnum Expression
+{
+	$$ = MakeTree(CommaOp,$1,$3);		
+}
+				| /*null return*/
+{
+	$$ = NullExp();		
+}
+;
+
+
+ReturnStatement: RETURNnum
+{
+	$$ = MakeTree(ReturnOp,NullExp(),NullExp());
+}
+				| RETURNnum Expression
+{
+	$$ = MakeTree(ReturnOp,$2,NullExp());	
+}
+;
+
+IfStatement: IFnum Expression StatementList
+{
+	$$ = MakeTree(IfElseOp,NullExp(),MakeTree(CommaOp,$2,$3));
+}
+			| IFnum Expression StatementList ELSEnum StatementList
+{
+	$$ = MakeTree(IfElseOp,MakeTree(IfElseOp,Nullexp(),MakeTree(CommaOp,$2,$3)),$5);
+}
+			| IFnum Expression StatementList ELSEnum IfStatement
+{
+	$$ = MakeTree(IfElseOp,$5,MakeTree(CommaOp,$2,$3));
+}
+;
+
+WhileStatement: WHILEnum Expression StatementList
+{
+	$$ = MakeTree(LoopOp,$2,$3);
+};
+
+Expression: SimpleExpression
+{
+	$$ = $1;
+}
+			| SimpleExpression LTnum SimpleExpression
+{
+	$$ = MakeTree(LTOp,$1,$3);
+}
+			| SimpleExpression LEnum SimpleExpression
+{
+	$$ = MakeTree(LEOp,$1,$3);	
+}
+			|SimpleExpression EQnum SimpleExpression
+{
+	$$ = MakeTree(EQOp,$1,$3);
+}
+			|SimpleExpression NEnum SimpleExpression
+{
+	$$ = MakeTree(NEOp,$1,$3);
+}
+			|SimpleExpression GTnum SimpleExpression
+{
+	$$ = MakeTree(GEOp,$1,$3);
+}
+			|SimpleExpression GEnum SimpleExpression
+{
+	$$ = MakeTree(GTOp,$1,$3);
+}
+;
+
+SimpleExpression: SimpleExpressionList
+{
+	$$ = $1;
+}
+				| PLUSnum SimpleExpressionList
+{
+	$$ = $2;
+}
+				| MINUSnum SimpleExpressionList
 {
 	$$ = $2;
 }
 ;
 
-FormalParameterListLoop2: IDnum
+SimpleExpressionList: Term
 {
-	$$ = MakeTree(RArgTypeOp,MakeTree(CommaOp, MakeLeaf(IDNode, $1), MakeLeaf(INTEGERTNode, 0)),NullExp());
+	$$ = $1;
 }
-						| IDnum COMMAnum FormalParameterListLoop2
+					| SimpleExpressionList PLUSnum Term
 {
-	tree temp = MakeTree(RArgTypeOp, MakeTree(CommaOp, MakeLeaf(IDNode, $1), MakeLeaf(INTEGERTNode, 0)), NullExp());
-	$$ = MkRightC($3, temp);
+	$$ = MakeTree(AddOp,$1,$3);
+}
+					| SimpleExpressionList MINUSnum Term
+{
+	$$ = MakeTree(SubOp,$1,$3);	
+}
+					| SimpleExpressionList ORnum Term
+{
+	$$ = MakeTree(OrOp,$1,$3);
 }
 ;
 
-Expression: /*nothing for now ---*/
+Term: FactorList
+{
+	$$ = $1;	
+}
+;
+
+FactorList: Factor
+{
+	$$ = $1;
+}
+			| FactorList ANDnum Factor
+{
+	$$ = MakeTree(AndOp,$1,$3);
+}
+			| FactorList DIVIDEnum Factor
+{
+	$$ = MakeTree(DivOp,$1,$3);	
+}
+			| FactorList TIMESnum Factor
+{
+	$$ = MakeTree(MultOp,$1,$3);
+}
+;
+
+Factor:
+{
+	
+};
+
+Variable: /*nothing for now ---*/
 {
 	$$ = NullExp();	
 };
 
 
-Block: /*nothing for now ---*/
-{
-	$$ = NullExp();	
-};
 
-Type: /*nothing for now ---*/
-{
-	$$ = NullExp();	
-};
+
+
 
 
 
@@ -260,6 +557,8 @@ Type: /*nothing for now ---*/
 
 /*edame code nevisi -- ya nokate pdf -- ya khatahaie mojood -- khandan az file*/
 
+
+/*daste akhar tartibe bazi rule ha mesle FormalParameterList va zir shakhe hash ro avaz kon*/
 %%
 
 
