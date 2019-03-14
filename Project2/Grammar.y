@@ -11,7 +11,9 @@ tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for tempora
 
 %token <intg> errIdentifier errComment errString errIntzero errOther COMMENT EOFnum DECLARATIONnum ASSGNum PROGRAMnum IDnum SEMInum ANDnum DOTnum ENDDECLARATIONSnum EQUALnum GTnum INTnum LBRACnum LPARENnum METHODnum NEnum ORnum RBRACnum RPARENnum VALnum WHILEnum CLASSnum COMMAnum DIVIDEnum ELSEnum EQnum GEnum ICONSTnum IFnum LBRACEnum LEnum LTnum MINUSnum NOTnum PLUSnum RBRACEnum RETURNnum SCONSTnum TIMESnum VOIDnum malformedComment
 
-%type  <tptr>  Program ClassDecl ClassDeclLoop ClassBody Decls FieldDeclLoop FieldDecl MethodDecl Type Block MethodDeclLoop FieldDeclLoop2 VariableDeclId VariableInitializer BrackLoop Expression ArrayIntializer ArrayCreationExpression VariableInitializerLoop ArrayCreationExpressionLoop FormalParameterListLoopNoVal FormalParameterListLoopWithVal ValLoop FormalParameterListNoType FormalParameterListWithType StatementList TypeList StatementLoop Statement AssignmentStatement MethodCallStatement ReturnStatement IfStatement WhileStatement Variable SimpleExpression SimpleExpressionList Term FactorList Factor
+%type  <tptr>  Program ClassDecl ClassDeclLoop ClassBody Decls FieldDeclLoop FieldDecl MethodDecl Type Block MethodDeclLoop FieldDeclLoop2 VariableDeclId VariableInitializer BrackLoop Expression ArrayIntializer ArrayCreationExpression VariableInitializerLoop ArrayCreationExpressionLoop FormalParameterListLoopNoVal FormalParameterListLoopWithVal ValLoop FormalParameterListNoType FormalParameterListWithType StatementList TypeList StatementLoop Statement AssignmentStatement ReturnStatement IfStatement  Variable SimpleExpression SimpleExpressionList Term FactorList Factor UnsignedConstant
+
+%type <tptr> WhileStatement MethodCallStatement MethodCallStatement2
 
 
 %% /*yacc specification */
@@ -405,19 +407,11 @@ MethodCallStatement: Variable LPARENnum ExpressionLoop RPARENnum
 	$$ = MakeTree(RoutineCallOp,$1,$3);
 };
 
-ExpressionLoop: Expression
+
+WhileStatement: WHILEnum Expression StatementList
 {
-	$$ = MakeTree(CommaOp,$1,NullExp());	
-}
-				| ExpressionLoop COMMAnum Expression
-{
-	$$ = MakeTree(CommaOp,$1,$3);		
-}
-				| /*null return*/
-{
-	$$ = NullExp();		
-}
-;
+	$$ = MakeTree(LoopOp,$2,$3);
+};
 
 
 ReturnStatement: RETURNnum
@@ -444,10 +438,22 @@ IfStatement: IFnum Expression StatementList
 }
 ;
 
-WhileStatement: WHILEnum Expression StatementList
+
+
+
+ExpressionLoop: Expression
 {
-	$$ = MakeTree(LoopOp,$2,$3);
-};
+	$$ = MakeTree(CommaOp,$1,NullExp());	
+}
+				| ExpressionLoop COMMAnum Expression
+{
+	$$ = MakeTree(CommaOp,$1,$3);		
+}
+				| /*null return*/
+{
+	$$ = NullExp();		
+}
+;
 
 Expression: SimpleExpression
 {
@@ -535,16 +541,46 @@ FactorList: Factor
 }
 ;
 
-Factor:
+Factor: UnsignedConstant
 {
-	
+	$$ = $1;
+}
+		| Variable
+{
+	$$ = $1;	
+}
+/*		| MethodCallStatement
+{
+	$$ = $1;
+}*/
+		| LPARENnum Expression RPARENnum
+{
+	$$ = $2;
+}
+		| NOTnum Factor
+{
+	$$ = MakeTree(NotOp,$2,NullExp());
+}
+		| MethodCallStatement2
+{
+	$$ = $1;
+}
+;
+
+MethodCallStatement2: 
+{
+	$$ = NullExp();	
+};
+
+UnsignedConstant: /*nothing for now ---*/
+{
+	$$ = NullExp();	
 };
 
 Variable: /*nothing for now ---*/
 {
 	$$ = NullExp();	
 };
-
 
 
 
