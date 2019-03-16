@@ -9,7 +9,7 @@ tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for tempora
 %}
 
 
-%token <intg> errIdentifier errComment errString errIntzero errOther COMMENT DECLARATIONnum ASSGNum PROGRAMnum IDnum SEMInum ANDnum DOTnum ENDDECLARATIONSnum EQUALnum GTnum INTnum LBRACnum LPARENnum METHODnum NEnum ORnum RBRACnum RPARENnum VALnum WHILEnum CLASSnum COMMAnum DIVIDEnum ELSEnum EQnum GEnum ICONSTnum IFnum LBRACEnum LEnum LTnum MINUSnum NOTnum PLUSnum RBRACEnum RETURNnum SCONSTnum TIMESnum VOIDnum malformedComment
+%token <intg> DECLARATIONnum ASSGNnum PROGRAMnum IDnum SEMInum ANDnum DOTnum ENDDECLARATIONSnum EQUALnum GTnum INTnum LBRACnum LPARENnum METHODnum NEnum ORnum RBRACnum RPARENnum VALnum WHILEnum CLASSnum COMMAnum DIVIDEnum ELSEnum EQnum GEnum ICONSTnum IFnum LBRACEnum LEnum LTnum MINUSnum NOTnum PLUSnum RBRACEnum RETURNnum SCONSTnum TIMESnum VOIDnum
 
 %token<intg>EOFnum 0
 
@@ -47,12 +47,7 @@ ClassDecl: CLASSnum IDnum ClassBody
 }
 ;
 
-ClassBody: LBRACEnum RBRACEnum
-{
-	$$ = NullExp();
-   /*$$ = MakeTree(BodyOp,NullExp(),MakeLeaf(DUMMYNode,0));	*/
-}
-		| LBRACEnum Decls RBRACEnum
+ClassBody:LBRACEnum Decls RBRACEnum
 {
 	/*$$ = MakeTree(BodyOp,$2);*/
 	$$ = $2; /*return Decls as output */
@@ -61,19 +56,13 @@ ClassBody: LBRACEnum RBRACEnum
 {
 	$$ = MakeTree(BodyOp,NullExp(),$2);
 }
-  		| LBRACEnum Decls MethodDeclLoop RBRACEnum
+		| LBRACEnum Decls MethodDecl RBRACEnum
 {
 	$$ = MakeTree(BodyOp,$2,$3);
 }
-;
-
-Decls: DECLARATIONnum FieldDeclLoop ENDDECLARATIONSnum
+  		| LBRACEnum Decls MethodDeclLoop RBRACEnum
 {
-	$$ = $2;
-}
-	| /*nothing for decls is acceptable, too*/
-{
-	$$ = NullExp();
+	$$ = MakeTree(BodyOp,$2,$3);
 }
 ;
 
@@ -98,31 +87,6 @@ MethodDecl : METHODnum VOIDnum IDnum LPARENnum FormalParameterListNoType RPARENn
 {
 	/*left leaf is a tree of FormalParameterListWithType and right leaf is Block */
 	$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),MakeTree(SpecOp,$5,type_tree)),$7);	
-}
-;
-
-FormalParameterListNoType: /*empty call*/
-{
-	/*no leaf and end tree here*/
-	$$ = MakeTree(SpecOp, NullExp(),NullExp());	
-}
-							| FormalParameterListLoopWithVal
-{
-	$$ = MakeTree(SpecOp, $1,NullExp());		
-}
-							| FormalParameterListLoopNoVal
-{
-	$$ = MakeTree(SpecOp, $1,NullExp());		
-}
-;
-
-Block: StatementList
-{
-	$$ = MakeTree(BodyOp,NullExp(),$1);
-}	
-	| Decls StatementList
-{
-	$$ = MakeTree(BodyOp,$1,$2);
 }
 ;
 
@@ -155,6 +119,32 @@ Type: INTnum
 {
 	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,$1),$2);
 	$$ = type_tree;
+}
+;
+
+TypeList: DOTnum Type
+{
+	$$ = MakeTree(FieldOp,$2,NullExp());
+}
+		| BrackLoop TypeList
+{
+	$$ = MakeTree(IndexOp,NullExp(),NullExp());
+}
+;
+
+
+FormalParameterListNoType: /*empty call*/
+{
+	/*no leaf and end tree here*/
+	$$ = MakeTree(SpecOp, NullExp(),NullExp());	
+}
+							| FormalParameterListLoopWithVal
+{
+	$$ = MakeTree(SpecOp, $1,NullExp());		
+}
+							| FormalParameterListLoopNoVal
+{
+	$$ = MakeTree(SpecOp, $1,NullExp());		
 }
 ;
 
@@ -198,25 +188,6 @@ FormalParameterListLoopWithVal: VALnum INTnum IDnum
 }
 ;
 
-BrackLoop: BrackLoop LBRACnum RBRACnum
-{
-	$$ = $$;	
-}
-		| LBRACnum RBRACnum
-{
-	$$ = $$;	
-};
-
-TypeList: DOTnum Type
-{
-	$$ = MakeTree(FieldOp,$2,NullExp());
-}
-		| BrackLoop TypeList
-{
-	$$ = MakeTree(IndexOp,NullExp(),NullExp());
-}
-;
-
 FormalParameterListLoopNoVal: INTnum IDnum
 {
 	$$ = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, $2), MakeLeaf(INTEGERTNode, INTnum)), NullExp());	
@@ -255,140 +226,13 @@ ValLoop: IDnum COMMAnum ValLoop
 ;
 
 
-FieldDeclLoop: /*no Declaration inside*/
+Block: StatementList
 {
-	/*$$ = NullExp();*/
-	/*in this condition we need to make a tree which has no children, but shows that this FieldDecl  can be a tree */
-	$$ = MakeTree(BodyOp,NullExp(),NullExp());
-}
-			| FieldDeclLoop FieldDecl
+	$$ = MakeTree(BodyOp,NullExp(),$1);
+}	
+	| Decls StatementList
 {
-	$$ = MakeTree(BodyOp,NullExp(),$2);	
-};
-
-
-FieldDecl : Type FieldDeclLoop2 SEMInum
-{
-	/* recall FieldDeclLoop many times */
-		$$ = $2;
-};
-
-FieldDeclLoop2: VariableDeclId 
-{
-	/*in this case we have only VariableDeclId and then ';' */
-	/*the right leaf is a tree of CommaOp and type_tree we make general, but there is no left leaf(tree). so I make a CommaOpTree as the right part and just add as the right leaf for the return tree*/
-
-	tree CommaOpTree = MakeTree(CommaOp,$1,MakeTree(CommaOp, type_tree, NullExp()));
-	$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);
-	
-	
-}
-			| VariableDeclId EQUALnum VariableInitializer
-{
-	/*this case is when we have 'variable = variableinitializer' */
-	/*the right leaf is again a tree but in its right leaf there should not be null but 3rd argumet, this time we got variableInitalizer as the leaf */
-
-	tree CommaOpTree = MakeTree(CommaOp,$1,MakeTree(CommaOp, type_tree,$3));
-	$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);
-}
-			| FieldDeclLoop2 COMMAnum VariableDeclId EQUALnum VariableInitializer 
-{
-	/*the last possible event is the whole diagram repeating again while it continues with a comma ',' with a repeating part of FieldDecloop*/
-
-	tree CommaOpTree = MakeTree(CommaOp,type_tree,$5);
-	$$ = MakeTree(DeclOp,$1,MakeTree(CommaOp,$3,CommaOpTree));
-}
-			| FieldDeclLoop2 COMMAnum VariableDeclId 
-{
-	/*Similar to above, expect we finish with VariableDecId*/
-	tree CommaOpTree = MakeTree(CommaOp,type_tree,NullExp());
-	$$ = MakeTree(DeclOp,$1,MakeTree(CommaOp,$3,CommaOpTree));
-		
-}
-;
-
-
-VariableDeclId: IDnum
-{
-	$$ = MakeLeaf(IDNode,$1);
-}
-			| IDnum BrackLoop
-{
-	$$ = MakeLeaf(IDNode,$1);
-}
-;
-
-VariableInitializer: Expression
-{
-	$$ = $1;	
-}
-					| ArrayIntializer
-{
-	$$ = $1;	
-}					| ArrayCreationExpression
-{
-	$$ = $1;	
-}
-;
-
-Expression: SimpleExpression
-{
-	$$ = $1;
-}
-			| SimpleExpression LTnum SimpleExpression
-{
-	$$ = MakeTree(LTOp,$1,$3);
-}
-			| SimpleExpression LEnum SimpleExpression
-{
-	$$ = MakeTree(LEOp,$1,$3);	
-}
-			|SimpleExpression EQnum SimpleExpression
-{
-	$$ = MakeTree(EQOp,$1,$3);
-}
-			|SimpleExpression NEnum SimpleExpression
-{
-	$$ = MakeTree(NEOp,$1,$3);
-}
-			|SimpleExpression GTnum SimpleExpression
-{
-	$$ = MakeTree(GEOp,$1,$3);
-}
-			|SimpleExpression GEnum SimpleExpression
-{
-	$$ = MakeTree(GTOp,$1,$3);
-}
-;
-
-ArrayIntializer: LBRACEnum VariableInitializerLoop RBRACEnum
-{
-	$$ = MakeTree(ArrayTypeOp,$2,type_tree);	
-};
-
-ArrayCreationExpression: INTnum ArrayCreationExpressionLoop
-{
-	$$ = MakeTree(ArrayTypeOp, $2, MakeLeaf(INTEGERTNode,$2));	
-};
-
-VariableInitializerLoop: VariableInitializer
-{
-	$$ = MakeTree(CommaOp,NullExp(),$1);
-}
-						| VariableInitializerLoop COMMAnum VariableInitializer
-{
-	$$ = MakeTree(CommaOp,$1,$3);
-}
-;
-
-
-ArrayCreationExpressionLoop: ArrayCreationExpressionLoop LBRACnum Expression RBRACnum
-{
-	$$ = MakeTree(BoundOp,$1,$3);
-}
-							| LBRACnum Expression RBRACnum
-{
-	$$ = MakeTree(BoundOp,NullExp(),$2);	
+	$$ = MakeTree(BodyOp,$1,$2);
 }
 ;
 
@@ -409,7 +253,7 @@ StatementLoop: Statement
 }
 ;
 
-Statement: /*nothing/
+Statement: /*nothing*/
 {
 	$$ = NullExp();	
 }
@@ -435,9 +279,140 @@ Statement: /*nothing/
 }
 ;
 
-AssignmentStatement: Variable ASSGNum Expression
+Decls: DECLARATIONnum FieldDeclLoop ENDDECLARATIONSnum
 {
-	$$ = MakeTree(AssignOp,MakeTree(AssignOp,Nullexp(),$1),$3);
+	$$ = $2;
+}
+	| /*nothing for decls is acceptable, too*/
+{
+	$$ = NullExp();
+}
+;
+
+Decls: DECLARATIONnum FieldDeclLoop ENDDECLARATIONSnum
+{
+	$$ = $2;
+}
+	| /*nothing for decls is acceptable, too*/
+{
+	$$ = NullExp();
+}
+;
+
+FieldDeclLoop: /*no Declaration inside*/
+{
+	/*$$ = NullExp();*/
+	/*in this condition we need to make a tree which has no children, but shows that this FieldDecl  can be a tree */
+	$$ = MakeTree(BodyOp,NullExp(),NullExp());
+}
+			| FieldDeclLoop FieldDecl
+{
+	$$ = MakeTree(BodyOp,NullExp(),$2);	
+};
+
+
+FieldDecl : Type FieldDeclLoop2 SEMInum
+{
+	/* recall FieldDeclLoop many times */
+		$$ = $2;
+};
+
+FieldDeclLoop2: VariableDeclId 
+{
+	/*in this case we have only VariableDeclId and then ';' */
+	/*the right leaf is a tree of CommaOp and type_tree we make general, but there is no left leaf(tree). so I make a CommaOpTree as the right part and just add as the right leaf for the return tree*/
+	tree CommaOpTree = MakeTree(CommaOp,$1,MakeTree(CommaOp, type_tree, NullExp()));
+	$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);
+	
+	
+}
+			| VariableDeclId EQUALnum VariableInitializer
+{
+	/*this case is when we have 'variable = variableinitializer' */
+	/*the right leaf is again a tree but in its right leaf there should not be null but 3rd argumet, this time we got variableInitalizer as the leaf */
+	tree CommaOpTree = MakeTree(CommaOp,$1,MakeTree(CommaOp, type_tree,$3));
+	$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);
+}
+			| FieldDeclLoop2 COMMAnum VariableDeclId EQUALnum VariableInitializer 
+{
+	/*the last possible event is the whole diagram repeating again while it continues with a comma ',' with a repeating part of FieldDecloop*/
+	tree CommaOpTree = MakeTree(CommaOp,type_tree,$5);
+	$$ = MakeTree(DeclOp,$1,MakeTree(CommaOp,$3,CommaOpTree));
+}
+			| FieldDeclLoop2 COMMAnum VariableDeclId 
+{
+	/*Similar to above, expect we finish with VariableDecId*/
+	tree CommaOpTree = MakeTree(CommaOp,type_tree,NullExp());
+	$$ = MakeTree(DeclOp,$1,MakeTree(CommaOp,$3,CommaOpTree));
+		
+}
+;
+
+VariableDeclId: IDnum
+{
+	$$ = MakeLeaf(IDNode,$1);
+}
+			| IDnum BrackLoop
+{
+	$$ = MakeLeaf(IDNode,$1);
+}
+;
+
+BrackLoop: LBRACnum RBRACnum
+{
+	$$ = $$;	
+}
+			|BrackLoop LBRACnum RBRACnum
+{
+	$$ = $$;	
+};
+
+VariableInitializer: Expression
+{
+	$$ = $1;	
+}
+					| ArrayIntializer
+{
+	$$ = $1;	
+}					| ArrayCreationExpression
+{
+	$$ = $1;	
+}
+;
+
+ArrayIntializer: LBRACEnum VariableInitializerLoop RBRACEnum
+{
+	$$ = MakeTree(ArrayTypeOp,$2,type_tree);	
+};
+
+VariableInitializerLoop: VariableInitializer
+{
+	$$ = MakeTree(CommaOp,NullExp(),$1);
+}
+						| VariableInitializerLoop COMMAnum VariableInitializer
+{
+	$$ = MakeTree(CommaOp,$1,$3);
+}
+;
+
+ArrayCreationExpression: INTnum ArrayCreationExpressionLoop
+{
+	$$ = MakeTree(ArrayTypeOp, $2, MakeLeaf(INTEGERTNode,$2));	
+};
+
+ArrayCreationExpressionLoop: ArrayCreationExpressionLoop LBRACnum Expression RBRACnum
+{
+	$$ = MakeTree(BoundOp,$1,$3);
+}
+							| LBRACnum Expression RBRACnum
+{
+	$$ = MakeTree(BoundOp,NullExp(),$2);	
+}
+;
+
+AssignmentStatement: Variable ASSGNnum Expression
+{
+	$$ = MakeTree(AssignOp,MakeTree(AssignOp,NullExp(),$1),$3);
 };
 
 MethodCallStatement: Variable LPARENnum ExpressionLoop RPARENnum
@@ -445,12 +420,19 @@ MethodCallStatement: Variable LPARENnum ExpressionLoop RPARENnum
 	$$ = MakeTree(RoutineCallOp,$1,$3);
 };
 
-
-WhileStatement: WHILEnum Expression StatementList
+ExpressionLoop: Expression
 {
-	$$ = MakeTree(LoopOp,$2,$3);
-};
-
+	$$ = MakeTree(CommaOp,$1,NullExp());	
+}
+				| Expression COMMAnum ExpressionLoop
+{
+	$$ = MakeTree(CommaOp,$1,$3);		
+}
+				| /*null return*/
+{
+	$$ = NullExp();		
+}
+;
 
 ReturnStatement: RETURNnum
 {
@@ -464,12 +446,11 @@ ReturnStatement: RETURNnum
 
 IfStatement: IFnum Expression StatementList
 {
-
 	$$ = MakeTree(IfElseOp,NullExp(),MakeTree(CommaOp,$2,$3));
 }
 			| IFnum Expression StatementList ELSEnum StatementList
 {
-	$$ = MakeTree(IfElseOp,MakeTree(IfElseOp,Nullexp(),MakeTree(CommaOp,$2,$3)),$5);
+	$$ = MakeTree(IfElseOp,MakeTree(IfElseOp,NullExp(),MakeTree(CommaOp,$2,$3)),$5);
 }
 			| IFnum Expression StatementList ELSEnum IfStatement
 {
@@ -477,21 +458,72 @@ IfStatement: IFnum Expression StatementList
 }
 ;
 
+WhileStatement: WHILEnum Expression StatementList
+{
+	$$ = MakeTree(LoopOp,$2,$3);
+};
 
-ExpressionLoop: Expression
+Expression: SimpleExpression
 {
-	$$ = MakeTree(CommaOp,$1,NullExp());	
+	$$ = $1;
 }
-				| ExpressionLoop COMMAnum Expression
+			| SimpleExpression LTnum SimpleExpression
 {
-	$$ = MakeTree(CommaOp,$1,$3);		
+	$$ = MakeTree(LTOp,$1,$3);
 }
-				| /*null return*/
+			| SimpleExpression LEnum SimpleExpression
 {
-	$$ = NullExp();		
+	$$ = MakeTree(LEOp,$1,$3);	
+}
+			|SimpleExpression EQnum SimpleExpression
+{
+	$$ = MakeTree(EQOp,$1,$3);
+}
+			|SimpleExpression NEnum SimpleExpression
+{
+	$$ = MakeTree(NEOp,$1,$3);
+}
+			|SimpleExpression GTnum SimpleExpression
+{
+	$$ = MakeTree(GTOp,$1,$3);
+}
+			|SimpleExpression GEnum SimpleExpression
+{
+	$$ = MakeTree(GEOp,$1,$3);
 }
 ;
 
+Factor: UnsignedConstant
+{
+	$$ = $1;
+}
+		| Variable
+{
+	$$ = $1;	
+}
+		| MethodCallStatement
+{
+	$$ = $1;
+}
+		| LPARENnum Expression RPARENnum
+{
+	$$ = $2;
+}
+		| NOTnum Factor
+{
+	$$ = MakeTree(NotOp,$2,NullExp());
+}
+;
+
+UnsignedConstant: ICONSTnum
+{
+	$$ = MakeLeaf(NUMNode,$1);
+}
+				| SCONSTnum
+{
+	$$ = MakeLeaf(STRINGNode,$1);
+}
+;
 
 SimpleExpression: SimpleExpressionList
 {
@@ -549,63 +581,6 @@ FactorList: Factor
 }
 ;
 
-Factor: UnsignedConstant
-{
-	$$ = $1;
-}
-		| Variable
-{
-	$$ = $1;	
-}
-/*		| MethodCallStatement
-{
-	$$ = $1;
-}*/
-		| LPARENnum Expression RPARENnum
-{
-	$$ = $2;
-}
-		| NOTnum Factor
-{
-	$$ = MakeTree(NotOp,$2,NullExp());
-}
-;
-
-MethodCallStatement: Variable LPARENnum RPARENnum
-{
-	$$ = MakeTree(RoutineCallOp, $1, NullExp());
-}
-					| Variable LPARENnum ExpressionLoop RPARENnum
-{
- 	$$ = MakeTree(RoutineCallOp, $1, $3);
-}
-;
-
-ExpressionLoop: Expression
-{
-	$$ = MakeTree(CommaOp,$1,NullExp());	
-}
-				| ExpressionLoop COMMAnum Expression
-{
-	$$ = MakeTree(CommaOp,$1,$3);		
-}
-				| /*null return*/
-{
-	$$ = NullExp();		
-}
-;
-
-
-UnsignedConstant: ICONSTnum
-{
-	$$ = MakeLeaf(NUMNode,$1);
-}
-				| SCONSTnum
-{
-	$$ = MakeLeaf(STRINGNode,$1);
-}
-;
-
 Variable: IDnum
 {
 	$$ = MakeTree(VarOp, MakeLeaf(IDNode, $1), NullExp());
@@ -622,6 +597,7 @@ VariableLoop: VariableLoop DOTnum IDnum
 }
 			| DOTnum IDnum
 {
+	/*printf("point0");*/
 	$$ = MakeTree(SelectOp,MakeTree(FieldOp,MakeLeaf(IDNode, $2), NullExp()), NullExp());
 }
 			| LBRACnum Expression ExpressionLoop RBRACnum
@@ -635,7 +611,7 @@ VariableLoop: VariableLoop DOTnum IDnum
 ;
 
 
-/*nokate pdf -- khandan az file -- Dorost kardan error report*/
+/*nokate pdf -- Alan khate 12 error mide ke nemidoonam vase chi hast, bebin mitooni error ro bargardooni ya debug koni ya inke peigiri koni bebin koja gir mikone ba print o ina*/
 
 
 /*daste akhar tartibe bazi rule ha mesle FormalParameterList va zir shakhe hash ro avaz kon*/
@@ -654,7 +630,7 @@ extern char* yytext;
 int main(int argc, char *argv[])
 {
 	
-	FILE *f = fopen("src1","r");
+	FILE *f = fopen(argv[1],"r");
 	yyin = f; 
 	treelst = stdout;
 	//printf("test test");

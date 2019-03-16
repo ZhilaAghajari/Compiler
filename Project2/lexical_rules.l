@@ -14,6 +14,13 @@
 //#include "proj2.h"
 //#include "y.tab.h"
 #include <regex.h>
+
+#define errComment 		501 
+#define errIdentifier 	500 /*to identify malformed identifier*/
+#define errString 		502 /*to identify strings which are not closed using an '*/
+#define errIntzero 		503 /*to identify an integer starts with zero */
+#define errOther 		504
+
 int lineNumber=1;
 int columnNumber=1;
 char stringtable[4096];
@@ -35,7 +42,7 @@ void errHandling(int);
 
 %%
 \/\* {BEGIN comment;}
-<comment>\*\/ {BEGIN 0;return COMMENT;}
+<comment>\*\/ {BEGIN 0;/*return COMMENT;*/}
 <comment>\n {lineNumber++;columnNumber=1;}
 <comment><<EOF>> {errHandling(errComment);return EOFnum;} /*test it for return error*/
 <comment>. /*observe anything between starting and ending of comment*/
@@ -43,7 +50,7 @@ void errHandling(int);
 [ ] {columnNumber++;}
 [\t] {columnNumber+=8;}
 "&&" {columnNumber+=yyleng; return ANDnum;}
-":=" {columnNumber+=yyleng;return ASSGNum;}
+":=" {columnNumber+=yyleng;return ASSGNnum;}
 "declarations" {columnNumber+=yyleng;return DECLARATIONnum;}
 "enddeclarations" {columnNumber+=yyleng;return ENDDECLARATIONSnum;}
 "." {columnNumber+=yyleng;return DOTnum;}

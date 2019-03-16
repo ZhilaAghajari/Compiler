@@ -17,6 +17,7 @@ clean:
 	rm -rf lex.yy.c runfile
 	rm -rf Grammar.output
 	rm -rf Grammar.tab.c
+	rm -rf runparser
 
 # parser:   y.tab.c lex.yy.c proj2.c
 # 	gcc  -g -o parser y.tab.c proj2.c -lfl
