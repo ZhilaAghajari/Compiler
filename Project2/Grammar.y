@@ -42,8 +42,8 @@ ClassDeclLoop: ClassDecl
 
 ClassDecl: CLASSnum IDnum ClassBody
 {
-	$$ = MakeTree(ClassOp,$3,MakeLeaf(IDNode,$2));
-	/*$$ = MakeTree(ClassOp,$2,MakeLeaf(IDNode,$2));*/
+	$$ = MakeTree(ClassDefOp,$3,MakeLeaf(IDNode,$2));
+	/*$$ = MakeTree(ClassDefOp,$2,MakeLeaf(IDNode,$2));*/
 }
 ;
 
@@ -77,16 +77,17 @@ MethodDeclLoop: MethodDeclLoop MethodDecl
 }
 ;
 
-MethodDecl : METHODnum VOIDnum IDnum LPARENnum FormalParameterListNoType RPARENnum Block /*this is first modle with VOID */
+MethodDecl : METHODnum VOIDnum {type_tree = NullExp();} IDnum LPARENnum FormalParameterListNoType RPARENnum Block /*this is first modle with VOID */
 {
 	/*left leaf is a tree of FormalParameterListNoType and right leaf is Block */
-	/*$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),$5),$7);*/
-	$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),MakeTree(SpecOp,$5,type_tree)),$7);
+	$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$4),$6),$8);
+	/*$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$4),MakeTree(SpecOp,$6,type_tree)),$8);*/
 }
 			| METHODnum Type IDnum LPARENnum FormalParameterListWithType RPARENnum Block /*this is first modle with type as return value */
 {
 	/*left leaf is a tree of FormalParameterListWithType and right leaf is Block */
-	$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),MakeTree(SpecOp,$5,type_tree)),$7);	
+	/*$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),MakeTree(SpecOp,$5,type_tree)),$7);	*/
+	$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),$5),$7);
 }
 ;
 
@@ -535,7 +536,7 @@ SimpleExpression: SimpleExpressionList
 }
 				| MINUSnum SimpleExpressionList
 {
-	$$ = $2;
+	$$ = MakeTree(UnaryNegOp,$2,NullExp());
 }
 ;
 
