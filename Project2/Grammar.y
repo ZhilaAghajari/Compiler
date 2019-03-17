@@ -328,8 +328,9 @@ FieldDeclLoop2: VariableDeclId
 {
 	/*in this case we have only VariableDeclId and then ';' */
 	/*the right leaf is a tree of CommaOp and type_tree we make general, but there is no left leaf(tree). so I make a CommaOpTree as the right part and just add as the right leaf for the return tree*/
-	tree CommaOpTree = MakeTree(CommaOp,$1,MakeTree(CommaOp, type_tree, NullExp()));
 	/*$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);*/
+	
+	tree CommaOpTree = MakeTree(CommaOp,$1,MakeTree(CommaOp, type_tree, NullExp()));
 	$$ = CommaOpTree;
 }
 			| VariableDeclId EQUALnum VariableInitializer
@@ -340,19 +341,7 @@ FieldDeclLoop2: VariableDeclId
 	/*$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);*/
 	$$ = CommaOpTree;
 }
-			| FieldDeclLoop2 COMMAnum VariableDeclId EQUALnum VariableInitializer 
-{
-	/*the last possible event is the whole diagram repeating again while it continues with a comma ',' with a repeating part of FieldDecloop*/
-	tree CommaOpTree = MakeTree(CommaOp,type_tree,$5);
-	$$ = MakeTree(DeclOp,$1,MakeTree(CommaOp,$3,CommaOpTree));
-}
-			| FieldDeclLoop2 COMMAnum VariableDeclId 
-{
-	/*Similar to above, expect we finish with VariableDecId*/
-	tree CommaOpTree = MakeTree(CommaOp,type_tree,NullExp());
-	$$ = MakeTree(DeclOp,$1,MakeTree(CommaOp,$3,CommaOpTree));
-		
-}
+
 ;
 
 VariableDeclId: IDnum

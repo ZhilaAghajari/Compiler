@@ -21,6 +21,14 @@
 #define errIntzero 		503 /*to identify an integer starts with zero */
 #define errOther 		504
 
+#define LIMIT1 500
+int st_index;
+void add_to_string_table(char str[]);
+int search(char str[]);
+int insert(char str[]);
+char * tolowercase(char a[]);
+
+
 int lineNumber=1;
 int columnNumber=1;
 char stringtable[4096];
@@ -86,8 +94,8 @@ void errHandling(int);
 "return" {columnNumber+=yyleng;return RETURNnum;}
 "*" {columnNumber+=yyleng;return TIMESnum;}
 "void" {columnNumber+=yyleng;return VOIDnum;}
-[a-zA-Z_][a-zA-Z_0-9]* {columnNumber+=yyleng;updatestrTable(yytext);return IDnum;}
-\'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\' {columnNumber+=yyleng;isStr = 1;updatestrTable(yytext);return SCONSTnum;} 
+[a-zA-Z_][a-zA-Z_0-9]* {columnNumber+=yyleng; /*add_to_stringtable(yytext);*/updatestrTable(yytext);return IDnum;}
+\'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\' {columnNumber+=yyleng;isStr = 1;/*add_to_stringtable(yytext);*/updatestrTable(yytext);return SCONSTnum;} 
 \'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\\? {columnNumber+=yyleng; errHandling(errString);}
 0+[0-9]+ {columnNumber+=yyleng; errHandling(errIntzero);}
 ([0-9]+(([a-zA-Z_]|[0-9]))*) {columnNumber+=yyleng; errHandling(errIdentifier);}; /* identifier starts with number*/
@@ -220,6 +228,7 @@ void updatestrTable(char* yytext)
 	//since we add " " each time we want to put a new variable into stringtable, then we decide to return location-1 instead of location
 	location--;
 	yylval.intg = location;
+		
 
 }
 void errHandling(int err)
@@ -255,4 +264,64 @@ void errHandling(int err)
 		default:
 			break;
 	}
+}
+
+
+/* Method to handle addition to the stringtable */
+void add_to_stringtable(char a[]) {
+	/* Search for the string in the table */
+	int search_index = search(a);
+	/* if it was not found insert into table and return index where
+	   it was inserted */
+	if (search_index == -1) {
+		a = tolowercase(a);
+		yylval.intg = insert(a);
+	/* if found return index it was found at */
+	} else {
+		yylval.intg = search_index;
+	}
+}
+
+/* insert into the stringtable */
+int insert(char a[]) {
+	/* Check if there is room for the string */
+	if (strlen(a) + st_index >= LIMIT1) {
+		printf("Lexeme too long.\n");
+		return -1;
+	}
+	/* Copy the string into the table */
+	strcpy(&(stringtable[st_index]), a);
+	/* Set new end index and return there the string was inserted */
+	int temp = st_index;
+	st_index += strlen(a) + 1;
+	return temp;
+}
+
+/* Search for the string in the table */
+int search(char a[]) {
+	int i = 0;
+	char word[LIMIT1];
+	stringtable[LIMIT1] = '\0';
+	while (i < LIMIT1) {
+		strcpy(&word[0], &(stringtable[i]));
+		if (!strcasecmp(word, a)) {
+			return i;
+		}
+		else {
+			i = i + strlen(word);
+		}
+		i++;
+	}
+	return -1;
+}
+
+char * tolowercase(char a[]) {
+/* transform an identifier to lower case representation */
+  int i;
+  for( i=0; i<yyleng; i++ )
+  {
+     if ( 'A'<=a[i] && a[i]<='Z' )
+        a[i] = a[i] - 'A' + 'a';
+  }
+  return a;
 }

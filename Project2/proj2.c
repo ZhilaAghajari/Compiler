@@ -335,6 +335,7 @@ void zerocrosses ()
 
 extern char  stringtable[];
 
+
 char* getname(int i)/*return ID name or String, i is the index of the string table, passed through yylval*/
 {
   return( stringtable+i );/*return string table indexed at i*/
@@ -342,7 +343,7 @@ char* getname(int i)/*return ID name or String, i is the index of the string tab
 
 char* getstring(int i)
 {
-  return( stringtable+i );/*return string table indexed at i*/
+  return( stringtable+i+1 );/*return string table indexed at i*/
 }
 
 

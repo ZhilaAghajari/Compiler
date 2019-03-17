@@ -1,26 +1,15 @@
-Original one:
-ClassBody:LBRACEnum Decls RBRACEnum
-{
-	/*$$ = MakeTree(BodyOp,$2);*/
-	$$ = $2; /*return Decls as output */
-}
-		| LBRACEnum MethodDeclLoop RBRACEnum
-{
-	/*$$ = MakeTree(BodyOp,NullExp(),$2);*/
-	/* Null pointer must be the child of Methoddeclloop tree, since decls(null here) is the left child of methoddecl*/
-	$$ = MkLeftC(NullExp(),$2);
-}
-		| LBRACEnum Decls MethodDecl RBRACEnum
-{
-	/*$$ = MakeTree(BodyOp,$2,$3);*/
-	/* Null pointer must be the child of Methoddeclloop tree, since decls(null here) is the left child of methoddecl*/
-	$$ = MkLeftC($2,$3);
-}
-  		| LBRACEnum Decls MethodDeclLoop RBRACEnum
-{
-	/*$$ = MakeTree(BodyOp,$2,$3);*/
-	$$ = MkLeftC($2,$3);
-}
-;
+removed from FieldDeclLoop2:
 
-changed one:
+			| FieldDeclLoop2 COMMAnum VariableDeclId EQUALnum VariableInitializer 
+{
+	/*the last possible event is the whole diagram repeating again while it continues with a comma ',' with a repeating part of FieldDecloop*/
+	tree CommaOpTree = MakeTree(CommaOp,type_tree,$5);
+	$$ = MakeTree(DeclOp,$1,MakeTree(CommaOp,$3,CommaOpTree));
+}
+			| FieldDeclLoop2 COMMAnum VariableDeclId 
+{
+	/*Similar to above, expect we finish with VariableDecId*/
+	tree CommaOpTree = MakeTree(CommaOp,type_tree,NullExp());
+	$$ = MakeTree(DeclOp,$1,MakeTree(CommaOp,$3,CommaOpTree));
+		
+}
