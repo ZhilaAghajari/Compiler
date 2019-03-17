@@ -74,7 +74,7 @@ void errHandling(int);
 "else" {columnNumber+=yyleng;return ELSEnum;}
 "==" {columnNumber+=yyleng;return EQnum;}
 ">=" {columnNumber+=yyleng;return GEnum;}
-([1-9]([0-9])*)|0 {columnNumber+=yyleng;return ICONSTnum;}
+([1-9]([0-9])*)|0 {columnNumber+=yyleng;yylval.intg = atoi(yytext);return ICONSTnum;}
 "if" {columnNumber+=yyleng;return IFnum;}
 "{" {columnNumber+=yyleng;return LBRACEnum;}
 "<=" {columnNumber+=yyleng;return LEnum;}
@@ -87,7 +87,7 @@ void errHandling(int);
 "*" {columnNumber+=yyleng;return TIMESnum;}
 "void" {columnNumber+=yyleng;return VOIDnum;}
 [a-zA-Z_][a-zA-Z_0-9]* {columnNumber+=yyleng;updatestrTable(yytext);return IDnum;}
-\'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\' {columnNumber+=yyleng; isStr = 1;updatestrTable(yytext);return SCONSTnum;} 
+\'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\' {columnNumber+=yyleng;isStr = 1;updatestrTable(yytext);return SCONSTnum;} 
 \'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\\? {columnNumber+=yyleng; errHandling(errString);}
 0+[0-9]+ {columnNumber+=yyleng; errHandling(errIntzero);}
 ([0-9]+(([a-zA-Z_]|[0-9]))*) {columnNumber+=yyleng; errHandling(errIdentifier);}; /* identifier starts with number*/
@@ -104,6 +104,7 @@ void updatestrTable(char* yytext)
 		location =strlen(stringtable);
 		strcat(stringtable," ");
 		isStr = 0;
+		yylval.intg = location;
 		return;
 	}
 
@@ -120,21 +121,25 @@ void updatestrTable(char* yytext)
 			if(yytext[i] == '\\' && yytext[i+1]=='n')
 			{
 				temptable[tempIndex++] = '\n';
+				yyleng--;
 				i++;
 			}
 			else if(yytext[i] == '\\' && yytext[i+1]=='t')
 			{
 				temptable[tempIndex++] = '\t';
+				yyleng--;
 				i++;
 			}
 			else if(yytext[i] == '\\' && yytext[i+1]=='\'')
 			{
 				temptable[tempIndex++] = '\'';
+				yyleng--;
 				i++;
 			}
 			else if(yytext[i] == '\\' && yytext[i+1]=='\\')
 			{
 				temptable[tempIndex++] = '\\';
+				yyleng--;
 				i++;
 			}
 			else
@@ -214,6 +219,7 @@ void updatestrTable(char* yytext)
 	}
 	//since we add " " each time we want to put a new variable into stringtable, then we decide to return location-1 instead of location
 	location--;
+	yylval.intg = location;
 
 }
 void errHandling(int err)

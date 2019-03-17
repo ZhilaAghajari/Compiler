@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 //#include "tokens.h"
-int lineNumber,columnNumber;
+int lineNumber,columnNumber,yyleng;
 tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for temporary usage*/
 %}
 
@@ -13,9 +13,9 @@ tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for tempora
 
 %token<intg>EOFnum 0
 
-%type  <tptr>  Program ClassDecl ClassDeclLoop ClassBody Decls FieldDeclLoop FieldDecl MethodDecl Type Block MethodDeclLoop FieldDeclLoop2 VariableDeclId VariableInitializer BrackLoop Expression ArrayIntializer ArrayCreationExpression VariableInitializerLoop ArrayCreationExpressionLoop FormalParameterListLoopNoVal FormalParameterListLoopWithVal ValLoop FormalParameterListNoType FormalParameterListWithType StatementList TypeList StatementLoop Statement AssignmentStatement ReturnStatement IfStatement  Variable SimpleExpression SimpleExpressionList Term FactorList Factor UnsignedConstant ExpressionLoop VariableLoop
+%type  <tptr>  Program ClassDecl ClassDeclLoop ClassBody Decls FieldDeclLoop FieldDecl MethodDecl Type Block MethodDeclLoop FieldDeclLoop2 VariableDeclId VariableInitializer BrackLoop Expression ArrayIntializer ArrayCreationExpression VariableInitializerLoop ArrayCreationExpressionLoop FormalParameterListLoopNoVal FormalParameterListLoopWithVal ValLoop FormalParameterListNoType FormalParameterListWithType StatementList TypeList StatementLoop Statement AssignmentStatement ReturnStatement IfStatement  Variable SimpleExpression SimpleExpressionList Term FactorList Factor UnsignedConstant ExpressionLoop VariableLoop MethodDeclLoop2
 
-%type <tptr> WhileStatement MethodCallStatement
+%type <tptr> WhileStatement MethodCallStatement FieldDeclInner
 
 %right  	GTnum GEnum LTnum LEnum EQnum NEnum   
 %left  		PLUSnum MINUSnum ORnum TIMESnum DIVIDEnum ANDnum
@@ -47,22 +47,11 @@ ClassDecl: CLASSnum IDnum ClassBody
 }
 ;
 
-ClassBody:LBRACEnum Decls RBRACEnum
+ClassBody:LBRACEnum Decls MethodDeclLoop RBRACEnum
 {
 	/*$$ = MakeTree(BodyOp,$2);*/
-	$$ = $2; /*return Decls as output */
-}
-		| LBRACEnum MethodDeclLoop RBRACEnum
-{
-	$$ = MakeTree(BodyOp,NullExp(),$2);
-}
-		| LBRACEnum Decls MethodDecl RBRACEnum
-{
-	$$ = MakeTree(BodyOp,$2,$3);
-}
-  		| LBRACEnum Decls MethodDeclLoop RBRACEnum
-{
-	$$ = MakeTree(BodyOp,$2,$3);
+	if($3 == NullExp()){$$ = $2; /*return Decls as output */}
+	else{$$ = MkLeftC($2,$3);}
 }
 ;
 
@@ -71,9 +60,20 @@ MethodDeclLoop: MethodDeclLoop MethodDecl
 {
 	$$ = MakeTree(BodyOp,$1,$2);
 }
-			| MethodDecl
+			| MethodDeclLoop2
 {
-	$$ = MakeTree(BodyOp,NullExp(),$1);	
+	/*$$ = MakeTree(BodyOp,NullExp(),$1);	moved to method declloop2*/
+	$$ = $1;
+}
+;
+
+MethodDeclLoop2: /*nothing to return*/
+{
+	$$ = NullExp();	
+}
+				|MethodDecl
+{
+	$$ = MakeTree(BodyOp,NullExp(),$1);
 }
 ;
 
@@ -290,16 +290,6 @@ Decls: DECLARATIONnum FieldDeclLoop ENDDECLARATIONSnum
 }
 ;
 
-Decls: DECLARATIONnum FieldDeclLoop ENDDECLARATIONSnum
-{
-	$$ = $2;
-}
-	| /*nothing for decls is acceptable, too*/
-{
-	$$ = NullExp();
-}
-;
-
 FieldDeclLoop: /*no Declaration inside*/
 {
 	/*$$ = NullExp();*/
@@ -308,31 +298,47 @@ FieldDeclLoop: /*no Declaration inside*/
 }
 			| FieldDeclLoop FieldDecl
 {
-	$$ = MakeTree(BodyOp,NullExp(),$2);	
-};
+	$$ = MakeTree(BodyOp,$1,$2);	
+}
+			| FieldDecl
+{
+	$$ = MakeTree(BodyOp,NullExp(),$1);	
+}
+;
 
 
-FieldDecl : Type FieldDeclLoop2 SEMInum
+/*FieldDecl : Type FieldDeclLoop2 SEMInum*/
+FieldDecl : Type FieldDeclInner SEMInum
 {
 	/* recall FieldDeclLoop many times */
-		$$ = $2;
+	$$ = $2;
 };
+
+FieldDeclInner: FieldDeclLoop2
+{
+	$$ = MakeTree(DeclOp,NullExp(),$1);
+}
+				| FieldDeclInner COMMAnum FieldDeclLoop2
+{
+	$$ = MakeTree(DeclOp,$1,$3);
+}
+;
 
 FieldDeclLoop2: VariableDeclId 
 {
 	/*in this case we have only VariableDeclId and then ';' */
 	/*the right leaf is a tree of CommaOp and type_tree we make general, but there is no left leaf(tree). so I make a CommaOpTree as the right part and just add as the right leaf for the return tree*/
 	tree CommaOpTree = MakeTree(CommaOp,$1,MakeTree(CommaOp, type_tree, NullExp()));
-	$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);
-	
-	
+	/*$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);*/
+	$$ = CommaOpTree;
 }
 			| VariableDeclId EQUALnum VariableInitializer
 {
 	/*this case is when we have 'variable = variableinitializer' */
 	/*the right leaf is again a tree but in its right leaf there should not be null but 3rd argumet, this time we got variableInitalizer as the leaf */
 	tree CommaOpTree = MakeTree(CommaOp,$1,MakeTree(CommaOp, type_tree,$3));
-	$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);
+	/*$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);*/
+	$$ = CommaOpTree;
 }
 			| FieldDeclLoop2 COMMAnum VariableDeclId EQUALnum VariableInitializer 
 {
@@ -449,14 +455,22 @@ IfStatement: IFnum Expression StatementList
 {
 	$$ = MakeTree(IfElseOp,NullExp(),MakeTree(CommaOp,$2,$3));
 }
-			| IFnum Expression StatementList ELSEnum StatementList
+			| IfStatement ELSEnum IFnum Expression StatementList
+{
+	$$ = MakeTree(IfElseOp,$1,MakeTree(CommaOp,$4,$5));
+}
+			| IfStatement ELSEnum StatementList
+{
+	$$ = MakeTree(IfElseOp,$1,$3);
+}
+/*			| IFnum Expression StatementList ELSEnum StatementList
 {
 	$$ = MakeTree(IfElseOp,MakeTree(IfElseOp,NullExp(),MakeTree(CommaOp,$2,$3)),$5);
-}
-			| IFnum Expression StatementList ELSEnum IfStatement
+}*/
+/*			| IFnum Expression StatementList ELSEnum IfStatement
 {
 	$$ = MakeTree(IfElseOp,$5,MakeTree(CommaOp,$2,$3));
-}
+}*/
 ;
 
 WhileStatement: WHILEnum Expression StatementList
