@@ -21,12 +21,7 @@
 #define errIntzero 		503 /*to identify an integer starts with zero */
 #define errOther 		504
 
-#define LIMIT1 500
-int st_index;
-void add_to_string_table(char str[]);
-int search(char str[]);
-int insert(char str[]);
-char * tolowercase(char a[]);
+int current_pointer = 0;
 
 
 int lineNumber=1;
@@ -110,9 +105,10 @@ void updatestrTable(char* yytext)
 	{
 		//printf("print it ....%d----%s---",strlen(stringtable),stringtable);
 		location =strlen(stringtable);
-		strcat(stringtable," ");
+		//strcat(stringtable," ");
 		isStr = 0;
 		yylval.intg = location;
+		yylval.intg = current_pointer;
 		return;
 	}
 
@@ -158,6 +154,7 @@ void updatestrTable(char* yytext)
 
 			i++;//increase i by one
 		}
+		temptable[tempIndex] = '\0';
 		strcpy(yytext,temptable);
 		isStr = 0;
 	}
@@ -221,9 +218,16 @@ void updatestrTable(char* yytext)
 	//if it is a new variable add it to string table, otherwise just set the location
 	if(newVar)
 	{
-		location =strlen(stringtable)+1;
+		/*location =strlen(stringtable)+1;
 		strcat(stringtable," ");
-		strcat(stringtable,yytext);
+		strcat(stringtable,yytext);*/
+
+		location = current_pointer+1;
+		for(int i=0;i<yyleng;i++)
+			stringtable[i+current_pointer] = yytext[i];
+		current_pointer += yyleng;
+		stringtable[current_pointer] = '\0';
+		current_pointer+=1;
 	}
 	//since we add " " each time we want to put a new variable into stringtable, then we decide to return location-1 instead of location
 	location--;
@@ -253,7 +257,7 @@ void errHandling(int err)
 		}
 		case errOther:
 		{
-			printf("ERROR : The wrong typo %s happend at line %d and collumn %d \n",yytext, lineNumber, columnNumber);
+			//printf("ERROR : The wrong typo %s happend at line %d and collumn %d \n",yytext, lineNumber, columnNumber);
 			break;
 		}
 		case errComment:
@@ -264,64 +268,4 @@ void errHandling(int err)
 		default:
 			break;
 	}
-}
-
-
-/* Method to handle addition to the stringtable */
-void add_to_stringtable(char a[]) {
-	/* Search for the string in the table */
-	int search_index = search(a);
-	/* if it was not found insert into table and return index where
-	   it was inserted */
-	if (search_index == -1) {
-		a = tolowercase(a);
-		yylval.intg = insert(a);
-	/* if found return index it was found at */
-	} else {
-		yylval.intg = search_index;
-	}
-}
-
-/* insert into the stringtable */
-int insert(char a[]) {
-	/* Check if there is room for the string */
-	if (strlen(a) + st_index >= LIMIT1) {
-		printf("Lexeme too long.\n");
-		return -1;
-	}
-	/* Copy the string into the table */
-	strcpy(&(stringtable[st_index]), a);
-	/* Set new end index and return there the string was inserted */
-	int temp = st_index;
-	st_index += strlen(a) + 1;
-	return temp;
-}
-
-/* Search for the string in the table */
-int search(char a[]) {
-	int i = 0;
-	char word[LIMIT1];
-	stringtable[LIMIT1] = '\0';
-	while (i < LIMIT1) {
-		strcpy(&word[0], &(stringtable[i]));
-		if (!strcasecmp(word, a)) {
-			return i;
-		}
-		else {
-			i = i + strlen(word);
-		}
-		i++;
-	}
-	return -1;
-}
-
-char * tolowercase(char a[]) {
-/* transform an identifier to lower case representation */
-  int i;
-  for( i=0; i<yyleng; i++ )
-  {
-     if ( 'A'<=a[i] && a[i]<='Z' )
-        a[i] = a[i] - 'A' + 'a';
-  }
-  return a;
 }
