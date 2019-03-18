@@ -5,6 +5,7 @@
 #include <string.h>
 //#include "tokens.h"
 int lineNumber,columnNumber,yyleng;
+int yydebug=1; 
 tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for temporary usage*/
 %}
 
@@ -15,7 +16,7 @@ tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for tempora
 
 %type  <tptr>  Program ClassDecl ClassDeclLoop ClassBody Decls FieldDeclLoop FieldDecl MethodDecl Type Block MethodDeclLoop FieldDeclLoop2 VariableDeclId VariableInitializer BrackLoop Expression ArrayIntializer ArrayCreationExpression VariableInitializerLoop ArrayCreationExpressionLoop FormalParameterListLoopNoVal FormalParameterListLoopWithVal ValLoop FormalParameterListNoType FormalParameterListWithType StatementList TypeList StatementLoop Statement AssignmentStatement ReturnStatement IfStatement  Variable SimpleExpression SimpleExpressionList Term FactorList Factor UnsignedConstant ExpressionLoop VariableLoop MethodDeclLoop2
 
-%type <tptr> WhileStatement MethodCallStatement FieldDeclInner
+%type <tptr> WhileStatement MethodCallStatement FieldDeclInner ArrayCreationExpressionLoop2 SimpleExpressionList2 FactorListInner
 
 %right  	GTnum GEnum LTnum LEnum EQnum NEnum   
 %left  		PLUSnum MINUSnum ORnum TIMESnum DIVIDEnum ANDnum
@@ -91,24 +92,9 @@ MethodDecl : METHODnum VOIDnum {type_tree = NullExp();} IDnum LPARENnum FormalPa
 }
 ;
 
-Type: INTnum
-{
-	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,$1),NullExp());
-	$$ = type_tree;
-}	
-	| IDnum 
-{
-	type_tree = MakeTree(TypeIdOp,MakeLeaf(IDNode,$1),NullExp());
-	$$ = type_tree;
-}
-	|INTnum BrackLoop
+Type: INTnum TypeList
 {
 	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,$1),$2);
-	$$ = type_tree;
-}
-	| IDnum BrackLoop
-{
-	type_tree = MakeTree(TypeIdOp,MakeLeaf(IDNode,$1),$2);
 	$$ = type_tree;
 }
 	| IDnum TypeList
@@ -116,20 +102,29 @@ Type: INTnum
 	type_tree = MakeTree(TypeIdOp,MakeLeaf(IDNode,$1),$2);
 	$$ = type_tree;
 }
-	| INTnum TypeList
+	| IDnum TypeList DOTnum Type
 {
-	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,$1),$2);
-	$$ = type_tree;
+	tree typeTree = MakeTree(TypeIdOp, MakeLeaf(IDNode, $1), $2);
+	$$ = type_tree = MkRightC($4, typeTree);
+}
+	| INTnum TypeList DOTnum Type
+{
+	tree typeTree = MakeTree(TypeIdOp, MakeLeaf(INTEGERTNode, $1), $2);
+	$$ = type_tree = MkRightC($4, typeTree);
 }
 ;
 
-TypeList: DOTnum Type
+TypeList: LBRACnum RBRACnum
 {
-	$$ = MakeTree(FieldOp,$2,NullExp());
+	$$ = type_tree = MakeTree(IndexOp, NullExp(), NullExp());
 }
-		| BrackLoop TypeList
+		| TypeList LBRACnum RBRACnum
 {
-	$$ = MakeTree(IndexOp,NullExp(),NullExp());
+	$$ = type_tree = MakeTree(IndexOp, NullExp(), $1);
+}
+		|/* nothing*/
+{
+	$$ = type_tree = NullExp();
 }
 ;
 
@@ -292,9 +287,9 @@ Decls: DECLARATIONnum FieldDeclLoop ENDDECLARATIONSnum
 
 FieldDeclLoop: /*no Declaration inside*/
 {
-	/*$$ = NullExp();*/
+	$$ = NullExp();
 	/*in this condition we need to make a tree which has no children, but shows that this FieldDecl  can be a tree */
-	$$ = MakeTree(BodyOp,NullExp(),NullExp());
+	/*$$ = MakeTree(BodyOp,NullExp(),NullExp());*/
 }
 			| FieldDeclLoop FieldDecl
 {
@@ -393,16 +388,22 @@ VariableInitializerLoop: VariableInitializer
 
 ArrayCreationExpression: INTnum ArrayCreationExpressionLoop
 {
-	$$ = MakeTree(ArrayTypeOp, $2, MakeLeaf(INTEGERTNode,$2));	
+	$$ = MakeTree(ArrayTypeOp, $2, MakeLeaf(INTEGERTNode,$1));	
 };
 
-ArrayCreationExpressionLoop: ArrayCreationExpressionLoop LBRACnum Expression RBRACnum
+ArrayCreationExpressionLoop: ArrayCreationExpressionLoop ArrayCreationExpressionLoop2
 {
-	$$ = MakeTree(BoundOp,$1,$3);
+	$$ = MakeTree(BoundOp,$1,$2);
 }
-							| LBRACnum Expression RBRACnum
+							| ArrayCreationExpressionLoop2
 {
-	$$ = MakeTree(BoundOp,NullExp(),$2);	
+	$$ = MakeTree(BoundOp,NullExp(),$1);	
+}
+;
+
+ArrayCreationExpressionLoop2:LBRACnum Expression RBRACnum
+{
+	$$ = $2;
 }
 ;
 

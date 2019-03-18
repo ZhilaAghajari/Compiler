@@ -13,3 +13,60 @@ removed from FieldDeclLoop2:
 	$$ = MakeTree(DeclOp,$1,MakeTree(CommaOp,$3,CommaOpTree));
 		
 }
+
+------------------------------------------------
+
+ArrayCreationExpressionLoop: ArrayCreationExpressionLoop LBRACnum Expression RBRACnum
+{
+	$$ = MakeTree(BoundOp,$1,$3);
+}
+							| LBRACnum Expression RBRACnum
+{
+	$$ = MakeTree(BoundOp,NullExp(),$2);	
+}
+;
+
+
+
+------------------------------------------------------------
+Type: INTnum
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,$1),NullExp());
+	$$ = type_tree;
+}	
+	| IDnum 
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(IDNode,$1),NullExp());
+	$$ = type_tree;
+}
+	|INTnum BrackLoop
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,$1),$2);
+	$$ = type_tree;
+}
+	| IDnum BrackLoop
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(IDNode,$1),$2);
+	$$ = type_tree;
+}
+	| IDnum TypeList
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(IDNode,$1),$2);
+	$$ = type_tree;
+}
+/*	| INTnum TypeList
+{
+	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,$1),$2);
+	$$ = type_tree;
+}*/
+;
+
+TypeList: DOTnum Type
+{
+	$$ = MakeTree(FieldOp,$2,NullExp());
+}
+		| BrackLoop TypeList
+{
+	$$ = MakeTree(IndexOp,NullExp(),NullExp());
+}
+;
