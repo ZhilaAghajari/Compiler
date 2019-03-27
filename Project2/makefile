@@ -7,7 +7,7 @@ LEXcompile : lexical_rules.l
 	lex lexical_rules.l
 	
 GccCompiler: y.tab.c lex.yy.c proj2.c
-	gcc  -g -o runparser y.tab.c proj2.c -lfl
+	gcc  -std=c99 -g -o runparser y.tab.c proj2.c -lfl
 
 YACC : Grammar.y
 	yacc -v Grammar.y

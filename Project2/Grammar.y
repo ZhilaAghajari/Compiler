@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 //#include "tokens.h"
-int lineNumber,columnNumber,yyleng;
+int lineNumber,columnNumber;
 int yydebug=1; 
 tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for temporary usage*/
 %}
@@ -14,9 +14,9 @@ tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for tempora
 
 %token<intg>EOFnum 0
 
-%type  <tptr>  Program ClassDecl ClassDeclLoop ClassBody Decls FieldDeclLoop FieldDecl MethodDecl Type Block MethodDeclLoop FieldDeclLoop2 VariableDeclId VariableInitializer BrackLoop Expression ArrayIntializer ArrayCreationExpression VariableInitializerLoop ArrayCreationExpressionLoop FormalParameterListLoopNoVal FormalParameterListLoopWithVal ValLoop FormalParameterListNoType FormalParameterListWithType StatementList TypeList StatementLoop Statement AssignmentStatement ReturnStatement IfStatement  Variable SimpleExpression SimpleExpressionList Term FactorList Factor UnsignedConstant ExpressionLoop VariableLoop MethodDeclLoop2
+%type  <tptr>  Program ClassDecl ClassDeclLoop ClassBody Decls FieldDecl MethodDecl Type Block MethodDeclLoop FieldDeclLoop2 VariableDeclId VariableInitializer BrackLoop Expression ArrayIntializer ArrayCreationExpression VariableInitializerLoop ArrayCreationExpressionLoop FormalParameterListLoopNoVal FormalParameterListLoopWithVal ValLoop FormalParameterListNoType FormalParameterListWithType StatementList TypeList StatementLoop Statement AssignmentStatement ReturnStatement IfStatement  Variable SimpleExpression SimpleExpressionList Term Factor UnsignedConstant ExpressionLoop VariableLoop MethodDeclLoop2
 
-%type <tptr> WhileStatement MethodCallStatement FieldDeclInner ArrayCreationExpressionLoop2 SimpleExpressionList2 FactorListInner DeclsLoop
+%type <tptr> WhileStatement MethodCallStatement FieldDeclInner ArrayCreationExpressionLoop2 DeclsLoop
 
 %right  	GTnum GEnum LTnum LEnum EQnum NEnum   
 %left  		PLUSnum MINUSnum ORnum TIMESnum DIVIDEnum ANDnum
@@ -68,17 +68,23 @@ Decls: DECLARATIONnum DeclsLoop ENDDECLARATIONSnum
 }
 	| /*nothing for decls is acceptable, too*/
 {
-	$$ = MakeTree(BodyOp, NullExp(), NullExp());
+	$$ = NullExp();
 }
 ;
 
-DeclsLoop: DeclsLoop FieldDecl
+DeclsLoop: /*no Declaration inside*/
 {
-	$$ = MakeTree(BodyOp,$1,$2);
+	$$ = NullExp();
+	/*in this condition we need to make a tree which has no children, but shows that this FieldDecl  can be a tree */
+	/*$$ = MakeTree(BodyOp,NullExp(),NullExp());*/
+}
+			| DeclsLoop FieldDecl
+{
+	$$ = MakeTree(BodyOp,$1,$2);	
 }
 			| FieldDecl
 {
-	$$ = MakeTree(BodyOp,NullExp(),$1);
+	$$ = MakeTree(BodyOp,NullExp(),$1);	
 }
 ;
 
