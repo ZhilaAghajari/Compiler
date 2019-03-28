@@ -69,7 +69,7 @@
 #include <stdlib.h>
 #include <string.h>
 //#include "tokens.h"
-int lineNumber,columnNumber,yyleng;
+int lineNumber,columnNumber;
 int yydebug=1; 
 tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for temporary usage*/
 
@@ -449,7 +449,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  46
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  121
+#define YYNRULES  122
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  204
 
@@ -502,18 +502,18 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    28,    28,    34,    38,    44,    51,    55,    59,    65,
-      70,    75,    79,    86,    90,    98,   101,   107,   113,   122,
-     129,   133,   137,   145,   148,   152,   158,   162,   166,   170,
-     174,   178,   184,   188,   192,   196,   200,   204,   211,   216,
-     221,   226,   231,   235,   239,   244,   250,   254,   259,   264,
-     269,   276,   280,   286,   291,   295,   304,   307,   311,   315,
-     319,   323,   329,   333,   339,   348,   358,   362,   368,   372,
-     377,   381,   384,   390,   395,   399,   406,   411,   415,   421,
-     427,   432,   437,   441,   446,   451,   455,   459,   463,   467,
-     471,   475,   481,   485,   489,   493,   497,   503,   507,   511,
-     515,   522,   526,   532,   536,   540,   546,   550,   554,   558,
-     565,   569,   575,   579,   584,   588,   596,   600,   606,   610,
-     614,   628
+      70,    76,    81,    85,    92,    96,   104,   107,   113,   119,
+     128,   135,   139,   143,   151,   154,   158,   164,   168,   172,
+     176,   180,   184,   190,   194,   198,   202,   206,   210,   217,
+     222,   227,   232,   237,   241,   245,   250,   256,   260,   265,
+     270,   275,   282,   286,   292,   297,   301,   310,   313,   317,
+     321,   325,   329,   335,   339,   345,   354,   364,   368,   374,
+     378,   383,   387,   390,   396,   401,   405,   412,   417,   421,
+     427,   433,   438,   443,   447,   452,   457,   461,   465,   469,
+     473,   477,   481,   487,   491,   495,   499,   503,   509,   513,
+     517,   521,   528,   532,   538,   542,   546,   552,   556,   560,
+     564,   571,   575,   581,   585,   590,   594,   602,   606,   612,
+     616,   620,   634
 };
 #endif
 
@@ -564,7 +564,7 @@ static const yytype_uint16 yytoknum[] =
 #define yypact_value_is_default(Yystate) \
   (!!((Yystate) == (-149)))
 
-#define YYTABLE_NINF -49
+#define YYTABLE_NINF -50
 
 #define yytable_value_is_error(Yytable_value) \
   0
@@ -602,26 +602,26 @@ static const yytype_int16 yypact[] =
 static const yytype_uint8 yydefact[] =
 {
        0,     0,     0,     0,     1,     0,     0,     2,     4,     0,
-       3,    10,     5,     0,     7,     0,    44,    45,     0,    12,
-       0,     0,     6,     0,    14,    16,     0,    41,    39,    40,
-      38,     9,    11,    66,     0,    62,    64,     0,     0,     8,
-      13,    46,     0,     0,     0,     0,     0,    67,    19,     0,
-       0,     0,     0,    42,    47,    69,    43,    68,    63,   110,
-       0,     0,   101,     0,     0,     0,     0,   102,    65,    71,
-      72,    94,    70,    97,   106,    92,    85,   103,    93,    20,
-      23,     0,     0,   111,     0,    76,    78,     0,    74,     0,
-     105,    96,   104,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    84,     0,     0,     0,    21,
-      22,     0,    24,    25,   113,    84,     0,     0,     0,    77,
-      95,     0,    73,    98,    99,   100,    90,    89,    88,    91,
-      87,    86,   109,   108,   107,     0,    82,    32,     0,     0,
-       0,     0,   112,    84,    79,    75,    81,    84,     0,     0,
-      26,    56,     0,    17,    51,    18,   114,     0,    83,    33,
-      34,    50,    35,     0,     0,     0,     0,   116,     0,    54,
-      57,    58,     0,    59,    60,    61,    52,   115,     0,     0,
-      27,    28,    29,     0,     0,   117,    56,    53,     0,     0,
-      49,    37,    36,     0,   121,   118,    55,    80,     0,   120,
-      30,    31,     0,   119
+       3,    10,     5,    11,     7,     0,    45,    46,     0,    13,
+       0,     0,     6,     0,    15,    17,     0,    42,    40,    41,
+      39,     9,    12,    67,     0,    63,    65,     0,     0,     8,
+      14,    47,     0,     0,     0,     0,     0,    68,    20,     0,
+       0,     0,     0,    43,    48,    70,    44,    69,    64,   111,
+       0,     0,   102,     0,     0,     0,     0,   103,    66,    72,
+      73,    95,    71,    98,   107,    93,    86,   104,    94,    21,
+      24,     0,     0,   112,     0,    77,    79,     0,    75,     0,
+     106,    97,   105,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,    85,     0,     0,     0,    22,
+      23,     0,    25,    26,   114,    85,     0,     0,     0,    78,
+      96,     0,    74,    99,   100,   101,    91,    90,    89,    92,
+      88,    87,   110,   109,   108,     0,    83,    33,     0,     0,
+       0,     0,   113,    85,    80,    76,    82,    85,     0,     0,
+      27,    57,     0,    18,    52,    19,   115,     0,    84,    34,
+      35,    51,    36,     0,     0,     0,     0,   117,     0,    55,
+      58,    59,     0,    60,    61,    62,    53,   116,     0,     0,
+      28,    29,    30,     0,     0,   118,    57,    54,     0,     0,
+      50,    38,    37,     0,   122,   119,    56,    81,     0,   121,
+      31,    32,     0,   120
 };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -655,7 +655,7 @@ static const yytype_int16 yytable[] =
       59,    61,   115,    94,   118,   194,   195,   151,    37,    61,
       14,   199,   171,   172,   187,    62,    22,    63,    95,    59,
       64,    65,    66,    62,   203,    67,   182,     5,    61,    65,
-     145,   -48,   141,    67,    21,    59,    26,   143,   106,   159,
+     145,   -49,   141,    67,    21,    59,    26,   143,   106,   159,
      190,    72,    62,   160,    38,    48,   107,    64,    65,    66,
        6,   165,    67,     9,   180,    39,    96,   102,   181,   166,
      157,    97,    49,   148,   158,    53,   163,   167,    56,   121,
@@ -724,36 +724,36 @@ static const yytype_uint8 yystos[] =
 static const yytype_uint8 yyr1[] =
 {
        0,    42,    43,    44,    44,    45,    46,    46,    46,    47,
-      47,    48,    48,    49,    49,    50,    50,    51,    51,    52,
-      53,    53,    53,    54,    54,    54,    55,    55,    55,    55,
-      55,    55,    56,    56,    56,    56,    56,    56,    57,    57,
-      57,    57,    57,    57,    57,    57,    58,    58,    58,    59,
-      59,    60,    60,    61,    62,    62,    63,    63,    63,    63,
-      63,    63,    64,    64,    65,    65,    66,    66,    67,    67,
-      68,    68,    68,    69,    70,    70,    71,    72,    72,    73,
-      74,    75,    76,    76,    76,    77,    77,    77,    77,    77,
-      77,    77,    78,    78,    78,    78,    78,    79,    79,    79,
-      79,    80,    80,    81,    81,    81,    82,    82,    82,    82,
-      83,    83,    84,    84,    84,    84,    85,    85,    86,    86,
-      86,    87
+      47,    48,    48,    48,    49,    49,    50,    50,    51,    51,
+      52,    53,    53,    53,    54,    54,    54,    55,    55,    55,
+      55,    55,    55,    56,    56,    56,    56,    56,    56,    57,
+      57,    57,    57,    57,    57,    57,    57,    58,    58,    58,
+      59,    59,    60,    60,    61,    62,    62,    63,    63,    63,
+      63,    63,    63,    64,    64,    65,    65,    66,    66,    67,
+      67,    68,    68,    68,    69,    70,    70,    71,    72,    72,
+      73,    74,    75,    76,    76,    76,    77,    77,    77,    77,
+      77,    77,    77,    78,    78,    78,    78,    78,    79,    79,
+      79,    79,    80,    80,    81,    81,    81,    82,    82,    82,
+      82,    83,    83,    84,    84,    84,    84,    85,    85,    86,
+      86,    86,    87
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     4,     2,     1,     3,     3,     2,     4,     3,
-       0,     2,     1,     2,     1,     0,     1,     7,     7,     3,
-       0,     1,     1,     0,     1,     1,     3,     5,     5,     5,
-       7,     7,     2,     4,     4,     4,     6,     6,     2,     2,
-       2,     2,     4,     4,     1,     1,     2,     3,     0,     3,
-       1,     1,     2,     3,     1,     3,     0,     1,     1,     1,
-       1,     1,     1,     3,     1,     3,     1,     2,     2,     3,
-       1,     1,     1,     3,     1,     3,     2,     2,     1,     3,
-       3,     4,     1,     3,     0,     1,     3,     3,     3,     3,
-       3,     3,     1,     1,     1,     3,     2,     1,     3,     3,
-       3,     1,     1,     1,     2,     2,     1,     3,     3,     3,
-       1,     2,     3,     2,     4,     5,     1,     2,     3,     5,
-       3,     3
+       0,     0,     2,     1,     2,     1,     0,     1,     7,     7,
+       3,     0,     1,     1,     0,     1,     1,     3,     5,     5,
+       5,     7,     7,     2,     4,     4,     4,     6,     6,     2,
+       2,     2,     2,     4,     4,     1,     1,     2,     3,     0,
+       3,     1,     1,     2,     3,     1,     3,     0,     1,     1,
+       1,     1,     1,     1,     3,     1,     3,     1,     2,     2,
+       3,     1,     1,     1,     3,     1,     3,     2,     2,     1,
+       3,     3,     4,     1,     3,     0,     1,     3,     3,     3,
+       3,     3,     3,     1,     1,     1,     3,     2,     1,     3,
+       3,     3,     1,     1,     1,     2,     2,     1,     3,     3,
+       3,     1,     2,     3,     2,     4,     5,     1,     2,     3,
+       5,     3,     3
 };
 
 
@@ -1498,7 +1498,7 @@ yyreduce:
   case 10:
 #line 70 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(BodyOp, NullExp(), NullExp());
+	(yyval.tptr) = NullExp();
 }
 #line 1504 "y.tab.c" /* yacc.c:1646  */
     break;
@@ -1506,58 +1506,58 @@ yyreduce:
   case 11:
 #line 76 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(BodyOp,(yyvsp[-1].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = NullExp();
+	/*in this condition we need to make a tree which has no children, but shows that this FieldDecl  can be a tree */
+	/*$$ = MakeTree(BodyOp,NullExp(),NullExp());*/
 }
-#line 1512 "y.tab.c" /* yacc.c:1646  */
+#line 1514 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 80 "Grammar.y" /* yacc.c:1646  */
+#line 82 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(BodyOp,NullExp(),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(BodyOp,(yyvsp[-1].tptr),(yyvsp[0].tptr));	
 }
-#line 1520 "y.tab.c" /* yacc.c:1646  */
+#line 1522 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 87 "Grammar.y" /* yacc.c:1646  */
+#line 86 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(BodyOp,(yyvsp[-1].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(BodyOp,NullExp(),(yyvsp[0].tptr));	
 }
-#line 1528 "y.tab.c" /* yacc.c:1646  */
+#line 1530 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 91 "Grammar.y" /* yacc.c:1646  */
+#line 93 "Grammar.y" /* yacc.c:1646  */
+    {
+	(yyval.tptr) = MakeTree(BodyOp,(yyvsp[-1].tptr),(yyvsp[0].tptr));
+}
+#line 1538 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 15:
+#line 97 "Grammar.y" /* yacc.c:1646  */
     {
 	/*$$ = MakeTree(BodyOp,NullExp(),$1);	moved to method declloop2*/
 	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 1537 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 15:
-#line 98 "Grammar.y" /* yacc.c:1646  */
-    {
-	(yyval.tptr) = NullExp();	
-}
-#line 1545 "y.tab.c" /* yacc.c:1646  */
+#line 1547 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 102 "Grammar.y" /* yacc.c:1646  */
+#line 104 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(BodyOp,NullExp(),(yyvsp[0].tptr));
+	(yyval.tptr) = NullExp();	
 }
-#line 1553 "y.tab.c" /* yacc.c:1646  */
+#line 1555 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
 #line 108 "Grammar.y" /* yacc.c:1646  */
     {
-	/*left leaf is a tree of FormalParameterListNoType and right leaf is Block */
-	(yyval.tptr) = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,(yyvsp[-4].intg)),(yyvsp[-2].tptr)),(yyvsp[0].tptr));
-	/*$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$4),MakeTree(SpecOp,$6,type_tree)),$8);*/
+	(yyval.tptr) = MakeTree(BodyOp,NullExp(),(yyvsp[0].tptr));
 }
 #line 1563 "y.tab.c" /* yacc.c:1646  */
     break;
@@ -1565,385 +1565,395 @@ yyreduce:
   case 18:
 #line 114 "Grammar.y" /* yacc.c:1646  */
     {
-	/*left leaf is a tree of FormalParameterListWithType and right leaf is Block */
-	/*$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),MakeTree(SpecOp,$5,type_tree)),$7);	*/
+	/*left leaf is a tree of FormalParameterListNoType and right leaf is Block */
 	(yyval.tptr) = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,(yyvsp[-4].intg)),(yyvsp[-2].tptr)),(yyvsp[0].tptr));
+	/*$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$4),MakeTree(SpecOp,$6,type_tree)),$8);*/
 }
 #line 1573 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 123 "Grammar.y" /* yacc.c:1646  */
+#line 120 "Grammar.y" /* yacc.c:1646  */
     {
-	/* recall FieldDeclLoop many times */
-	(yyval.tptr) = (yyvsp[-1].tptr);
+	/*left leaf is a tree of FormalParameterListWithType and right leaf is Block */
+	/*$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),MakeTree(SpecOp,$5,type_tree)),$7);	*/
+	(yyval.tptr) = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,(yyvsp[-4].intg)),(yyvsp[-2].tptr)),(yyvsp[0].tptr));
 }
-#line 1582 "y.tab.c" /* yacc.c:1646  */
+#line 1583 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
 #line 129 "Grammar.y" /* yacc.c:1646  */
     {
-	/*no leaf and end tree here*/
-	(yyval.tptr) = MakeTree(SpecOp, NullExp(),NullExp());	
+	/* recall FieldDeclLoop many times */
+	(yyval.tptr) = (yyvsp[-1].tptr);
 }
-#line 1591 "y.tab.c" /* yacc.c:1646  */
+#line 1592 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 134 "Grammar.y" /* yacc.c:1646  */
+#line 135 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(SpecOp, (yyvsp[0].tptr),NullExp());		
+	/*no leaf and end tree here*/
+	(yyval.tptr) = MakeTree(SpecOp, NullExp(),NullExp());	
 }
-#line 1599 "y.tab.c" /* yacc.c:1646  */
+#line 1601 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 138 "Grammar.y" /* yacc.c:1646  */
+#line 140 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = MakeTree(SpecOp, (yyvsp[0].tptr),NullExp());		
 }
-#line 1607 "y.tab.c" /* yacc.c:1646  */
+#line 1609 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 145 "Grammar.y" /* yacc.c:1646  */
+#line 144 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(SpecOp, NullExp(),type_tree);	
+	(yyval.tptr) = MakeTree(SpecOp, (yyvsp[0].tptr),NullExp());		
 }
-#line 1615 "y.tab.c" /* yacc.c:1646  */
+#line 1617 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 149 "Grammar.y" /* yacc.c:1646  */
+#line 151 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(SpecOp, (yyvsp[0].tptr),type_tree);		
+	(yyval.tptr) = MakeTree(SpecOp, NullExp(),type_tree);	
 }
-#line 1623 "y.tab.c" /* yacc.c:1646  */
+#line 1625 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 153 "Grammar.y" /* yacc.c:1646  */
+#line 155 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = MakeTree(SpecOp, (yyvsp[0].tptr),type_tree);		
 }
-#line 1631 "y.tab.c" /* yacc.c:1646  */
+#line 1633 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
 #line 159 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[0].intg)), MakeLeaf(INTEGERTNode, INTnum)), NullExp());
+	(yyval.tptr) = MakeTree(SpecOp, (yyvsp[0].tptr),type_tree);		
 }
-#line 1639 "y.tab.c" /* yacc.c:1646  */
+#line 1641 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 163 "Grammar.y" /* yacc.c:1646  */
+#line 165 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-2].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[0].intg)), MakeLeaf(INTEGERTNode, INTnum)), NullExp());
 }
-#line 1647 "y.tab.c" /* yacc.c:1646  */
+#line 1649 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 167 "Grammar.y" /* yacc.c:1646  */
+#line 169 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-2].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));
 }
-#line 1655 "y.tab.c" /* yacc.c:1646  */
+#line 1657 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 171 "Grammar.y" /* yacc.c:1646  */
+#line 173 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-2].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));	
+	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-2].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));
 }
-#line 1663 "y.tab.c" /* yacc.c:1646  */
+#line 1665 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 175 "Grammar.y" /* yacc.c:1646  */
+#line 177 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-4].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-2].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));	
 }
-#line 1671 "y.tab.c" /* yacc.c:1646  */
+#line 1673 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 179 "Grammar.y" /* yacc.c:1646  */
+#line 181 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-4].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));
 }
-#line 1679 "y.tab.c" /* yacc.c:1646  */
+#line 1681 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
 #line 185 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[0].intg)), MakeLeaf(INTEGERTNode, INTnum)), NullExp());	
+	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-4].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));
 }
-#line 1687 "y.tab.c" /* yacc.c:1646  */
+#line 1689 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 189 "Grammar.y" /* yacc.c:1646  */
+#line 191 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-2].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[0].intg)), MakeLeaf(INTEGERTNode, INTnum)), NullExp());	
 }
-#line 1695 "y.tab.c" /* yacc.c:1646  */
+#line 1697 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 193 "Grammar.y" /* yacc.c:1646  */
+#line 195 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-2].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));
 }
-#line 1703 "y.tab.c" /* yacc.c:1646  */
+#line 1705 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 197 "Grammar.y" /* yacc.c:1646  */
+#line 199 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-2].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));	
+	(yyval.tptr) = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-2].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));
 }
-#line 1711 "y.tab.c" /* yacc.c:1646  */
+#line 1713 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 201 "Grammar.y" /* yacc.c:1646  */
+#line 203 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(VArgTypeOp, MakeTree(CommaOp, MakeLeaf(IDNode, (yyvsp[-4].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[-2].tptr)), (yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[-2].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[0].tptr));	
 }
-#line 1719 "y.tab.c" /* yacc.c:1646  */
+#line 1721 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 205 "Grammar.y" /* yacc.c:1646  */
+#line 207 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(VArgTypeOp, MakeTree(CommaOp, MakeLeaf(IDNode, (yyvsp[-4].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[-2].tptr)), (yyvsp[0].tptr));
 }
-#line 1727 "y.tab.c" /* yacc.c:1646  */
+#line 1729 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 212 "Grammar.y" /* yacc.c:1646  */
+#line 211 "Grammar.y" /* yacc.c:1646  */
+    {
+	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(VArgTypeOp, MakeTree(CommaOp, MakeLeaf(IDNode, (yyvsp[-4].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[-2].tptr)), (yyvsp[0].tptr));
+}
+#line 1737 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 39:
+#line 218 "Grammar.y" /* yacc.c:1646  */
     {
 	type_tree = MakeTree(TypeIdOp, MakeLeaf(INTEGERTNode, (yyvsp[-1].intg)), (yyvsp[0].tptr));
 	(yyval.tptr) = type_tree;
 }
-#line 1736 "y.tab.c" /* yacc.c:1646  */
+#line 1746 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 39:
-#line 217 "Grammar.y" /* yacc.c:1646  */
+  case 40:
+#line 223 "Grammar.y" /* yacc.c:1646  */
     {
 	type_tree = MakeTree(TypeIdOp, MakeLeaf(IDNode, (yyvsp[-1].intg)), (yyvsp[0].tptr));
 	(yyval.tptr) = type_tree;
 }
-#line 1745 "y.tab.c" /* yacc.c:1646  */
+#line 1755 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 40:
-#line 222 "Grammar.y" /* yacc.c:1646  */
+  case 41:
+#line 228 "Grammar.y" /* yacc.c:1646  */
     {
 	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,(yyvsp[-1].intg)),(yyvsp[0].tptr));
 	(yyval.tptr) = type_tree;
 }
-#line 1754 "y.tab.c" /* yacc.c:1646  */
+#line 1764 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 41:
-#line 227 "Grammar.y" /* yacc.c:1646  */
+  case 42:
+#line 233 "Grammar.y" /* yacc.c:1646  */
     {
 	type_tree = MakeTree(TypeIdOp,MakeLeaf(IDNode,(yyvsp[-1].intg)),(yyvsp[0].tptr));
 	(yyval.tptr) = type_tree;
 }
-#line 1763 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 42:
-#line 232 "Grammar.y" /* yacc.c:1646  */
-    {
-	(yyval.tptr) = type_tree = MkRightC((yyvsp[0].tptr), MakeTree(TypeIdOp, MakeLeaf(IDNode, (yyvsp[-3].intg)), (yyvsp[-2].tptr)));
-}
-#line 1771 "y.tab.c" /* yacc.c:1646  */
+#line 1773 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 236 "Grammar.y" /* yacc.c:1646  */
+#line 238 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = type_tree = MkRightC((yyvsp[0].tptr), MakeTree(TypeIdOp, MakeLeaf(INTEGERTNode, (yyvsp[-3].intg)), (yyvsp[-2].tptr)));
+	(yyval.tptr) = type_tree = MkRightC((yyvsp[0].tptr), MakeTree(TypeIdOp, MakeLeaf(IDNode, (yyvsp[-3].intg)), (yyvsp[-2].tptr)));
 }
-#line 1779 "y.tab.c" /* yacc.c:1646  */
+#line 1781 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 240 "Grammar.y" /* yacc.c:1646  */
+#line 242 "Grammar.y" /* yacc.c:1646  */
+    {
+	(yyval.tptr) = type_tree = MkRightC((yyvsp[0].tptr), MakeTree(TypeIdOp, MakeLeaf(INTEGERTNode, (yyvsp[-3].intg)), (yyvsp[-2].tptr)));
+}
+#line 1789 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 45:
+#line 246 "Grammar.y" /* yacc.c:1646  */
     {
 	type_tree = MakeTree(TypeIdOp, MakeLeaf(IDNode, (yyvsp[0].intg)), NullExp());
 	(yyval.tptr) = type_tree;
 }
-#line 1788 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 45:
-#line 245 "Grammar.y" /* yacc.c:1646  */
-    {
-	(yyval.tptr) = type_tree = MakeTree(TypeIdOp, MakeLeaf(INTEGERTNode, (yyvsp[0].intg)), NullExp());
-}
-#line 1796 "y.tab.c" /* yacc.c:1646  */
+#line 1798 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
 #line 251 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = type_tree = MakeTree(IndexOp, NullExp(), NullExp());
+	(yyval.tptr) = type_tree = MakeTree(TypeIdOp, MakeLeaf(INTEGERTNode, (yyvsp[0].intg)), NullExp());
 }
-#line 1804 "y.tab.c" /* yacc.c:1646  */
+#line 1806 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 255 "Grammar.y" /* yacc.c:1646  */
+#line 257 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = type_tree = MakeTree(IndexOp, NullExp(), (yyvsp[-2].tptr));
+	(yyval.tptr) = type_tree = MakeTree(IndexOp, NullExp(), NullExp());
 }
-#line 1812 "y.tab.c" /* yacc.c:1646  */
+#line 1814 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 259 "Grammar.y" /* yacc.c:1646  */
+#line 261 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = type_tree = NullExp();
+	(yyval.tptr) = type_tree = MakeTree(IndexOp, NullExp(), (yyvsp[-2].tptr));
 }
-#line 1820 "y.tab.c" /* yacc.c:1646  */
+#line 1822 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
 #line 265 "Grammar.y" /* yacc.c:1646  */
     {
-	/* make a loop to continue*/
-	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode,(yyvsp[-2].intg)),MakeLeaf(INTEGERTNode,INTnum)),(yyvsp[0].tptr));
+	(yyval.tptr) = type_tree = NullExp();
 }
-#line 1829 "y.tab.c" /* yacc.c:1646  */
+#line 1830 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 270 "Grammar.y" /* yacc.c:1646  */
+#line 271 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode,(yyvsp[0].intg)),MakeLeaf(INTEGERTNode,INTnum)),NullExp());
+	/* make a loop to continue*/
+	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode,(yyvsp[-2].intg)),MakeLeaf(INTEGERTNode,INTnum)),(yyvsp[0].tptr));
 }
-#line 1837 "y.tab.c" /* yacc.c:1646  */
+#line 1839 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 277 "Grammar.y" /* yacc.c:1646  */
+#line 276 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(BodyOp,NullExp(),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode,(yyvsp[0].intg)),MakeLeaf(INTEGERTNode,INTnum)),NullExp());
 }
-#line 1845 "y.tab.c" /* yacc.c:1646  */
+#line 1847 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 281 "Grammar.y" /* yacc.c:1646  */
+#line 283 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(BodyOp,(yyvsp[-1].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(BodyOp,NullExp(),(yyvsp[0].tptr));
 }
-#line 1853 "y.tab.c" /* yacc.c:1646  */
+#line 1855 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
 #line 287 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = (yyvsp[-1].tptr);
+	(yyval.tptr) = MakeTree(BodyOp,(yyvsp[-1].tptr),(yyvsp[0].tptr));
 }
-#line 1861 "y.tab.c" /* yacc.c:1646  */
+#line 1863 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 292 "Grammar.y" /* yacc.c:1646  */
+#line 293 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(StmtOp,NullExp(),(yyvsp[0].tptr));
+	(yyval.tptr) = (yyvsp[-1].tptr);
 }
-#line 1869 "y.tab.c" /* yacc.c:1646  */
+#line 1871 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 296 "Grammar.y" /* yacc.c:1646  */
+#line 298 "Grammar.y" /* yacc.c:1646  */
     {
-	/*if there is nothing as for statment, then just return StatementLoop. Otherwise, return the whole tree*/
-	if((yyvsp[0].tptr) == NullExp()){(yyval.tptr) = (yyvsp[-2].tptr);}
-	else {(yyval.tptr) = MakeTree(StmtOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));}
+	(yyval.tptr) = MakeTree(StmtOp,NullExp(),(yyvsp[0].tptr));
 }
 #line 1879 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 304 "Grammar.y" /* yacc.c:1646  */
+#line 302 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = NullExp();	
+	/*if there is nothing as for statment, then just return StatementLoop. Otherwise, return the whole tree*/
+	if((yyvsp[0].tptr) == NullExp()){(yyval.tptr) = (yyvsp[-2].tptr);}
+	else {(yyval.tptr) = MakeTree(StmtOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));}
 }
-#line 1887 "y.tab.c" /* yacc.c:1646  */
+#line 1889 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 308 "Grammar.y" /* yacc.c:1646  */
+#line 310 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = (yyvsp[0].tptr);
+	(yyval.tptr) = NullExp();	
 }
-#line 1895 "y.tab.c" /* yacc.c:1646  */
+#line 1897 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 312 "Grammar.y" /* yacc.c:1646  */
+#line 314 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 1903 "y.tab.c" /* yacc.c:1646  */
+#line 1905 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 316 "Grammar.y" /* yacc.c:1646  */
+#line 318 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 1911 "y.tab.c" /* yacc.c:1646  */
+#line 1913 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 320 "Grammar.y" /* yacc.c:1646  */
+#line 322 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 1919 "y.tab.c" /* yacc.c:1646  */
+#line 1921 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 324 "Grammar.y" /* yacc.c:1646  */
+#line 326 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 1927 "y.tab.c" /* yacc.c:1646  */
+#line 1929 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
 #line 330 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(DeclOp,NullExp(),(yyvsp[0].tptr));
+	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 1935 "y.tab.c" /* yacc.c:1646  */
+#line 1937 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 334 "Grammar.y" /* yacc.c:1646  */
+#line 336 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(DeclOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(DeclOp,NullExp(),(yyvsp[0].tptr));
 }
-#line 1943 "y.tab.c" /* yacc.c:1646  */
+#line 1945 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
 #line 340 "Grammar.y" /* yacc.c:1646  */
+    {
+	(yyval.tptr) = MakeTree(DeclOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+}
+#line 1953 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 65:
+#line 346 "Grammar.y" /* yacc.c:1646  */
     {
 	/*in this case we have only VariableDeclId and then ';' */
 	/*the right leaf is a tree of CommaOp and type_tree we make general, but there is no left leaf(tree). so I make a CommaOpTree as the right part and just add as the right leaf for the return tree*/
@@ -1952,11 +1962,11 @@ yyreduce:
 	tree CommaOpTree = MakeTree(CommaOp,(yyvsp[0].tptr),MakeTree(CommaOp, type_tree, NullExp()));
 	(yyval.tptr) = CommaOpTree;
 }
-#line 1956 "y.tab.c" /* yacc.c:1646  */
+#line 1966 "y.tab.c" /* yacc.c:1646  */
     break;
 
-  case 65:
-#line 349 "Grammar.y" /* yacc.c:1646  */
+  case 66:
+#line 355 "Grammar.y" /* yacc.c:1646  */
     {
 	/*this case is when we have 'variable = variableinitializer' */
 	/*the right leaf is again a tree but in its right leaf there should not be null but 3rd argumet, this time we got variableInitalizer as the leaf */
@@ -1964,460 +1974,460 @@ yyreduce:
 	/*$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);*/
 	(yyval.tptr) = CommaOpTree;
 }
-#line 1968 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 66:
-#line 359 "Grammar.y" /* yacc.c:1646  */
-    {
-	(yyval.tptr) = MakeLeaf(IDNode,(yyvsp[0].intg));
-}
-#line 1976 "y.tab.c" /* yacc.c:1646  */
+#line 1978 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 363 "Grammar.y" /* yacc.c:1646  */
+#line 365 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeLeaf(IDNode,(yyvsp[-1].intg));
+	(yyval.tptr) = MakeLeaf(IDNode,(yyvsp[0].intg));
 }
-#line 1984 "y.tab.c" /* yacc.c:1646  */
+#line 1986 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
 #line 369 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = (yyval.tptr);	
+	(yyval.tptr) = MakeLeaf(IDNode,(yyvsp[-1].intg));
 }
-#line 1992 "y.tab.c" /* yacc.c:1646  */
+#line 1994 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 373 "Grammar.y" /* yacc.c:1646  */
+#line 375 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = (yyval.tptr);	
 }
-#line 2000 "y.tab.c" /* yacc.c:1646  */
+#line 2002 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 378 "Grammar.y" /* yacc.c:1646  */
+#line 379 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = (yyvsp[0].tptr);	
+	(yyval.tptr) = (yyval.tptr);	
 }
-#line 2008 "y.tab.c" /* yacc.c:1646  */
+#line 2010 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 382 "Grammar.y" /* yacc.c:1646  */
+#line 384 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = (yyvsp[0].tptr);	
 }
-#line 2016 "y.tab.c" /* yacc.c:1646  */
+#line 2018 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 385 "Grammar.y" /* yacc.c:1646  */
+#line 388 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = (yyvsp[0].tptr);	
 }
-#line 2024 "y.tab.c" /* yacc.c:1646  */
+#line 2026 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
 #line 391 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(ArrayTypeOp,(yyvsp[-1].tptr),type_tree);	
+	(yyval.tptr) = (yyvsp[0].tptr);	
 }
-#line 2032 "y.tab.c" /* yacc.c:1646  */
+#line 2034 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 396 "Grammar.y" /* yacc.c:1646  */
+#line 397 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(CommaOp,NullExp(),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(ArrayTypeOp,(yyvsp[-1].tptr),type_tree);	
 }
-#line 2040 "y.tab.c" /* yacc.c:1646  */
+#line 2042 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 400 "Grammar.y" /* yacc.c:1646  */
+#line 402 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(CommaOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(CommaOp,NullExp(),(yyvsp[0].tptr));
 }
-#line 2048 "y.tab.c" /* yacc.c:1646  */
+#line 2050 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 407 "Grammar.y" /* yacc.c:1646  */
+#line 406 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(ArrayTypeOp, (yyvsp[0].tptr), MakeLeaf(INTEGERTNode,(yyvsp[-1].intg)));	
+	(yyval.tptr) = MakeTree(CommaOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
 }
-#line 2056 "y.tab.c" /* yacc.c:1646  */
+#line 2058 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 412 "Grammar.y" /* yacc.c:1646  */
+#line 413 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(BoundOp,(yyvsp[-1].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(ArrayTypeOp, (yyvsp[0].tptr), MakeLeaf(INTEGERTNode,(yyvsp[-1].intg)));	
 }
-#line 2064 "y.tab.c" /* yacc.c:1646  */
+#line 2066 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 416 "Grammar.y" /* yacc.c:1646  */
+#line 418 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(BoundOp,NullExp(),(yyvsp[0].tptr));	
+	(yyval.tptr) = MakeTree(BoundOp,(yyvsp[-1].tptr),(yyvsp[0].tptr));
 }
-#line 2072 "y.tab.c" /* yacc.c:1646  */
+#line 2074 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
 #line 422 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = (yyvsp[-1].tptr);
+	(yyval.tptr) = MakeTree(BoundOp,NullExp(),(yyvsp[0].tptr));	
 }
-#line 2080 "y.tab.c" /* yacc.c:1646  */
+#line 2082 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 80:
 #line 428 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(AssignOp,MakeTree(AssignOp,NullExp(),(yyvsp[-2].tptr)),(yyvsp[0].tptr));
+	(yyval.tptr) = (yyvsp[-1].tptr);
 }
-#line 2088 "y.tab.c" /* yacc.c:1646  */
+#line 2090 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 433 "Grammar.y" /* yacc.c:1646  */
+#line 434 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(RoutineCallOp,(yyvsp[-3].tptr),(yyvsp[-1].tptr));
+	(yyval.tptr) = MakeTree(AssignOp,MakeTree(AssignOp,NullExp(),(yyvsp[-2].tptr)),(yyvsp[0].tptr));
 }
-#line 2096 "y.tab.c" /* yacc.c:1646  */
+#line 2098 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 438 "Grammar.y" /* yacc.c:1646  */
+#line 439 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(CommaOp,(yyvsp[0].tptr),NullExp());	
+	(yyval.tptr) = MakeTree(RoutineCallOp,(yyvsp[-3].tptr),(yyvsp[-1].tptr));
 }
-#line 2104 "y.tab.c" /* yacc.c:1646  */
+#line 2106 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 442 "Grammar.y" /* yacc.c:1646  */
+#line 444 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(CommaOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));		
+	(yyval.tptr) = MakeTree(CommaOp,(yyvsp[0].tptr),NullExp());	
 }
-#line 2112 "y.tab.c" /* yacc.c:1646  */
+#line 2114 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 446 "Grammar.y" /* yacc.c:1646  */
+#line 448 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = NullExp();		
+	(yyval.tptr) = MakeTree(CommaOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));		
 }
-#line 2120 "y.tab.c" /* yacc.c:1646  */
+#line 2122 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 85:
 #line 452 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = (yyvsp[0].tptr);
+	(yyval.tptr) = NullExp();		
 }
-#line 2128 "y.tab.c" /* yacc.c:1646  */
+#line 2130 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 456 "Grammar.y" /* yacc.c:1646  */
+#line 458 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(LTOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 2136 "y.tab.c" /* yacc.c:1646  */
+#line 2138 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 460 "Grammar.y" /* yacc.c:1646  */
+#line 462 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(LEOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));	
+	(yyval.tptr) = MakeTree(LTOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
 }
-#line 2144 "y.tab.c" /* yacc.c:1646  */
+#line 2146 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 464 "Grammar.y" /* yacc.c:1646  */
+#line 466 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(EQOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(LEOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));	
 }
-#line 2152 "y.tab.c" /* yacc.c:1646  */
+#line 2154 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 468 "Grammar.y" /* yacc.c:1646  */
+#line 470 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(NEOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(EQOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
 }
-#line 2160 "y.tab.c" /* yacc.c:1646  */
+#line 2162 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 90:
-#line 472 "Grammar.y" /* yacc.c:1646  */
+#line 474 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(GTOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(NEOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
 }
-#line 2168 "y.tab.c" /* yacc.c:1646  */
+#line 2170 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 476 "Grammar.y" /* yacc.c:1646  */
+#line 478 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(GEOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(GTOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
 }
-#line 2176 "y.tab.c" /* yacc.c:1646  */
+#line 2178 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 92:
 #line 482 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = (yyvsp[0].tptr);
+	(yyval.tptr) = MakeTree(GEOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
 }
-#line 2184 "y.tab.c" /* yacc.c:1646  */
+#line 2186 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 93:
-#line 486 "Grammar.y" /* yacc.c:1646  */
-    {
-	(yyval.tptr) = (yyvsp[0].tptr);	
-}
-#line 2192 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 94:
-#line 490 "Grammar.y" /* yacc.c:1646  */
+#line 488 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 2200 "y.tab.c" /* yacc.c:1646  */
+#line 2194 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 94:
+#line 492 "Grammar.y" /* yacc.c:1646  */
+    {
+	(yyval.tptr) = (yyvsp[0].tptr);	
+}
+#line 2202 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 95:
-#line 494 "Grammar.y" /* yacc.c:1646  */
+#line 496 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = (yyvsp[-1].tptr);
+	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 2208 "y.tab.c" /* yacc.c:1646  */
+#line 2210 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 96:
-#line 498 "Grammar.y" /* yacc.c:1646  */
+#line 500 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(NotOp,(yyvsp[0].tptr),NullExp());
+	(yyval.tptr) = (yyvsp[-1].tptr);
 }
-#line 2216 "y.tab.c" /* yacc.c:1646  */
+#line 2218 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 97:
 #line 504 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = (yyvsp[0].tptr);	
+	(yyval.tptr) = MakeTree(NotOp,(yyvsp[0].tptr),NullExp());
 }
-#line 2224 "y.tab.c" /* yacc.c:1646  */
+#line 2226 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 508 "Grammar.y" /* yacc.c:1646  */
+#line 510 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(AndOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = (yyvsp[0].tptr);	
 }
-#line 2232 "y.tab.c" /* yacc.c:1646  */
+#line 2234 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 512 "Grammar.y" /* yacc.c:1646  */
+#line 514 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(DivOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));	
+	(yyval.tptr) = MakeTree(AndOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
 }
-#line 2240 "y.tab.c" /* yacc.c:1646  */
+#line 2242 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 516 "Grammar.y" /* yacc.c:1646  */
+#line 518 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(MultOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(DivOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));	
 }
-#line 2248 "y.tab.c" /* yacc.c:1646  */
+#line 2250 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 523 "Grammar.y" /* yacc.c:1646  */
+#line 522 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeLeaf(NUMNode,(yyvsp[0].intg));
+	(yyval.tptr) = MakeTree(MultOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
 }
-#line 2256 "y.tab.c" /* yacc.c:1646  */
+#line 2258 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 527 "Grammar.y" /* yacc.c:1646  */
+#line 529 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeLeaf(STRINGNode,(yyvsp[0].intg));
+	(yyval.tptr) = MakeLeaf(NUMNode,(yyvsp[0].intg));
 }
-#line 2264 "y.tab.c" /* yacc.c:1646  */
+#line 2266 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 103:
 #line 533 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = (yyvsp[0].tptr);
+	(yyval.tptr) = MakeLeaf(STRINGNode,(yyvsp[0].intg));
 }
-#line 2272 "y.tab.c" /* yacc.c:1646  */
+#line 2274 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 537 "Grammar.y" /* yacc.c:1646  */
+#line 539 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 2280 "y.tab.c" /* yacc.c:1646  */
+#line 2282 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 541 "Grammar.y" /* yacc.c:1646  */
+#line 543 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(UnaryNegOp,(yyvsp[0].tptr),NullExp());
+	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 2288 "y.tab.c" /* yacc.c:1646  */
+#line 2290 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 106:
 #line 547 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = (yyvsp[0].tptr);
+	(yyval.tptr) = MakeTree(UnaryNegOp,(yyvsp[0].tptr),NullExp());
 }
-#line 2296 "y.tab.c" /* yacc.c:1646  */
+#line 2298 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 107:
-#line 551 "Grammar.y" /* yacc.c:1646  */
+#line 553 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(AddOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = (yyvsp[0].tptr);
 }
-#line 2304 "y.tab.c" /* yacc.c:1646  */
+#line 2306 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 108:
-#line 555 "Grammar.y" /* yacc.c:1646  */
+#line 557 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(SubOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));	
+	(yyval.tptr) = MakeTree(AddOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
 }
-#line 2312 "y.tab.c" /* yacc.c:1646  */
+#line 2314 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 559 "Grammar.y" /* yacc.c:1646  */
+#line 561 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(OrOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(SubOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));	
 }
-#line 2320 "y.tab.c" /* yacc.c:1646  */
+#line 2322 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 110:
-#line 566 "Grammar.y" /* yacc.c:1646  */
+#line 565 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(VarOp, MakeLeaf(IDNode, (yyvsp[0].intg)), NullExp());
+	(yyval.tptr) = MakeTree(OrOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
 }
-#line 2328 "y.tab.c" /* yacc.c:1646  */
+#line 2330 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 111:
-#line 570 "Grammar.y" /* yacc.c:1646  */
+#line 572 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(VarOp, MakeLeaf(IDNode, (yyvsp[-1].intg)), (yyvsp[0].tptr));	
+	(yyval.tptr) = MakeTree(VarOp, MakeLeaf(IDNode, (yyvsp[0].intg)), NullExp());
 }
-#line 2336 "y.tab.c" /* yacc.c:1646  */
+#line 2338 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 112:
 #line 576 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(SelectOp,MakeTree(FieldOp,MakeLeaf(IDNode, (yyvsp[-1].intg)), NullExp()), (yyvsp[-2].tptr));
+	(yyval.tptr) = MakeTree(VarOp, MakeLeaf(IDNode, (yyvsp[-1].intg)), (yyvsp[0].tptr));	
 }
-#line 2344 "y.tab.c" /* yacc.c:1646  */
+#line 2346 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 113:
-#line 580 "Grammar.y" /* yacc.c:1646  */
+#line 582 "Grammar.y" /* yacc.c:1646  */
+    {
+	(yyval.tptr) = MakeTree(SelectOp,MakeTree(FieldOp,MakeLeaf(IDNode, (yyvsp[-1].intg)), NullExp()), (yyvsp[-2].tptr));
+}
+#line 2354 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 114:
+#line 586 "Grammar.y" /* yacc.c:1646  */
     {
 	/*printf("point0");*/
 	(yyval.tptr) = MakeTree(SelectOp,MakeTree(FieldOp,MakeLeaf(IDNode, (yyvsp[0].intg)), NullExp()), NullExp());
 }
-#line 2353 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 114:
-#line 585 "Grammar.y" /* yacc.c:1646  */
-    {
-	(yyval.tptr) = MakeTree(SelectOp, MakeTree(IndexOp, (yyvsp[-2].tptr), (yyvsp[-1].tptr)), NullExp());
-}
-#line 2361 "y.tab.c" /* yacc.c:1646  */
+#line 2363 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 115:
-#line 589 "Grammar.y" /* yacc.c:1646  */
+#line 591 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(SelectOp, MakeTree(IndexOp, (yyvsp[-2].tptr), (yyvsp[-1].tptr)), (yyvsp[-4].tptr));
+	(yyval.tptr) = MakeTree(SelectOp, MakeTree(IndexOp, (yyvsp[-2].tptr), (yyvsp[-1].tptr)), NullExp());
 }
-#line 2369 "y.tab.c" /* yacc.c:1646  */
+#line 2371 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 116:
-#line 597 "Grammar.y" /* yacc.c:1646  */
+#line 595 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(ReturnOp,NullExp(),NullExp());
+	(yyval.tptr) = MakeTree(SelectOp, MakeTree(IndexOp, (yyvsp[-2].tptr), (yyvsp[-1].tptr)), (yyvsp[-4].tptr));
 }
-#line 2377 "y.tab.c" /* yacc.c:1646  */
+#line 2379 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 117:
-#line 601 "Grammar.y" /* yacc.c:1646  */
+#line 603 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(ReturnOp,(yyvsp[0].tptr),NullExp());	
+	(yyval.tptr) = MakeTree(ReturnOp,NullExp(),NullExp());
 }
-#line 2385 "y.tab.c" /* yacc.c:1646  */
+#line 2387 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 118:
 #line 607 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(IfElseOp,NullExp(),MakeTree(CommaOp,(yyvsp[-1].tptr),(yyvsp[0].tptr)));
+	(yyval.tptr) = MakeTree(ReturnOp,(yyvsp[0].tptr),NullExp());	
 }
-#line 2393 "y.tab.c" /* yacc.c:1646  */
+#line 2395 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 119:
-#line 611 "Grammar.y" /* yacc.c:1646  */
+#line 613 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(IfElseOp,(yyvsp[-4].tptr),MakeTree(CommaOp,(yyvsp[-1].tptr),(yyvsp[0].tptr)));
+	(yyval.tptr) = MakeTree(IfElseOp,NullExp(),MakeTree(CommaOp,(yyvsp[-1].tptr),(yyvsp[0].tptr)));
 }
-#line 2401 "y.tab.c" /* yacc.c:1646  */
+#line 2403 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 120:
-#line 615 "Grammar.y" /* yacc.c:1646  */
+#line 617 "Grammar.y" /* yacc.c:1646  */
     {
-	(yyval.tptr) = MakeTree(IfElseOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+	(yyval.tptr) = MakeTree(IfElseOp,(yyvsp[-4].tptr),MakeTree(CommaOp,(yyvsp[-1].tptr),(yyvsp[0].tptr)));
 }
-#line 2409 "y.tab.c" /* yacc.c:1646  */
+#line 2411 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 121:
-#line 629 "Grammar.y" /* yacc.c:1646  */
+#line 621 "Grammar.y" /* yacc.c:1646  */
+    {
+	(yyval.tptr) = MakeTree(IfElseOp,(yyvsp[-2].tptr),(yyvsp[0].tptr));
+}
+#line 2419 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 122:
+#line 635 "Grammar.y" /* yacc.c:1646  */
     {
 	(yyval.tptr) = MakeTree(LoopOp,(yyvsp[-1].tptr),(yyvsp[0].tptr));
 }
-#line 2417 "y.tab.c" /* yacc.c:1646  */
+#line 2427 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2421 "y.tab.c" /* yacc.c:1646  */
+#line 2431 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2645,7 +2655,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 633 "Grammar.y" /* yacc.c:1906  */
+#line 639 "Grammar.y" /* yacc.c:1906  */
 
 
 

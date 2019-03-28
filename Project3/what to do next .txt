@@ -1,0 +1,13 @@
+-run mohammad and gitproj project --> Mohamed code did not run and ended up with an semantic error
++see mohammad code and new files we need to consider
++see mohamed grammer code and differences with new grammar in proj3 (especially for part "Syntax Tree Augmentation" in page4 ) --> No difference
+-do the above for gitproj
+	-int error=0 added to grammar.y and it is returned at the yyerror() of this file
++compare gitproj and mohammad
+-see what changes we need for proj3.c and proj3.h using both codes we have
+	- git proj --> insert entry(241)  // LookUpField(311) // findclass(we don have it) //
+
+-start coding
+	-static semantic in page 1 and 6 other rules in page 2 must be met
+	-symbol table (proj3.c)
+	-files -->  semantic_analysis.c // 
