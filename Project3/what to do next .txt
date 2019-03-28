@@ -4,10 +4,30 @@
 -do the above for gitproj
 	-int error=0 added to grammar.y and it is returned at the yyerror() of this file
 +compare gitproj and mohammad
--see what changes we need for proj3.c and proj3.h using both codes we have
-	- git proj --> insert entry(241)  // LookUpField(311) // findclass(we don have it) //
++see what changes we need for proj3.c and proj3.h using both codes we have
+	- git proj --> insert entry(241)  // LookUpField(311) // findclass(we don have it) 
+	-mohammad proj --> in our proj3.c 417 mohammad commented that printf
 
 -start coding
 	-static semantic in page 1 and 6 other rules in page 2 must be met
 	-symbol table (proj3.c)
 	-files -->  semantic_analysis.c // 
+	-STRING_ASSIGN (proj3.c 195 must be completed, and it is not in other codes)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Replacment table;
+
+file name            ours      			mohammad     	git
+proj3.c,proj3.h      PARAMETER_CONFLICT	FUNC_PARAM_MIS	-

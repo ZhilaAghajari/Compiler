@@ -43,11 +43,13 @@
  * id's in the current scoping context are visible.  "attrarray" is to store
  * all the attributes in symbol table. 
  */
-
- #include "proj2.h"
- #include "proj3.h" 
+#include "proj2.h"
+#include "proj3.h" 
+#include "tokens.h"
 #include <stdio.h> 
 #include <stdlib.h> 
+#include <string.h>
+#include <stdint.h>
 
 
 /*********************************data structures**********************/
@@ -77,12 +79,18 @@ int st_top = 0;		     /* symbol table top counter */
 int nesting = 0;	     /* nesting level counter */
 int attr_top = 0;	     /* attribute array counter */
 
-extern int yyline;
-extern char strg_tbl[];      /* string table in table.c */
+//extern int yyline;
+//extern char strg_tbl[];      /* string table in table.c */
 char* getstring(int i);
 char* getname(int i);        /*return ID name or String, i is the index of the string table, passed through yylval*/
 
+extern int lineNumber,columnNumber,yyleng;
+extern char* yytext;
+extern char stringtable[];
+
 /************************ routines *****************************/
+
+
 
 
 /*
@@ -102,6 +110,7 @@ STInit()
       /* SetAttr(nSymInd, TREE_ATTR, NULL); */
       SetAttr(nSymInd, PREDE_ATTR, true);
       SetAttr(nSymInd, KIND_ATTR, CLASS);
+      SetAttr(nSymInd,ARGNUM_ATTR,1);
     }
 
   nStrInd = loc_str("readln");
@@ -186,6 +195,9 @@ int type, action, id, seq;
     case STRING_ASSIGN:
 	printf("symbol %s: declared to be an int, can't be assigned a string.\n", getname(id));
 	break;
+  case PARAMETER_CONFLICT:
+    printf("symbol %s: the number of arguments does not match the number of parameters in the declarations.\n", getname(id));
+  break;
     case ARR_TYPE_MIS:
 	if (seq == 0)
 	  printf("symbol %s: isn't defined as an array.\n", getname(id));

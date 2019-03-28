@@ -39,6 +39,7 @@
 #define ARR_DIME_MIS 123
 #define MULTI_MAIN 124
 #define STRING_ASSIGN 125
+#define PARAMETER_CONFLICT 126
 
 /*
  * processing instruction for error reporting routine 
