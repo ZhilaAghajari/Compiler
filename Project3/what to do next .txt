@@ -5,8 +5,8 @@
 	-int error=0 added to grammar.y and it is returned at the yyerror() of this file
 +compare gitproj and mohammad
 +see what changes we need for proj3.c and proj3.h using both codes we have
-	- git proj --> insert entry(241)  // LookUpField(311) // findclass(we don have it) 
-	-mohammad proj --> in our proj3.c 417 mohammad commented that printf
+	+git proj --> insert entry(241)  // LookUpField(311) // findclass(we don have it) 
+	+mohammad proj --> in our proj3.c 417 mohammad commented that printf
 
 -start coding
 	-static semantic in page 1 and 6 other rules in page 2 must be met

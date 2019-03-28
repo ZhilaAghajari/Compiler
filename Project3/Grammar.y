@@ -648,19 +648,7 @@ FILE *treelst;
 extern FILE *yyin;
 extern char* yytext;
 
-int main(int argc, char *argv[])
-{
-	
-	FILE *f = fopen(argv[1],"r");
-	yyin = f; 
-	treelst = stdout;
-	//printf("test test");
-	//do{
-	yyparse();
-	//}while(!feof(yyin));
 
-	return 0;
-}
 yyerror(char *str)
 {
 	printf("yerror: %s at line %d and Column %d\n ",str,lineNumber,columnNumber);
