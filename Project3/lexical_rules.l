@@ -14,6 +14,7 @@
 //#include "proj2.h"
 //#include "y.tab.h"
 #include <regex.h>
+extern int yylex();
 
 #define errComment 		501 
 #define errIdentifier 	500 /*to identify malformed identifier*/
@@ -268,4 +269,54 @@ void errHandling(int err)
 		default:
 			break;
 	}
+}
+
+
+int loc_str(char text[])
+{
+	int yc = 0;//counter of matching string
+	int newVar = 1; //if the searching variable is newVar=1 then we should add it to stringtable, otherwise we have to return location
+
+	//searching string begins here
+	for (int i=0;i<strlen(stringtable);i++)
+	{
+		//if we see similar char we increased yc to check other chars of this variable
+		if(stringtable[i]==text[yc])
+		{
+			yc++;
+		}
+		//we set yc =0 everytime we can't see a similar char. The reason is, if we see "interest" and "interesting" respectively
+		// in stringtable and text we will increase yc 8 times (as interest in stringtable). then we have to reset yc since two
+		// words are different and we want to check other words, too.
+		else 
+			yc = 0;
+
+		//if yc counter == strlen(text) that means we extract and find a pattern...therefore we should check if it is and independant words
+		// or a word inside another word
+		if(yc==strlen(text)) 
+		{
+			//if i-yc>=0 that means the word is not at the start of stringtable, so there must be spaces one before and one after the word
+			// if everythings goes right, then we can say this variable is not new and we can return the location and searching is finished
+			if(i-yc>=0 && stringtable[i-yc]==' ' && (stringtable[i+1]==' '))
+			{
+				return i-yc+1;
+			}
+			//in other case if i-yc>=0 but the found variable is at the end of string there is no space afterward but instead we have 
+			// i+1 == strlen(stringtable), since there is end of string
+			if(i-yc>=0 && stringtable[i-yc]==' ' && i+1==strlen(stringtable))
+			{
+				return i-yc+1;
+			}
+			
+			//if i-yc<0 then it the word we found is at the start of string table so ther must be a space just aftewards not befor
+			if(i-yc<0 && stringtable[i+1]==' ')
+			{
+				return i-yc+1;
+			}
+
+			//if there is no break, that means the word we found wasn't an independant one or correct one, so we should search again
+			yc = 0;
+		}
+	}
+	return -1;
 }

@@ -6,7 +6,7 @@
 //#include "tokens.h"
 int lineNumber,columnNumber;
 int yydebug=1; 
-tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for temporary usage*/
+tree temp_tree1, temp_tree2, type_tree, DisplayTree; /* defined two tree variable for temporary usage*/
 %}
 
 
@@ -27,8 +27,8 @@ tree temp_tree1, temp_tree2, type_tree; /* defined two tree variable for tempora
 %% /*yacc specification */
 Program : PROGRAMnum IDnum SEMInum ClassDeclLoop
 {
-	tree DisplayTree = MakeTree(ProgramOp,$4,MakeLeaf(IDNode,$2));
-	printtree(DisplayTree,0);
+	DisplayTree = MakeTree(ProgramOp,$4,MakeLeaf(IDNode,$2));
+	/*printtree(DisplayTree,0);*/
 };
 
 ClassDeclLoop: ClassDeclLoop ClassDecl
@@ -645,8 +645,8 @@ WhileStatement: WHILEnum Expression StatementList
 
 
 FILE *treelst;	
-extern FILE *yyin;
-extern char* yytext;
+//extern FILE *yyin;
+//extern char* yytext;
 
 
 yyerror(char *str)

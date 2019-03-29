@@ -16,6 +16,7 @@ Aggelos Varvitsiotis.
 #include <stdio.h>
 #include <stdlib.h>
 #include "proj2.h"
+#include "proj3.h"
 
 ILTree dummy = { DUMMYNode, 0, 0, 0, 0 };
  
@@ -200,6 +201,14 @@ tree Target, Source;
 	}
 }
 
+
+tree ChangeValue(T) tree T;
+{
+	if (NodeKind(T) != EXPRNode || IsNull(T) ) return NULL;
+	SetNodeOp(T, VArgTypeOp);
+	ChangeValue(RightChild(T));
+	return T;
+}
 /********************************************************
 *	This function sets the NodeOpType  to be	*
 *	to be NewOp (only for Interior EXPRNode)	*
@@ -214,6 +223,18 @@ int Op;
 		T->NodeOpType = Op;
 }
 
+
+
+
+void SetNodeKind(T, Node) tree T; int Node;
+{
+	T->NodeKind = Node;
+}
+
+void InternalValue(T, a) tree T; int a;
+{
+	T->IntVal = a;
+}
 /********************************************************
 *	This function sets the tree root and all its	*
 *	left subtree root to be a NewOp node, used only *

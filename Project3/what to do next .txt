@@ -6,19 +6,20 @@
 +compare gitproj and mohammad
 +see what changes we need for proj3.c and proj3.h using both codes we have
 	+git proj --> insert entry(241)  // LookUpField(311) // findclass(we don have it) 
-	+mohammad proj --> in our proj3.c 417 mohammad commented that printf
+	moh+ammad proj --> in our proj3.c 417 mohammad commented that printf
 
 -start coding
 	-static semantic in page 1 and 6 other rules in page 2 must be met
 	-symbol table (proj3.c)
 	-files -->  semantic_analysis.c // 
 	-STRING_ASSIGN (proj3.c 195 must be completed, and it is not in other codes)
+	-correct result on error files
+	-shuffle codes and lines and functions based on semanticAnalyzor
 
 
 
-
-
-
+*agar code grammar ro bad az yek saat taghir dadan natoonesti shabih be khodet cony//copy ro shoroo kon
+	*table.c moshkele mast
 
 
 
@@ -31,3 +32,8 @@ Replacment table;
 
 file name            ours      			mohammad     	git
 proj3.c,proj3.h      PARAMETER_CONFLICT	FUNC_PARAM_MIS	-
+semantic_analysis.c  semanticAnalyzor	makesyntaxtree  
+proj2.c 			 NodeKindSet		-				SetNodeKind
+					 InternalValue		-				SetIntVal
+					 ChangeValue		-				MakeVal
+					 NodeOp				-				SetNodeOp

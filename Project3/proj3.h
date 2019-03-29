@@ -1,3 +1,5 @@
+#ifndef __PROJ3_H_
+#define __PROJ3_H_
 #include <stdint.h>
 
 #define false 0
@@ -40,6 +42,7 @@
 #define MULTI_MAIN 124
 #define STRING_ASSIGN 125
 #define PARAMETER_CONFLICT 126
+#define STRING_MIS 127
 
 /*
  * processing instruction for error reporting routine 
@@ -142,3 +145,6 @@ void SetAttr(int, int, uintptr_t);
 void STPrint();
 void Push(int, int, int, int);
 char *seq_str(int);
+
+
+#endif

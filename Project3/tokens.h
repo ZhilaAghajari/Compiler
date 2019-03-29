@@ -1,4 +1,5 @@
-																				/* 
+#ifndef __TOKEN_H_
+#define __TOKEN_H_																				/* 
 *Defined tokens in Mini Java based on Figure1 in the project instruction
 */
 #define ANDnum			257
@@ -48,3 +49,5 @@
 #define errString 		502 /*to identify strings which are not closed using an '*/
 #define errIntzero 		503 /*to identify an integer starts with zero */
 #define errOther 		504
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef __PROJ2_H_
+#define __PROJ2_H_
 /* proj2.h */
 typedef struct treenode
         {       /* syntax tree node struct */
@@ -89,3 +91,4 @@ void SetLeftChild(tree, tree);
 void SetRightChild(tree, tree); */
 
 
+#endif

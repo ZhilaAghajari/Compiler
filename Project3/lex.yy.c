@@ -539,6 +539,7 @@ char *yytext;
 //#include "proj2.h"
 //#include "y.tab.h"
 #include <regex.h>
+extern int yylex();
 
 #define errComment 		501 
 #define errIdentifier 	500 /*to identify malformed identifier*/
@@ -558,12 +559,12 @@ void updatestrTable(char*);
 void errHandling(int);
 
 
-#line 562 "lex.yy.c"
+#line 563 "lex.yy.c"
  
 /* first I put comment, since it could be mis-find by "/" or "*" and etc */
 /* second I put all symbols, to make sure they are porioritized more than identifiers */
 /* Finnally I wrote all other Regular-Expression and EOF*/
-#line 567 "lex.yy.c"
+#line 568 "lex.yy.c"
 
 #define INITIAL 0
 #define comment 1
@@ -781,9 +782,9 @@ YY_DECL
 		}
 
 	{
-#line 46 "lexical_rules.l"
+#line 47 "lexical_rules.l"
 
-#line 787 "lex.yy.c"
+#line 788 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -842,272 +843,272 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 47 "lexical_rules.l"
+#line 48 "lexical_rules.l"
 {BEGIN comment;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 48 "lexical_rules.l"
+#line 49 "lexical_rules.l"
 {BEGIN 0;/*return COMMENT;*/}
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 49 "lexical_rules.l"
+#line 50 "lexical_rules.l"
 {lineNumber++;columnNumber=1;}
 	YY_BREAK
 case YY_STATE_EOF(comment):
-#line 50 "lexical_rules.l"
+#line 51 "lexical_rules.l"
 {errHandling(errComment);return EOFnum;} /*test it for return error*/
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 51 "lexical_rules.l"
+#line 52 "lexical_rules.l"
 /*observe anything between starting and ending of comment*/
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 52 "lexical_rules.l"
+#line 53 "lexical_rules.l"
 {lineNumber++; columnNumber=1;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 53 "lexical_rules.l"
+#line 54 "lexical_rules.l"
 {columnNumber++;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 54 "lexical_rules.l"
+#line 55 "lexical_rules.l"
 {columnNumber+=8;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 55 "lexical_rules.l"
+#line 56 "lexical_rules.l"
 {columnNumber+=yyleng; return ANDnum;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 56 "lexical_rules.l"
+#line 57 "lexical_rules.l"
 {columnNumber+=yyleng;return ASSGNnum;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 57 "lexical_rules.l"
+#line 58 "lexical_rules.l"
 {columnNumber+=yyleng;return DECLARATIONnum;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 58 "lexical_rules.l"
+#line 59 "lexical_rules.l"
 {columnNumber+=yyleng;return ENDDECLARATIONSnum;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 59 "lexical_rules.l"
+#line 60 "lexical_rules.l"
 {columnNumber+=yyleng;return DOTnum;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 60 "lexical_rules.l"
+#line 61 "lexical_rules.l"
 {columnNumber+=yyleng;return EQUALnum;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 61 "lexical_rules.l"
+#line 62 "lexical_rules.l"
 {columnNumber+=yyleng;return GTnum;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 62 "lexical_rules.l"
+#line 63 "lexical_rules.l"
 {columnNumber+=yyleng;return INTnum;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 63 "lexical_rules.l"
+#line 64 "lexical_rules.l"
 {columnNumber+=yyleng;return LBRACnum;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 64 "lexical_rules.l"
+#line 65 "lexical_rules.l"
 {columnNumber+=yyleng;return LPARENnum;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 65 "lexical_rules.l"
+#line 66 "lexical_rules.l"
 {columnNumber+=yyleng;return METHODnum;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 66 "lexical_rules.l"
+#line 67 "lexical_rules.l"
 {columnNumber+=yyleng;return NEnum;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 67 "lexical_rules.l"
+#line 68 "lexical_rules.l"
 {columnNumber+=yyleng;return ORnum;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 68 "lexical_rules.l"
+#line 69 "lexical_rules.l"
 {columnNumber+=yyleng;return PROGRAMnum;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 69 "lexical_rules.l"
+#line 70 "lexical_rules.l"
 {columnNumber+=yyleng;return RBRACnum;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 70 "lexical_rules.l"
+#line 71 "lexical_rules.l"
 {columnNumber+=yyleng;return RPARENnum;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 71 "lexical_rules.l"
+#line 72 "lexical_rules.l"
 {columnNumber+=yyleng;return SEMInum;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 72 "lexical_rules.l"
+#line 73 "lexical_rules.l"
 {columnNumber+=yyleng;return VALnum;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 73 "lexical_rules.l"
+#line 74 "lexical_rules.l"
 {columnNumber+=yyleng;return WHILEnum;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 74 "lexical_rules.l"
+#line 75 "lexical_rules.l"
 {columnNumber+=yyleng;return CLASSnum;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 75 "lexical_rules.l"
+#line 76 "lexical_rules.l"
 {columnNumber+=yyleng;return COMMAnum;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 76 "lexical_rules.l"
+#line 77 "lexical_rules.l"
 {columnNumber+=yyleng;return DIVIDEnum;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 77 "lexical_rules.l"
+#line 78 "lexical_rules.l"
 {columnNumber+=yyleng;return ELSEnum;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 78 "lexical_rules.l"
+#line 79 "lexical_rules.l"
 {columnNumber+=yyleng;return EQnum;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 79 "lexical_rules.l"
+#line 80 "lexical_rules.l"
 {columnNumber+=yyleng;return GEnum;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 80 "lexical_rules.l"
+#line 81 "lexical_rules.l"
 {columnNumber+=yyleng;yylval.intg = atoi(yytext);return ICONSTnum;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 81 "lexical_rules.l"
+#line 82 "lexical_rules.l"
 {columnNumber+=yyleng;return IFnum;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 82 "lexical_rules.l"
+#line 83 "lexical_rules.l"
 {columnNumber+=yyleng;return LBRACEnum;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 83 "lexical_rules.l"
+#line 84 "lexical_rules.l"
 {columnNumber+=yyleng;return LEnum;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 84 "lexical_rules.l"
+#line 85 "lexical_rules.l"
 {columnNumber+=yyleng;return LTnum;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 85 "lexical_rules.l"
+#line 86 "lexical_rules.l"
 {columnNumber+=yyleng;return MINUSnum;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 86 "lexical_rules.l"
+#line 87 "lexical_rules.l"
 {columnNumber+=yyleng;return NOTnum;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 87 "lexical_rules.l"
+#line 88 "lexical_rules.l"
 {columnNumber+=yyleng;return PLUSnum;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 88 "lexical_rules.l"
+#line 89 "lexical_rules.l"
 {columnNumber+=yyleng;return RBRACEnum;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 89 "lexical_rules.l"
+#line 90 "lexical_rules.l"
 {columnNumber+=yyleng;return RETURNnum;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 90 "lexical_rules.l"
+#line 91 "lexical_rules.l"
 {columnNumber+=yyleng;return TIMESnum;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 91 "lexical_rules.l"
+#line 92 "lexical_rules.l"
 {columnNumber+=yyleng;return VOIDnum;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 92 "lexical_rules.l"
+#line 93 "lexical_rules.l"
 {columnNumber+=yyleng; /*add_to_stringtable(yytext);*/updatestrTable(yytext);return IDnum;}
 	YY_BREAK
 case 46:
 /* rule 46 can match eol */
 YY_RULE_SETUP
-#line 93 "lexical_rules.l"
+#line 94 "lexical_rules.l"
 {columnNumber+=yyleng;isStr = 1;/*add_to_stringtable(yytext);*/updatestrTable(yytext);return SCONSTnum;} 
 	YY_BREAK
 case 47:
 /* rule 47 can match eol */
 YY_RULE_SETUP
-#line 94 "lexical_rules.l"
+#line 95 "lexical_rules.l"
 {columnNumber+=yyleng; errHandling(errString);}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 95 "lexical_rules.l"
+#line 96 "lexical_rules.l"
 {columnNumber+=yyleng; errHandling(errIntzero);}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 96 "lexical_rules.l"
+#line 97 "lexical_rules.l"
 {columnNumber+=yyleng; errHandling(errIdentifier);}; /* identifier starts with number*/
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 97 "lexical_rules.l"
+#line 98 "lexical_rules.l"
 {columnNumber+=yyleng-1;return EOFnum;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 98 "lexical_rules.l"
+#line 99 "lexical_rules.l"
 {errHandling(errOther);}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 100 "lexical_rules.l"
+#line 101 "lexical_rules.l"
 ECHO;
 	YY_BREAK
-#line 1111 "lex.yy.c"
+#line 1112 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2110,7 +2111,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 100 "lexical_rules.l"
+#line 101 "lexical_rules.l"
 
 void updatestrTable(char* yytext)
 {
@@ -2282,5 +2283,138 @@ void errHandling(int err)
 		default:
 			break;
 	}
+}
+
+
+int loc_str(char text[])
+{
+	int yc = 0;//counter of matching string
+	int newVar = 1; //if the searching variable is newVar=1 then we should add it to stringtable, otherwise we have to return location
+
+	//searching string begins here
+	for (int i=0;i<strlen(stringtable);i++)
+	{
+		//if we see similar char we increased yc to check other chars of this variable
+		if(stringtable[i]==text[yc])
+		{
+			yc++;
+		}
+		//we set yc =0 everytime we can't see a similar char. The reason is, if we see "interest" and "interesting" respectively
+		// in stringtable and text we will increase yc 8 times (as interest in stringtable). then we have to reset yc since two
+		// words are different and we want to check other words, too.
+		else 
+			yc = 0;
+
+		//if yc counter == strlen(text) that means we extract and find a pattern...therefore we should check if it is and independant words
+		// or a word inside another word
+		if(yc==strlen(text)) 
+		{
+			//if i-yc>=0 that means the word is not at the start of stringtable, so there must be spaces one before and one after the word
+			// if everythings goes right, then we can say this variable is not new and we can return the location and searching is finished
+			if(i-yc>=0 && stringtable[i-yc]==' ' && (stringtable[i+1]==' '))
+			{
+				return i-yc+1;
+			}
+			//in other case if i-yc>=0 but the found variable is at the end of string there is no space afterward but instead we have 
+			// i+1 == strlen(stringtable), since there is end of string
+			if(i-yc>=0 && stringtable[i-yc]==' ' && i+1==strlen(stringtable))
+			{
+				return i-yc+1;
+			}
+			
+			//if i-yc<0 then it the word we found is at the start of string table so ther must be a space just aftewards not befor
+			if(i-yc<0 && stringtable[i+1]==' ')
+			{
+				return i-yc+1;
+			}
+
+			//if there is no break, that means the word we found wasn't an independant one or correct one, so we should search again
+			yc = 0;
+		}
+	}
+	return -1;
+}
+#include <stdio.h>
+#include <string.h>
+
+#include "table.h"
+#include "proj2.h"
+
+extern char stringtable[];
+int st_index;
+extern int yyleng;
+extern YYSTYPE yylval; 
+
+/* Print the symbol table for final output */
+void print_stringtable() {
+	int i;
+	printf("String Table: ");
+	for (i = 0; i < st_index; i++) {
+		while (stringtable[i] != '\0') {
+			printf("%c", stringtable[i]);
+			i++;
+		}
+		printf("%c", ' ');
+	}
+	printf("\n");
+}
+
+char * tolowercase(char a[]) {
+/* transform an identifier to lower case representation */
+  int i;
+  for( i=0; i<yyleng; i++ )
+  {
+     if ( 'A'<=a[i] && a[i]<='Z' )
+        a[i] = a[i] - 'A' + 'a';
+  }
+  return a;
+}
+
+/* Method to handle addition to the stringtable */
+void add_to_stringtable(char a[]) {
+	/* Search for the string in the table */
+	int search_index = search(a);
+	/* if it was not found insert into table and return index where
+	   it was inserted */
+	if (search_index == -1) {
+		a = tolowercase(a);
+		yylval.intg = insert(a);
+	/* if found return index it was found at */
+	} else {
+		yylval.intg = search_index;
+	}
+}
+
+/* insert into the stringtable */
+int insert(char a[]) {
+	/* Check if there is room for the string */
+	if (strlen(a) + st_index >= LIMIT1) {
+		printf("Lexeme too long.\n");
+		return -1;
+	}
+	/* Copy the string into the table */
+	strcpy(&(stringtable[st_index]), a);
+	/* Set new end index and return there the string was inserted */
+	int temp = st_index;
+	st_index += strlen(a) + 1;
+	return temp;
+}
+
+/* Search for the string in the table */
+int search(char a[]) {
+	int i = 0;
+	char word[LIMIT1];
+	stringtable[LIMIT1] = '\0';
+	while (i < LIMIT1) {
+		strcpy(&word[0], &(stringtable[i]));
+		if (!strcasecmp(word, a)) {
+			return i;
+		}
+		else {
+			i = i + strlen(word);
+		}
+		i++;
+	}
+	return -1;
 }
 
