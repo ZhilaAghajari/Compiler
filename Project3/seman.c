@@ -10,17 +10,17 @@ extern int error;
 
 int outputMethod = 0;
 
-void traversetree();
+void traverse();
 void inorder(tree root);
-void process(tree root);
-void process_node(tree root);
-void process_leaf(tree root);
+void semantic_analyze(tree root);
+void semantic_analyze_node(tree root);
+void semantic_analyze_leaf(tree root);
 void analyze_ClassOp(tree root);
 void analyze_BodyOp(tree root);
 void analyze_DeclOp(tree root);
 void analyze_MethodOp(tree root);
 void analyze_Arg(tree root);
-void analyze_Stmt(tree root);
+void statement_semantic(tree root);
 void analyze_AssignOp(tree root);
 int analyze_Var(tree root);
 void analyze_Exp(tree root);
@@ -32,11 +32,11 @@ void analyze_Array(tree root, int dimension, int arr);
 void analyze_VarInt(tree root, int dimension, int arr);
 void analyze_ArrayInit(tree root, int dimension, int arr);
 void analyze_ArrayCreate(tree root, int dimension, int arr);
-void analyze_ReturnOp(tree root);
+void return_semantic(tree root);
 void analyze_LoopOp(tree root);
 void analyze_IfElseOp(tree root);
 int count_Args(tree root);
-void bottomUp(tree root);
+void get_to_left(tree root);
 void topDownLeft(tree root);
 void topDownRight(tree root);
 int countDimension(tree root);
@@ -48,97 +48,124 @@ int main() {
 	yyin = f; 
 	treelst = stdout;
 	yyparse();
-	if (error != 1) {
-		//print_string_table();
-		STInit();
-		traversetree();
-		STPrint();
-		printtree(root, 0);
-		return 0;
+	if (error != 1) 
+	{
+		STInit();//initial symbol tree
+		traverse(); //start traversing the tree
+		STPrint(); //print symbol table
+		printtree(root, 0); //print Grammar tree
+		return 0; //exit with code 0
 	}
-	puts("Syntax Tree not created, exiting...");
-	return 1;
+	printf("%s\n", "there is an erro in Grammar part, and Grammar tree is not built yet!");
+	return 0;
 }
 
-void traversetree() {
-	bottomUp(root);
+void traverse() {
+	get_to_left(root);
 }
 
-// Analyze nodes using a left recursive strategy 
-// process the nodes on the way back up.
-void bottomUp(tree root) {
-	if (IsNull(root)) {
+/*
+*get_to_left(tree T) -- get to the letmost child, so later we can start coming back to top and check all the symbols from bottom to up
+*@tree a tree structure
+*return void
+*/
+void get_to_left(tree T) {
+	if (IsNull(T)) 
 		return;
+	else
+	{
+		get_to_left(LeftChild(T)); //expand left child every time and recursively till we get to the bottom then analyze each node back from bottom to up
+		semantic_analyze(T);
 	}
-	bottomUp(LeftChild(root));
-	process(root);
+}
+
+/*
+*semantic_analyze(tree T) -- gets a node as a tree and check the node type to pass the node to the appropriate function for further analysis
+*/
+void semantic_analyze(tree T) {
+	if(NodeKind(T)==EXPRNode)
+	{
+		if(NodeOp(T) == StmtOp)
+			statement_semantic(T);
+		if(NodeOp(T) == RArgTypeOp)
+			analyze_Arg(T);
+		if(NodeOp(T) == ClassOp)
+			analyze_ClassOp(T);
+		if(NodeOp(T) == CommaOp)
+			analyze_Exp(LeftChild(T));
+		if (NodeOp(T) == BoundOp)
+			analyze_Exp(RightChild(T));
+		if (NodeOp(T) == VArgTypeOp)
+			analyze_Arg(T);
+		if (NodeOp(T) == BodyOp)
+			analyze_BodyOp(T);
+		if (NodeOp(T) == DeclOp)
+			analyze_DeclOp(T);
+		
+
+
+	}
+	else if (NodeKind(T) == STRINGNode && outputMethod == 0)
+	{
+		error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
+	}
+}
+
+// Analyze a Statement
+void statement_semantic(tree T) {
+	tree rightT = RightChild(T);//open right node of statement
+
+	if (IsNull(rightT)) //return if this is the final term
+		return;
+	if (NodeKind(rightT) != EXPRNode &&  outputMethod == 0 && NodeKind(T) == STRINGNode ) 
+		error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
+
+	//continue expanding the tree for subtree of statement
+	switch (NodeOp(rightT)) 
+	{
+		case ReturnOp:
+			return_semantic(rightT); break;
+		case IfElseOp:
+			analyze_IfElseOp(rightT); break;
+		case LoopOp:
+			analyze_LoopOp(rightT); break;
+		case RoutineCallOp:
+			analyze_RoutineCallOp(rightT); break;
+		case AssignOp:
+			analyze_AssignOp(rightT); break;
+	}
+}
+
+/*
+*return Semantic is a function that recieve a subtree with node "ReturnOp" and threat the subtree as an Expression for left-child of this subtree
+*/
+void return_semantic(tree T) {
+	tree T2 = LeftChild(T);
+	if (!IsNull(T2))
+		analyze_Exp(T2);
 }
 
 // Analyze nodes using a left recursive strategy
-// process the nodes on the way down
+// semantic_analyze the nodes on the way down
 void topDownLeft(tree root) {
 	if (IsNull(root)) {
 		return;
 	}
-	process(root);
+	semantic_analyze(root);
 	topDownLeft(LeftChild(root));
 }
 
 // Analyze Nodes using a right recursive strategy
-// process nodes on the way down
+// semantic_analyze nodes on the way down
 void topDownRight(tree root) {
 	if (IsNull(root)) {
 		return;
 	}
-	process(root);
+	semantic_analyze(root);
 	topDownRight(RightChild(root));
 }
 
-// process the node depending on the type
-void process(tree root) {
-	if (NodeKind(root) == EXPRNode) {
-		switch (NodeOp(root))
-		{
-			case ClassOp:
-				analyze_ClassOp(root);
-				break;
-			case BodyOp:
-				analyze_BodyOp(root);
-				break;
-			case DeclOp:
-				analyze_DeclOp(root);
-				break;
-			case RArgTypeOp:
-			case VArgTypeOp:
-				analyze_Arg(root);
-				break;
-			case StmtOp:
-				analyze_Stmt(root);
-				break;
-			// Used when analyzing function args
-			case CommaOp:
-				analyze_Exp(LeftChild(root));
-				break;
-			// Used when analyzing Array Creation Expression
-			case BoundOp:
-				analyze_Exp(RightChild(root));
-				break;
-			default:
-				break;
-		}
-	}
-	else {
-		if (NodeKind(root) == STRINGNode) {
-			if (outputMethod == 0) {
-				error_msg(
-					STRING_MIS,
-					CONTINUE,
-					IntVal(root),
-					0);
-			}
-		}
-	}
-}
+
 
 // Analyze a class in the program
 void analyze_ClassOp(tree root) {
@@ -163,7 +190,7 @@ void analyze_ClassOp(tree root) {
 			// Open a new nesting level (scope)
 			OpenBlock();
 			// recursivly analyze what will be BodyOp Nodes
-			bottomUp(node);
+			get_to_left(node);
 			// Close scope
 			CloseBlock();
 		}
@@ -185,7 +212,7 @@ void analyze_BodyOp(tree root) {
 				break;
 			case StmtOp:
 				// Analyze all Stmt recursivly
-				bottomUp(node);
+				get_to_left(node);
 				break;
 			default:
 				break;
@@ -236,7 +263,7 @@ void analyze_MethodOp(tree root) {
 	// set the number or agrs
 	SetAttr(nSymInd, ARGNUM_ATTR, numArgs);
 	// analyze the statements
-	bottomUp(RightChild(root));
+	get_to_left(RightChild(root));
 	// close scope
 	CloseBlock();
 }	
@@ -371,7 +398,7 @@ void analyze_ArrayCreate(tree root, int dimension, int arr) {
 			GetAttr(arr, NAME_ATTR), 
 			0);
 	}
-	bottomUp(root);
+	get_to_left(root);
 }
 
 // recursivly count the number of nodes to the right before a Dummy
@@ -390,44 +417,7 @@ int countDimensionsLeft(tree root) {
 	return countDimensionsLeft(LeftChild(root)) + 1;
 }
 
-// Analyze a Statement
-void analyze_Stmt(tree root) {
-	tree op = RightChild(root);
-	if (IsNull(op)) {
-		return;
-	}
-	if (NodeKind(op) != EXPRNode) {
-		if (NodeKind(root) == STRINGNode) {
-			if (outputMethod == 0) {
-				error_msg(
-					STRING_MIS,
-					CONTINUE,
-					IntVal(root),
-					0);
-			}
-		}
-	}
-	switch (NodeOp(op)) 
-	{
-		case AssignOp:
-			analyze_AssignOp(op);
-			break;
-		case RoutineCallOp:
-			analyze_RoutineCallOp(op);
-			break;
-		case ReturnOp:
-			analyze_ReturnOp(op);
-			break;
-		case IfElseOp:
-			analyze_IfElseOp(op);
-			break;
-		case LoopOp:
-			analyze_LoopOp(op);
-			break;
-		default:
-			break;
-	}
-}
+
 
 // Analyze an IfElse Construct
 void analyze_IfElseOp(tree root) {
@@ -442,25 +432,20 @@ void analyze_IfElseOp(tree root) {
 		// Analyze the Exp
 		analyze_Exp(LeftChild(RightChild(root)));
 		// Analyze the statement list
-		bottomUp(RightChild(RightChild(root)));
+		get_to_left(RightChild(RightChild(root)));
 	}
 	// analyze the statements to the right (final else block)
 	if (NodeOp(RightChild(root)) == StmtOp) {
-		bottomUp(RightChild(root));
+		get_to_left(RightChild(root));
 	}
 }
 
-// Analyze a return
-void analyze_ReturnOp(tree root) {
-	if (!IsNull(LeftChild(root))) {
-		analyze_Exp(LeftChild(root));
-	}
-}
+
 
 // Analyze a loop
 void analyze_LoopOp(tree root) {
 	analyze_Exp(LeftChild(root));
-	bottomUp(RightChild(root));
+	get_to_left(RightChild(root));
 }
 
 // Analyze an Assignment
