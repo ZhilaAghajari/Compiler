@@ -141,6 +141,7 @@ tree T;
         if (NodeKind(T) != EXPRNode)
         {
           printf("NodeOP(): This node must be an EXPRNode!\n");
+	  printf("%s\n", getname(IntVal(T)));
           return(0);
         }
 	return (T->NodeOpType);
@@ -201,14 +202,6 @@ tree Target, Source;
 	}
 }
 
-
-tree ChangeValue(T) tree T;
-{
-	if (NodeKind(T) != EXPRNode || IsNull(T) ) return NULL;
-	SetNodeOp(T, VArgTypeOp);
-	ChangeValue(RightChild(T));
-	return T;
-}
 /********************************************************
 *	This function sets the NodeOpType  to be	*
 *	to be NewOp (only for Interior EXPRNode)	*
@@ -223,18 +216,31 @@ int Op;
 		T->NodeOpType = Op;
 }
 
-
-
-
-void SetNodeKind(T, Node) tree T; int Node;
+void SetNodeKind(T, kind)
+tree T;
+int kind;
 {
-	T->NodeKind = Node;
+	T->NodeKind = kind;
 }
 
-void InternalValue(T, a) tree T; int a;
+void SetIntVal(T, val)
+tree T;
+int val;
 {
-	T->IntVal = a;
+	T->IntVal = val;
 }
+
+tree MakeVal(T)
+tree T;
+{
+	if (IsNull(T) || NodeKind(T) != EXPRNode) {
+		return NULL;
+	}
+	SetNodeOp(T, VArgTypeOp);
+	MakeVal(RightChild(T));
+	return T;
+}
+
 /********************************************************
 *	This function sets the tree root and all its	*
 *	left subtree root to be a NewOp node, used only *
@@ -354,17 +360,16 @@ void zerocrosses ()
     crosses [i] = 0;
 }
 
-extern char  stringtable[];
-
+extern char  string_table[];
 
 char* getname(int i)/*return ID name or String, i is the index of the string table, passed through yylval*/
 {
-  return( stringtable+i );/*return string table indexed at i*/
+  return( string_table+i );/*return string table indexed at i*/
 }
 
 char* getstring(int i)
 {
-  return( stringtable+i+1 );/*return string table indexed at i*/
+  return( string_table+i+1 );/*return string table indexed at i*/
 }
 
 
@@ -401,19 +406,19 @@ void printtree (nd, depth)
 		    else 
 		      fprintf (treelst,"[IDNode,%d,\"%s\"]\n", indx, "err");
 		    break;
-
+	#ifndef parser	
     case STNode:
                     indx = IntVal(nd);
                     if (indx > 0)
                     {
                       id = indx; /* GetAttr(indx, NAME_ATTR); */
                       fprintf (treelst,"[STNode,%d,\"%s\"]\n", IntVal(nd),
-                                                    getname(id));
+                                                getname(GetAttr(IntVal(nd), 1)));
                     }
                     else 
                       fprintf (treelst,"[IDNode,%d,\"%s\"]\n", indx, "err");
                     break;
-
+	#endif
     case INTEGERTNode:
                       fprintf (treelst,"[INTEGERTNode]\n");
                     break;
@@ -436,7 +441,6 @@ void printtree (nd, depth)
     case EXPRNode:  fprintf (treelst,"[%s]\n", 
 					opnodenames [NodeOp(nd) - ProgramOp]);
 		    break;
-
     default:	    fprintf (treelst,"INVALID!!!\n");
 		    break;
   }

@@ -4,18 +4,18 @@
 #include "table.h"
 #include "proj2.h"
 
-extern char stringtable[];
-int st_index;
+extern char string_table[];
+extern int st_index;
 extern int yyleng;
 extern YYSTYPE yylval; 
 
 /* Print the symbol table for final output */
-void print_stringtable() {
+void print_string_table() {
 	int i;
 	printf("String Table: ");
 	for (i = 0; i < st_index; i++) {
-		while (stringtable[i] != '\0') {
-			printf("%c", stringtable[i]);
+		while (string_table[i] != '\0') {
+			printf("%c", string_table[i]);
 			i++;
 		}
 		printf("%c", ' ');
@@ -34,8 +34,8 @@ char * tolowercase(char a[]) {
   return a;
 }
 
-/* Method to handle addition to the stringtable */
-void add_to_stringtable(char a[]) {
+/* Method to handle addition to the string_table */
+void add_to_string_table(char a[]) {
 	/* Search for the string in the table */
 	int search_index = search(a);
 	/* if it was not found insert into table and return index where
@@ -49,7 +49,7 @@ void add_to_stringtable(char a[]) {
 	}
 }
 
-/* insert into the stringtable */
+/* insert into the string_table */
 int insert(char a[]) {
 	/* Check if there is room for the string */
 	if (strlen(a) + st_index >= LIMIT1) {
@@ -57,7 +57,7 @@ int insert(char a[]) {
 		return -1;
 	}
 	/* Copy the string into the table */
-	strcpy(&(stringtable[st_index]), a);
+	strcpy(&(string_table[st_index]), a);
 	/* Set new end index and return there the string was inserted */
 	int temp = st_index;
 	st_index += strlen(a) + 1;
@@ -68,9 +68,9 @@ int insert(char a[]) {
 int search(char a[]) {
 	int i = 0;
 	char word[LIMIT1];
-	stringtable[LIMIT1] = '\0';
+	string_table[LIMIT1] = '\0';
 	while (i < LIMIT1) {
-		strcpy(&word[0], &(stringtable[i]));
+		strcpy(&word[0], &(string_table[i]));
 		if (!strcasecmp(word, a)) {
 			return i;
 		}

@@ -1,34 +1,14 @@
-#MAKEFILE
-#last step I was in, cannot run YACC completely, since there is
-#no yac.tab.y for us!
-all : LEXcompile YACC GccCompiler SemanticCompiler
+seman:    seman.c y.tab.c lex.yy.c proj2.c proj3.c
+	gcc -g -o seman seman.c y.tab.c proj2.c proj3.c -lfl
 
-LEXcompile : lexical_rules.l table.c
-	lex lexical_rules.l table.c
-	
-GccCompiler: y.tab.c lex.yy.c proj2.c
-	gcc  -std=c99 -g -o runparser y.tab.c proj2.c -lfl
+parser:   parser.c y.tab.c lex.yy.c proj2.c
+	gcc -D parser -g -o parser parser.c y.tab.c proj2.c -lfl
 
-SemanticCompiler: seman.c y.tab.c lex.yy.c proj2.c proj3.c
-	gcc -g -o runsemantic seman.c y.tab.c proj2.c proj3.c -lfl
+lexer:    lex.yy.c lexer_main.c table.c
+	gcc -D lex -o lexer lex.yy.c lexer_main.c -ll
 
+y.tab.c:  grammar.y
+	yacc -v grammar.y
 
-YACC : Grammar.y
-	yacc -v Grammar.y
-
-
-clean: 
-	rm -rf lex.yy.c runfile
-	rm -rf Grammar.output
-	rm -rf Grammar.tab.c
-	rm -rf runparser
-	rm -rf runsemantic
-
-# parser:   y.tab.c lex.yy.c proj2.c
-# 	gcc  -g -o parser y.tab.c proj2.c -lfl
-
-# y.tab.c:  grammar.y
-# 	yacc -v grammar.y
-
-# lex.yy.c: lexical_rules.l 
-# 	lex lexical_rules.l
+lex.yy.c: lex.l table.c 
+	flex lex.l table.c

@@ -70,9 +70,8 @@ void bottomUp(tree root) {
 	if (IsNull(root)) {
 		return;
 	}
-	printtree(root,0);//////////
 	bottomUp(LeftChild(root));
-	//process(root);
+	process(root);
 }
 
 // Analyze nodes using a left recursive strategy

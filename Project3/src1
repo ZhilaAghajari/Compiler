@@ -2,17 +2,17 @@
 program ex1;
 class c1
 {
-    declarations
-        int x=-1;
-    enddeclarations
-    method void main()
-    declarations
-        int x=4;
-    enddeclarations
-    {
-    if (x>=0)
-      {
-        system.println('x>=0'); 
-      };
-    }
+	declarations
+		int x=-1;
+	enddeclarations
+	method void main()
+	declarations
+		int x=4;
+	enddeclarations
+	{
+	if (x>=0)
+	  {
+		System.println('x>=0'); 
+	  };
+	}
 }
