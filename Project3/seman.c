@@ -23,7 +23,7 @@ void analyze_Arg(tree root);
 void statement_semantic(tree root);
 void analyze_AssignOp(tree root);
 int analyze_Var(tree root);
-void analyze_Exp(tree root);
+void expression_semantic(tree root);
 void analyze_SimpleExp(tree root);
 void analyze_RoutineCallOp(tree root);
 void analyze_Term(tree root);
@@ -33,8 +33,8 @@ void analyze_VarInt(tree root, int dimension, int arr);
 void analyze_ArrayInit(tree root, int dimension, int arr);
 void analyze_ArrayCreate(tree root, int dimension, int arr);
 void return_semantic(tree root);
-void analyze_LoopOp(tree root);
-void analyze_IfElseOp(tree root);
+void loop_semantic(tree root);
+void condition_semantic(tree root);
 int count_Args(tree root);
 void get_to_left(tree root);
 void topDownLeft(tree root);
@@ -75,7 +75,7 @@ void get_to_left(tree T) {
 	else
 	{
 		get_to_left(LeftChild(T)); //expand left child every time and recursively till we get to the bottom then analyze each node back from bottom to up
-		semantic_analyze(T);
+		semantic_analyze(T);	
 	}
 }
 
@@ -92,9 +92,9 @@ void semantic_analyze(tree T) {
 		if(NodeOp(T) == ClassOp)
 			analyze_ClassOp(T);
 		if(NodeOp(T) == CommaOp)
-			analyze_Exp(LeftChild(T));
+			expression_semantic(LeftChild(T));
 		if (NodeOp(T) == BoundOp)
-			analyze_Exp(RightChild(T));
+			expression_semantic(RightChild(T));
 		if (NodeOp(T) == VArgTypeOp)
 			analyze_Arg(T);
 		if (NodeOp(T) == BodyOp)
@@ -126,9 +126,9 @@ void statement_semantic(tree T) {
 		case ReturnOp:
 			return_semantic(rightT); break;
 		case IfElseOp:
-			analyze_IfElseOp(rightT); break;
+			condition_semantic(rightT); break;
 		case LoopOp:
-			analyze_LoopOp(rightT); break;
+			expression_semantic(LeftChild(rightT)); get_to_left(RightChild(rightT)); break;
 		case RoutineCallOp:
 			analyze_RoutineCallOp(rightT); break;
 		case AssignOp:
@@ -142,8 +142,49 @@ void statement_semantic(tree T) {
 void return_semantic(tree T) {
 	tree T2 = LeftChild(T);
 	if (!IsNull(T2))
-		analyze_Exp(T2);
+		expression_semantic(T2);
 }
+
+// Analyze an IfElse Construct
+void condition_semantic(tree T) {
+	if (IsNull(T))
+		return;
+	condition_semantic(LeftChild(T));
+
+	tree T2 = RightChild(T);
+	if (NodeOp(T2) == StmtOp) 
+	{
+		get_to_left(T2);
+	}
+	if (NodeOp(T2) == CommaOp) 
+	{	
+		expression_semantic(LeftChild(T2));
+		get_to_left(RightChild(T2));
+	}
+	
+}
+
+/*
+*
+*/
+void expression_semantic(tree T) {
+	if (NodeKind(T) != EXPRNode &&  outputMethod == 0 && NodeKind(T) == STRINGNode) //throw an error
+		error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
+	else if(NodeKind(T) == EXPRNode )
+	{
+		if(NodeOp(T) == GEOp || NodeOp(T) == LTOp || NodeOp(T) == NEOp || NodeOp(T) == EQOp || NodeOp(T) == GTOp || NodeOp(T) == LEOp)
+		{
+			analyze_SimpleExp(LeftChild(T));
+			analyze_SimpleExp(RightChild(T));
+		}
+		else //non terminal expression
+			analyze_SimpleExp(T);
+	}
+}
+
+
+
+
 
 // Analyze nodes using a left recursive strategy
 // semantic_analyze the nodes on the way down
@@ -345,7 +386,7 @@ void analyze_VarInt(tree root, int dimension, int arr) {
 			analyze_Array(root, dimension, arr);
 		} else {
 			// if it is a normal var it is just an expression
-			analyze_Exp(root);
+			expression_semantic(root);
 		}
 	}
 	else {
@@ -419,32 +460,13 @@ int countDimensionsLeft(tree root) {
 
 
 
-// Analyze an IfElse Construct
-void analyze_IfElseOp(tree root) {
-	if (IsNull(root)) {
-		return;
-	}
-	// recurse to the bottom of the IfElse trees
-	analyze_IfElseOp(LeftChild(root));
-	if (NodeOp(RightChild(root)) == CommaOp) {	
-		// Comma Tree
-		// (This is used on 'if' and 'else if'
-		// Analyze the Exp
-		analyze_Exp(LeftChild(RightChild(root)));
-		// Analyze the statement list
-		get_to_left(RightChild(RightChild(root)));
-	}
-	// analyze the statements to the right (final else block)
-	if (NodeOp(RightChild(root)) == StmtOp) {
-		get_to_left(RightChild(root));
-	}
-}
+
 
 
 
 // Analyze a loop
-void analyze_LoopOp(tree root) {
-	analyze_Exp(LeftChild(root));
+void loop_semantic(tree root) {
+	expression_semantic(LeftChild(root));
 	get_to_left(RightChild(root));
 }
 
@@ -453,11 +475,11 @@ void analyze_AssignOp(tree root) {
 	tree var = RightChild(LeftChild(root));
 	analyze_Var(var);
 	tree exp = RightChild(root);
-	analyze_Exp(exp);
+	expression_semantic(exp);
 	// For use when type checking
 	/*
 	int lhs = analyze_Var(var);
-	int rhs = analyze_Exp(exp);
+	int rhs = expression_semantic(exp);
 	if (IsAttr(lhs, TYPE_ATTR) && IsAttr(rhs, TYPE_ATTR)) {
 		check and compare types
 		if not equal
@@ -541,7 +563,7 @@ int analyze_Var(tree root) {
 			//}
 
 			// Analyze the expression in the index
-			analyze_Exp(LeftChild(LeftChild(select)));
+			expression_semantic(LeftChild(LeftChild(select)));
 		} 
 		if (NodeOp(LeftChild(select)) == FieldOp) {
 			// If the previous var or field is not a class then 
@@ -600,37 +622,7 @@ int analyze_Var(tree root) {
 	return nSymInd;
 }
 
-// Analyze an Expression
-void analyze_Exp(tree root) {
-	if (NodeKind(root) == EXPRNode) {
-		switch(NodeOp(root))
-		{
-			case LTOp:
-			case LEOp:
-			case EQOp:
-			case NEOp:
-			case GEOp:
-			case GTOp:
-				analyze_SimpleExp(LeftChild(root));
-				analyze_SimpleExp(RightChild(root));
-				break;
-			default:
-				analyze_SimpleExp(root);
-				break;
-		}
-	}
-	else {
-		if (NodeKind(root) == STRINGNode) {
-			if (outputMethod == 0) {
-				error_msg(
-					STRING_MIS,
-					CONTINUE,
-					IntVal(root),
-					0);
-			}
-		}
-	}
-}
+
 
 // Analyze a simple expression
 void analyze_SimpleExp(tree root) {
@@ -721,7 +713,7 @@ void analyze_Factor(tree root) {
 				break;
 			// Error?m
 			default:
-				analyze_Exp(root);
+				expression_semantic(root);
 				break;
 		}
 	}
