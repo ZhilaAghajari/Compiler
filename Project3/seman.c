@@ -8,15 +8,10 @@ extern FILE *treelst;
 extern tree root;
 extern int error;
 
-int outputMethod = 0;
+int output_check = 0;
 
 void traverse();
 void inorder(tree root);
-void semantic_analyze(tree root);
-void semantic_analyze_node(tree root);
-void semantic_analyze_leaf(tree root);
-void analyze_ClassOp(tree root);
-void analyze_BodyOp(tree root);
 void analyze_DeclOp(tree root);
 void analyze_MethodOp(tree root);
 void analyze_Arg(tree root);
@@ -37,9 +32,12 @@ void loop_semantic(tree root);
 void condition_semantic(tree root);
 int count_Args(tree root);
 void get_to_left(tree root);
+void get_to_left2(tree root);
 void topDownLeft(tree root);
 void topDownRight(tree root);
 int countDimension(tree root);
+void method_semantic(tree root);
+void get_to_right(tree T);
 
 extern FILE *yyin;
 
@@ -79,6 +77,7 @@ void get_to_left(tree T) {
 	}
 }
 
+
 /*
 *semantic_analyze(tree T) -- gets a node as a tree and check the node type to pass the node to the appropriate function for further analysis
 */
@@ -90,7 +89,26 @@ void semantic_analyze(tree T) {
 		if(NodeOp(T) == RArgTypeOp)
 			analyze_Arg(T);
 		if(NodeOp(T) == ClassOp)
-			analyze_ClassOp(T);
+		{
+			//class-semantic part
+			tree node = RightChild(T);
+			if (NodeKind(node) == EXPRNode) {
+				if (NodeOp(node) == ClassDefOp) {
+					tree classname = RightChild(node);
+					if (NodeKind(classname) == EXPRNode)
+						return;
+					int class_id = IntVal(classname);
+					int symbol_num = InsertEntry(class_id);
+					SetAttr(symbol_num, KIND_ATTR, CLASS);
+					SetNodeKind(classname, STNode);
+					SetIntVal(classname, symbol_num);
+					tree body = LeftChild(node);
+					OpenBlock();
+					get_to_left(node);
+					CloseBlock();
+				}
+			}
+		}
 		if(NodeOp(T) == CommaOp)
 			expression_semantic(LeftChild(T));
 		if (NodeOp(T) == BoundOp)
@@ -98,18 +116,101 @@ void semantic_analyze(tree T) {
 		if (NodeOp(T) == VArgTypeOp)
 			analyze_Arg(T);
 		if (NodeOp(T) == BodyOp)
-			analyze_BodyOp(T);
+		{
+			//analyze_BodyOp(T);
+			//bodyclass_semantic
+			tree T2 = RightChild(T);
+			if (NodeKind(T2) == EXPRNode) 
+			{
+				if(NodeOp(T2) == StmtOp)
+					get_to_left(T2);
+				if(NodeOp(T2) == DeclOp)
+					get_to_left2(T2);
+				if(NodeOp(T2) == MethodOp)
+					method_semantic(T2);
+			}
+			else if (output_check == 0 && NodeKind(root) == STRINGNode) 
+				error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
+		}
 		if (NodeOp(T) == DeclOp)
-			analyze_DeclOp(T);
+		{
+			//Declrataions_semantic
+			int symbol_num;	
+			int dimension = 0;
+			tree T2 = LeftChild(RightChild(T));
+			int id = IntVal(T2);
+			symbol_num = InsertEntry(id) ;
+			if (symbol_num== 0)
+				return;
+			SetAttr(symbol_num, KIND_ATTR, VAR);
+			SetNodeKind(T2, STNode);
+			SetIntVal(T2, symbol_num);
+			tree T3 = LeftChild(RightChild(RightChild(T)));
+			SetAttr(symbol_num, TYPE_ATTR, (uintptr_t)T3);
+			tree T4 = LeftChild(T3);
+			if (NodeKind(T4) == IDNode) 
+			{
+				int typeIndex = IntVal(T4);
+				int typeSymInd = LookUp(typeIndex);
+				SetNodeKind(T4, STNode);
+				SetIntVal(T4, typeSymInd);
+			}
+			dimension = countDimensions(RightChild(T3));
+			if (dimension != 0) 
+			{
+				SetAttr(symbol_num, KIND_ATTR, ARR);
+				SetAttr(symbol_num, DIMEN_ATTR, dimension);
+			}
+			tree variable_init_tree = RightChild(RightChild(RightChild(T)));
+			variable_init_semantic(variable_init_tree, dimension, symbol_num);
+		}
 		
 
 
 	}
-	else if (NodeKind(T) == STRINGNode && outputMethod == 0)
+	else if (NodeKind(T) == STRINGNode && output_check == 0)
 	{
 		error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
 	}
 }
+
+// Analyze a DeclOp
+// the DeclOp is passed in
+void analyze_DeclOp2(tree root) {
+	int id, nSymInd;	
+	int dimension = 0;
+	// Variable to declare
+	tree name = LeftChild(RightChild(root));
+	id = IntVal(name);
+	nSymInd = InsertEntry(id);
+	if (nSymInd == 0) {
+		return;
+	}
+	SetAttr(nSymInd, KIND_ATTR, VAR);
+	SetNodeKind(name, STNode);
+	SetIntVal(name, nSymInd);
+	// Type Stuff
+	tree typeTree = LeftChild(RightChild(RightChild(root)));
+	SetAttr(nSymInd, TYPE_ATTR, (uintptr_t)typeTree);
+	tree type = LeftChild(typeTree);
+	if (NodeKind(type) == IDNode) {
+		int typeIndex = IntVal(type);
+		int typeSymInd = LookUp(typeIndex);
+		SetNodeKind(type, STNode);
+		SetIntVal(type, typeSymInd);
+	}
+	// Array Stuff
+	dimension = countDimensions(RightChild(typeTree));
+	// Set the number of dimensions for arrays
+	if (dimension != 0) {
+		SetAttr(nSymInd, KIND_ATTR, ARR);
+		SetAttr(nSymInd, DIMEN_ATTR, dimension);
+	}
+	tree varInt = RightChild(RightChild(RightChild(root)));
+	// Analyze if the var's are being initialized
+	analyze_VarInt(varInt, dimension, nSymInd);
+}
+
 
 // Analyze a Statement
 void statement_semantic(tree T) {
@@ -117,7 +218,7 @@ void statement_semantic(tree T) {
 
 	if (IsNull(rightT)) //return if this is the final term
 		return;
-	if (NodeKind(rightT) != EXPRNode &&  outputMethod == 0 && NodeKind(T) == STRINGNode ) 
+	if (NodeKind(rightT) != EXPRNode &&  output_check == 0 && NodeKind(T) == STRINGNode ) 
 		error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
 
 	//continue expanding the tree for subtree of statement
@@ -168,7 +269,7 @@ void condition_semantic(tree T) {
 *
 */
 void expression_semantic(tree T) {
-	if (NodeKind(T) != EXPRNode &&  outputMethod == 0 && NodeKind(T) == STRINGNode) //throw an error
+	if (NodeKind(T) != EXPRNode &&  output_check == 0 && NodeKind(T) == STRINGNode) //throw an error
 		error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
 	else if(NodeKind(T) == EXPRNode )
 	{
@@ -185,6 +286,117 @@ void expression_semantic(tree T) {
 
 
 
+/*
+*get_to_left2(tree T) -- get to the letmost child, but check the semantic before calling recurisvely
+*@tree a tree structure
+*return void
+*/
+void get_to_left2(tree T) {
+	if (IsNull(T)) 
+		return;
+	else
+	{
+		semantic_analyze(T);
+		get_to_left(LeftChild(T)); 
+	}
+}
+
+
+void method_semantic(tree T) {	
+	int symbol_num;
+	tree T2 = LeftChild(LeftChild(T));
+	symbol_num = InsertEntry(IntVal(T2));
+	if (symbol_num == -1)
+		return;
+	SetNodeKind(T2, STNode);
+	SetIntVal(T2,symbol_num);
+	tree T3 = RightChild(RightChild(LeftChild(T)));
+	if (IsNull(T3))
+		SetAttr(symbol_num, KIND_ATTR, PROCE);	
+	else 
+	{
+		SetAttr(symbol_num, KIND_ATTR, FUNC);	
+		SetAttr(symbol_num, TYPE_ATTR, (uintptr_t)T3); 
+	}
+	OpenBlock();
+	int args = count_Args(LeftChild(RightChild(LeftChild(root))));
+	get_to_right(LeftChild(RightChild(LeftChild(T))));
+	SetAttr(symbol_num, ARGNUM_ATTR, args);
+	get_to_left(RightChild(T));
+	CloseBlock();
+}	
+
+/*
+*get_to_Right(tree T) -- get to the rightmost child, so later we can start coming back to top and check all the symbols from bottom to up
+*@tree a tree structure
+*return void
+*/
+void get_to_right(tree T) {
+	if (IsNull(T)) 
+		return;
+	else
+	{
+		semantic_analyze(T);
+		get_to_right(RightChild(T));
+	}
+}
+
+int argument_num(tree T) {
+	if(!IsNull(T))
+		return argument_num(RightChild(root)) + 1;
+	else
+		return 0;	
+}
+
+void variable_init_semantic(tree T, int dimension, int arr) {
+	if (IsNull(T))
+		return;
+	if (NodeKind(T) == EXPRNode && NodeOp(T) == ArrayTypeOp)
+	{
+		//array_semantic
+		if (IsNull(LeftChild(T)))
+			return;
+		if (NodeOp(LeftChild(T)) == CommaOp)
+			array_init_semantic(LeftChild(T), dimension, arr);
+		else 
+		{
+			//array-semantic
+			if (check_dim(T) != dimension)
+				error_msg(INDX_MIS,CONTINUE,GetAttr(arr, NAME_ATTR),0);
+			else
+				get_to_left(T);
+		}
+	}
+	else if (NodeKind(T) == EXPRNode && NodeOp(T) != ArrayTypeOp)
+		expression_semantic(T);
+	else if (NodeKind(T) != EXPRNode && output_check == 0 && NodeKind(T) == STRINGNode) 
+	{
+		error_msg(INDX_MIS,CONTINUE,IntVal(T),0);
+	}
+}
+
+
+
+void array_init_semantic(tree T, int dimension, int arr) {
+	if (!IsNull(T)) 
+	{
+		array_init_semantic(LeftChild(T), dimension, arr);
+		variable_init_semantic(RightChild(T), dimension, arr);
+	}
+	else
+		return;
+}
+
+int check_dim(tree T) {
+	if (!IsNull(T))
+		return check_dim(LeftChild(T)) + 1;
+	return 0;
+}
+
+
+
+
+//------------------------------------------------------------------------------------------------------
 
 // Analyze nodes using a left recursive strategy
 // semantic_analyze the nodes on the way down
@@ -261,7 +473,7 @@ void analyze_BodyOp(tree root) {
 	}
 	else {
 		if (NodeKind(root) == STRINGNode) {
-			if (outputMethod == 0) {
+			if (output_check == 0) {
 				error_msg(
 					STRING_MIS,
 					CONTINUE,
@@ -372,7 +584,8 @@ void analyze_DeclOp(tree root) {
 	}
 	tree varInt = RightChild(RightChild(RightChild(root)));
 	// Analyze if the var's are being initialized
-	analyze_VarInt(varInt, dimension, nSymInd);
+	//analyze_VarInt(varInt, dimension, nSymInd);
+	variable_init_semantic(varInt, dimension, nSymInd);
 }
 
 // Analyze var initilizations
@@ -391,7 +604,7 @@ void analyze_VarInt(tree root, int dimension, int arr) {
 	}
 	else {
 		if (NodeKind(root) == STRINGNode) {
-			if (outputMethod == 0) {
+			if (output_check == 0) {
 				error_msg(
 					STRING_MIS,
 					CONTINUE,
@@ -652,7 +865,7 @@ void analyze_SimpleExp(tree root) {
 	}
 	else {
 		if (NodeKind(root) == STRINGNode) {
-			if (outputMethod == 0) {
+			if (output_check == 0) {
 				error_msg(
 					STRING_MIS,
 					CONTINUE,
@@ -687,7 +900,7 @@ void analyze_Term(tree root) {
 	}
 	else {
 		if (NodeKind(root) == STRINGNode) {
-			if (outputMethod == 0) {
+			if (output_check == 0) {
 				error_msg(
 					STRING_MIS,
 					CONTINUE,
@@ -719,7 +932,7 @@ void analyze_Factor(tree root) {
 	}
 	else {
 		if (NodeKind(root) == STRINGNode) {
-			if (outputMethod == 0) {
+			if (output_check == 0) {
 				error_msg(
 					STRING_MIS,
 					CONTINUE,
@@ -740,7 +953,7 @@ void analyze_RoutineCallOp(tree root) {
 	}
 	// Set a global to mark if we are currently using an output function
 	if (!strcmp(getname(GetAttr(name, NAME_ATTR)), "println")) {
-		outputMethod = 1;
+		output_check = 1;
 	}
 	// If this is not a procedure or function report error
 	if (GetAttr(name, KIND_ATTR) != FUNC
@@ -766,5 +979,5 @@ void analyze_RoutineCallOp(tree root) {
 	}
 	// Analyze the arguments
 	topDownRight(RightChild(root));
-	outputMethod = 0;
+	output_check = 0;
 }

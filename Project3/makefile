@@ -5,9 +5,6 @@ all : LEXcompile YACC SemanticCompiler
 
 LEXcompile : lex.l table.c 
 	flex lex.l table.c
-	
-#ParserCompiler: y.tab.c lex.yy.c proj2.c
-#	gcc  -std=c99 -g -o runparser Grammar.y y.tab.c proj2.c -lfl
 
 SemanticCompiler: seman.c y.tab.c lex.yy.c proj2.c proj3.c
 	gcc -g -o runsemantic seman.c y.tab.c proj2.c proj3.c -lfl
