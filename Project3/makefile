@@ -6,7 +6,7 @@ LEXcompile : lex.l
 	flex lexical_rules.l 
 
 SemanticCompiler: semantic_analysis.c y.tab.c lex.yy.c proj2.c proj3.c
-	gcc -g -o runsemantic semantic_analysis.c y.tab.c proj2.c proj3.c -lfl
+	gcc -std=c99 -g -o runsemantic semantic_analysis.c y.tab.c proj2.c proj3.c -lfl
 
 
 YACC : Grammar.y
