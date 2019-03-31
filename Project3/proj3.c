@@ -1,51 +1,52 @@
 /* %A%
-	* TO USE THIS MODULE YOU HAVE TO DEFINE:
-	* =====================================
-	*
-	* FILE *table   \
-	* getstring()    }  as for proj2.c
-	* getname()     / 
-	*
-	* 
-	* void 
-	* error_msg(error_type, proc_instr, id);
-	*   int error_type, proc_instr, id;
-	* {
-	*    Report an error, the type of which is given by 'error_type'
-	*    (see the defined error_type below). 
-	*
-	*    If 'id' is not zero it is the unique identifying number of the 
-	*    identifier for which the error as to be reported.
-	*
-	*    Proceed according to 'proc_instr' (ABORT / CONTINUE, see below in
-	*    the define section).
-	* }
-	*
-	* 
-	* AND TO INSERT THE ADEQUATE CODE:
-	* ===============================
-	*
-	* - in STInit() 
-	*
-	* - in STPrint()  (lines 453 and 457)
-	* 
-	*/
+* TO USE THIS MODULE YOU HAVE TO DEFINE:
+* =====================================
+*
+* FILE *table   \
+* getstring()    }  as for proj2.c
+* getname()     / 
+*
+* 
+* void 
+* error_msg(error_type, proc_instr, id);
+*   int error_type, proc_instr, id;
+* {
+*    Report an error, the type of which is given by 'error_type'
+*    (see the defined error_type below). 
+*
+*    If 'id' is not zero it is the unique identifying number of the 
+*    identifier for which the error as to be reported.
+*
+*    Proceed according to 'proc_instr' (ABORT / CONTINUE, see below in
+*    the define section).
+* }
+*
+* 
+* AND TO INSERT THE ADEQUATE CODE:
+* ===============================
+*
+* - in STInit() 
+*
+* - in STPrint()  (lines 453 and 457)
+* 
+*/
 
 
 /*
-	* there are three arrays for symbol table operation.  "st" is the real
-	* symbol table, it carries all the information of an id and will still be
-	* used in code generation phase.  The attributes for an id are kept in a
-	* link list pointed by its symbol table entry. It is easy to be extended in
-	* the next phase to include more attributes, such like the size and the
-	* location of a varialbe. Below are some sample attributes of an id.  You
-	* should design your own. "stack" is a temporary structure in which all the
-	* id's in the current scoping context are visible.  "attrarray" is to store
-	* all the attributes in symbol table. 
-	*/
+* there are three arrays for symbol table operation.  "st" is the real
+* symbol table, it carries all the information of an id and will still be
+* used in code generation phase.  The attributes for an id are kept in a
+* link list pointed by its symbol table entry. It is easy to be extended in
+* the next phase to include more attributes, such like the size and the
+* location of a varialbe. Below are some sample attributes of an id.  You
+* should design your own. "stack" is a temporary structure in which all the
+* id's in the current scoping context are visible.  "attrarray" is to store
+* all the attributes in symbol table. 
+*/
 
 #include "proj2.h"
 #include "proj3.h"
+/* #include "token.h" */
 #include <stdio.h> 
 #include <stdlib.h> 
 
@@ -77,8 +78,8 @@ int st_top = 0;		     /* symbol table top counter */
 int nesting = 0;	     /* nesting level counter */
 int attr_top = 0;	     /* attribute array counter */
 
-extern int yyline;
-extern char string_table[];      /* string table in table.c */
+extern int lineNumber;
+extern char stringtable[];      /* string table in table.c */
 
 int mainDef = 0;
 /************************ routines *****************************/
@@ -129,7 +130,8 @@ STInit()
 void error_msg(type, action, id, seq)
 int type, action, id, seq;
 {
-	printf("Semantic Error--line: %d, ", yyline);
+	if(type==UNDECLARATION) return;
+	printf("Semantic Error--line: %d, ", lineNumber);
 	switch (type)
 	{
 		case STACK_OVERFLOW:
@@ -142,7 +144,7 @@ int type, action, id, seq;
 			printf("symbol table overflow.\n");
 			break;
 		case UNDECLARATION:
-			printf("symbol %s: undeclared.\n", getname(id));
+			//printf("symbol %s: undeclared.\n", getname(id));
 			break;
 		case ATTR_OVERFLOW:
 			printf("attribute array overflowed.\n");
@@ -216,7 +218,7 @@ int type, action, id, seq;
 		case MULTI_MAIN:
 			printf("main() method already declared.\n");
 			break;
-		case STRING_MIS:
+		case STRING_ASSIGN:
 			printf("symbol %s: is String Contstant outside of an output function.\n", getstring(id));
 			break;
 		default:
@@ -238,14 +240,6 @@ int
 InsertEntry(id)
 int id;
 {
-	/* Look for main in whole program */
-	if (!strncmp(getname(id), "main", 4)) {
-		if (mainDef == 1) {
-			error_msg(MULTI_MAIN, CONTINUE, 0, 0);
-			return -1;
-		}
-		mainDef = 1;
-	}
 	/* id is already declared in the current block */
 	if (LookUpHere(id))
 	{
@@ -294,6 +288,25 @@ int id;
 	return 0;
 }
 
+/*
+	* LookUpHere():  search an id in the stack for the current block.  It
+	* returns the symbol table pointer if the id is found.  otherwise, return 0
+	* this routine can be used to check if there is a forward declaration
+	* for a procedure/function
+	*/
+int
+LookUpHere(id)
+int id;
+{
+	int i;
+
+	for (i = stack_top; !stack[i].marker; i--)
+		if (stack[i].name == id && !stack[i].dummy)
+			return (stack[i].st_ptr);
+	return (0);
+}
+
+
 /* LookUp a field in a given class. The class int should be a class entry 
    in the symbol table or a variable of a class type
  */
@@ -319,9 +332,8 @@ int field;
 	return 0;
 }
 
-/* findClass(if): Given an id determines if it is a class or a variable
-   of type class. If it is return the index into the symbol table, 
-   otherwise return -1;
+/* findClass(id):  check if the variable with index is class variabel or not
+*@id index in symbol table
 */
 int findClass(id)
 int id;
@@ -348,27 +360,7 @@ int id;
 	return toReturn;
 }
 
-/*
-	* LookUpHere():  search an id in the stack for the current block.  It
-	* returns the symbol table pointer if the id is found.  otherwise, return 0
-	* this routine can be used to check if there is a forward declaration
-	* for a procedure/function
-	*/
-int
-LookUpHere(id)
-int id;
-{
-	int i;
 
-	for (i = stack_top; !stack[i].marker; i--)
-	{
-		if (stack[i].name == id && !stack[i].dummy)
-		{
-			return (stack[i].st_ptr);
-		}
-	}
-	return (0);
-}
 
 /*
 	* LookUpField():  it is found unnecessary.  so it is not implemented 

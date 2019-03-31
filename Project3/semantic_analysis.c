@@ -2,18 +2,17 @@
 #include <string.h>
 #include "proj2.h"
 #include "proj3.h"
-#include "table.h"
 
 extern FILE *treelst;
-extern tree root;
+extern tree DisplayTree;
 extern int error;
 
 int output_check = 0;
 
 extern FILE *yyin;
 
-int main() {
-	FILE *f = fopen("src1","r");
+int main(int argc, char *argv[]) {
+	FILE *f = fopen(argv[1],"r");
 	yyin = f; 
 	treelst = stdout;
 	yyparse();
@@ -22,7 +21,7 @@ int main() {
 		STInit();//initial symbol tree
 		traverse(); //start traversing the tree
 		STPrint(); //print symbol table
-		printtree(root, 0); //print Grammar tree
+		printtree(DisplayTree, 0); //print Grammar tree
 		return 0; //exit with code 0
 	}
 	printf("%s\n", "there is an erro in Grammar part, and Grammar tree is not built yet!");
@@ -30,7 +29,7 @@ int main() {
 }
 
 void traverse() {
-	get_to_left(root);
+	get_to_left(DisplayTree);
 }
 
 /*
@@ -100,8 +99,8 @@ void semantic_analyze(tree T) {
 				if(NodeOp(T2) == MethodOp)
 					method_semantic(T2);
 			}
-			else if (output_check == 0 && NodeKind(root) == STRINGNode) 
-				error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
+			else if (output_check == 0 && NodeKind(T2) == STRINGNode) 
+				error_msg(STRING_ASSIGN,CONTINUE,IntVal(T2),0);
 		}
 		if (NodeOp(T) == DeclOp)
 		{
@@ -141,7 +140,7 @@ void semantic_analyze(tree T) {
 	}
 	else if (NodeKind(T) == STRINGNode && output_check == 0)
 	{
-		error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
+		error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
 	}
 }
 
@@ -154,7 +153,7 @@ void statement_semantic(tree T) {
 	if (IsNull(rightT)) //return if this is the final term
 		return;
 	if (NodeKind(rightT) != EXPRNode &&  output_check == 0 && NodeKind(T) == STRINGNode ) 
-		error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
+		error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
 
 	//continue expanding the tree for subtree of statement
 	switch (NodeOp(rightT)) 
@@ -227,7 +226,7 @@ void condition_semantic(tree T) {
 */
 void expression_semantic(tree T) {
 	if (NodeKind(T) != EXPRNode &&  output_check == 0 && NodeKind(T) == STRINGNode) //throw an error
-		error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
+		error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
 	else if(NodeKind(T) == EXPRNode )
 	{
 		if(NodeOp(T) == GEOp || NodeOp(T) == LTOp || NodeOp(T) == NEOp || NodeOp(T) == EQOp || NodeOp(T) == GTOp || NodeOp(T) == LEOp)
@@ -257,7 +256,7 @@ void si_expression_semantic(tree T) {
 	}
 	if(!IsNull(T) && output_check == 0 && NodeKind(T) == STRINGNode)
 	{
-		error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
+		error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
 	}
 	if(IsNull(T))
 		return;
@@ -306,14 +305,14 @@ void term_semantic(tree T) {
 		}
 		if(!IsNull(T) && output_check == 0 && NodeKind(T) == STRINGNode)
 		{
-			error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
+			error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
 		}
 		if(IsNull(T))
 			return;
 	}
 	if(!IsNull(T) && output_check == 0 && NodeKind(T) == STRINGNode)
 	{
-		error_msg(STRING_MIS,CONTINUE,IntVal(T),0);
+		error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
 	}
 	if(IsNull(T))
 		return;
@@ -354,7 +353,7 @@ void method_semantic(tree T) {
 		SetAttr(symbol_num, TYPE_ATTR, (uintptr_t)T3); 
 	}
 	OpenBlock();
-	int args = argument_num(LeftChild(RightChild(LeftChild(root))));
+	int args = argument_num(LeftChild(RightChild(LeftChild(T))));
 	get_to_right(LeftChild(RightChild(LeftChild(T))));
 	SetAttr(symbol_num, ARGNUM_ATTR, args);
 	get_to_left(RightChild(T));
@@ -497,9 +496,9 @@ int variable_semantic(tree T) {
 	return symbol_num;
 }
 
-void assignment_semantic(tree root) {
-	tree var = RightChild(LeftChild(root));
+void assignment_semantic(tree T) {
+	tree var = RightChild(LeftChild(T));
 	variable_semantic(var);
-	tree exp = RightChild(root);
+	tree exp = RightChild(T);
 	expression_semantic(exp);
 }

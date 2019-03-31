@@ -1,5 +1,5 @@
-#ifndef __TABLE_H_
-#define __TABLE_H_
+#ifndef __STRING_FUNCRIONS_H
+#define __STRING_FUNCRIONS_H
 
 #define LIMIT1 5000
 

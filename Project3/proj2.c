@@ -360,16 +360,16 @@ void zerocrosses ()
     crosses [i] = 0;
 }
 
-extern char  string_table[];
+extern char  stringtable[];
 
 char* getname(int i)/*return ID name or String, i is the index of the string table, passed through yylval*/
 {
-  return( string_table+i );/*return string table indexed at i*/
+  return( stringtable+i );/*return string table indexed at i*/
 }
 
 char* getstring(int i)
 {
-  return( string_table+i+1 );/*return string table indexed at i*/
+  return( stringtable+i+1 );/*return string table indexed at i*/
 }
 
 

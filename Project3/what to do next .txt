@@ -18,8 +18,22 @@
 
 
 
+Changes for Grammar.y
+1-DeclarationNum --> DeclarationsNum
+2-root --> DisplayTree (SemanticAnalysis.c)
+
+Changes for Proj3.h/proj3.c
+1-String_MIS -> STRING_ASSIGN (proj3.h)
+2-int LookUpField(int, int); added to proj3.h
+3-finding main in insertEntry function has been removed (proj3.c)
+4-lookuphere added to proj3.c
+
+
 ***
-1-remove some functions for semantic_analysis.c to not be tablo!!!
+2-remove some functions(extra points) for semantic_analysis.c to not be tablo!!! --> Look for Narges code
+3-treeNode & type in final print is missing
+
+
 
 
 

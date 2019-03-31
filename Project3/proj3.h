@@ -41,7 +41,7 @@
 #define NOT_TYPE 122
 #define ARR_DIME_MIS 123
 #define MULTI_MAIN 124
-#define STRING_MIS 125
+#define STRING_ASSIGN 125
 
 /*
  * processing instruction for error reporting routine 
@@ -73,7 +73,9 @@
 #define VALUE_ATTR 7	/* value: the value of a constant id (integer,
 						 * charater or string pointer) */
 #define OFFSET_ATTR 8
+
 #define KIND_ATTR 5	     /* value: see below */
+
 #define DIMEN_ATTR   9
 #define ARGNUM_ATTR 10
 
@@ -133,6 +135,7 @@ void error_msg(int, int, int, int);
 int InsertEntry(int);
 int LookUp(int);
 int LookUpHere(int);
+int LookUpField(int, int);
 void OpenBlock();
 void CloseBlock();
 int IsAttr(int, int);

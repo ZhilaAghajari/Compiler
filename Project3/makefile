@@ -1,17 +1,16 @@
 #MAKEFILE
-#last step I was in, cannot run YACC completely, since there is
-#no yac.tab.y for us!
+
 all : LEXcompile YACC SemanticCompiler
 
-LEXcompile : lex.l table.c 
-	flex lex.l table.c
+LEXcompile : lex.l
+	flex lexical_rules.l 
 
 SemanticCompiler: semantic_analysis.c y.tab.c lex.yy.c proj2.c proj3.c
 	gcc -g -o runsemantic semantic_analysis.c y.tab.c proj2.c proj3.c -lfl
 
 
-YACC : grammar.y
-	yacc -v grammar.y
+YACC : Grammar.y
+	yacc -v Grammar.y
 
 
 clean: 
@@ -20,12 +19,4 @@ clean:
 	rm -rf Grammar.tab.c
 	rm -rf runparser
 	rm -rf runsemantic
-
-# parser:   y.tab.c lex.yy.c proj2.c
-# 	gcc  -g -o parser y.tab.c proj2.c -lfl
-
-# y.tab.c:  grammar.y
-# 	yacc -v grammar.y
-
-# lex.yy.c: lexical_rules.l 
-# 	lex lexical_rules.l
+	rm -rf y.tab.c

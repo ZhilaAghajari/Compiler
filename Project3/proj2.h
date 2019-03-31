@@ -85,6 +85,7 @@ tree MkRightC(tree, tree);
 tree MakeVal(tree);
 char * getname(int index);
 char * getstring(int index);
+/*
 void SetNode(tree, tree);
 void SetNodeOp(tree, int);
 void SetLeftTreeOp(tree, int);
@@ -92,5 +93,5 @@ void SetRightTreeOp(tree, int);
 void SetLeftChild(tree, tree);
 void SetRightChild(tree, tree); 
 int NodeOp(tree);
-
+*/
 #endif
