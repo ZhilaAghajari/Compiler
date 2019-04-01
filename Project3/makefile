@@ -1,7 +1,7 @@
 #MAKEFILE
 all : LEXcompile YACC SemanticCompiler
 
-LEXcompile : lex.l
+LEXcompile : lexical_rules.l
 	flex lexical_rules.l 
 
 SemanticCompiler: semantic_analysis.c y.tab.c lex.yy.c proj2.c proj3.c
