@@ -118,11 +118,13 @@ void semantic_analyze(tree T) {
 				if(NodeOp(T2) == MethodOp)
 					method_semantic(T2);
 			}
-			else if (output_check == 0 && NodeKind(T2) == STRINGNode) 
-				error_msg(STRING_ASSIGN,CONTINUE,IntVal(T2),0);
+			else if (output_check == 0 && NodeKind(T) == STRINGNode) 
+				error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
 		}
 		if (NodeOp(T) == DeclOp)
 		{
+			//analyze_DeclOp(T);
+			//return;
 			//Declrataions_semantic
 			int symbol_num;	
 			int dimension = 0;
@@ -163,6 +165,8 @@ void semantic_analyze(tree T) {
 	}
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 void statement_semantic(tree T) {
@@ -188,8 +192,9 @@ void statement_semantic(tree T) {
 			//routinecallop_semantic part
 			if (variable_semantic(LeftChild(rightT)) == 0) 
 				return;
-			else
-				arg_index = variable_semantic(LeftChild(rightT)) ;
+			
+			arg_index = variable_semantic(LeftChild(rightT)) ;
+
 			if (!strcmp(getname(GetAttr(arg_index, NAME_ATTR)), "println"))
 				output_check = 1;
 			if (GetAttr(arg_index, KIND_ATTR) != FUNC && GetAttr(arg_index, KIND_ATTR) != PROCE) 
@@ -209,6 +214,8 @@ void statement_semantic(tree T) {
 			break;
 		case AssignOp:
 			assignment_semantic(rightT); break;
+		default:
+			break;
 	}
 }
 
@@ -246,7 +253,7 @@ void condition_semantic(tree T) {
 void expression_semantic(tree T) {
 	if (NodeKind(T) != EXPRNode &&  output_check == 0 && NodeKind(T) == STRINGNode) //throw an error
 		error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
-	else if(NodeKind(T) == EXPRNode )
+	if(NodeKind(T) == EXPRNode )
 	{
 		if(NodeOp(T) == GEOp || NodeOp(T) == LTOp || NodeOp(T) == NEOp || NodeOp(T) == EQOp || NodeOp(T) == GTOp || NodeOp(T) == LEOp)
 		{
@@ -273,7 +280,7 @@ void si_expression_semantic(tree T) {
 		else
 			term_semantic(T);
 	}
-	if(!IsNull(T) && output_check == 0 && NodeKind(T) == STRINGNode)
+	if(!IsNull(T) && NodeKind(T) != EXPRNode && output_check == 0 && NodeKind(T) == STRINGNode)
 	{
 		error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
 	}
@@ -283,25 +290,29 @@ void si_expression_semantic(tree T) {
 
 void term_semantic(tree T) {
 	int arg_index;
+	tree T2;
 	if(!IsNull(T) && NodeKind(T) == EXPRNode)
 	{
 		if(NodeOp(T) == MultOp || NodeOp(T) == DivOp || NodeOp(T) == AndOp)
 		{
 				term_semantic(LeftChild(T));
-				T = RightChild(T); //get rught child for expanding as factor_semantic
+				T2 = RightChild(T2); //get rught child for expanding as factor_semantic
 		}
+		else
+			T2 = T;
+
 		//Factor_semantic part
-		if(!IsNull(T) && NodeKind(T) == EXPRNode)
+		if(!IsNull(T2) && NodeKind(T2) == EXPRNode)
 		{
-			if(NodeOp(T) == VarOp)
-				variable_semantic(T);
-			else if(NodeOp(T) == RoutineCallOp)
+			if(NodeOp(T2) == VarOp)
+				variable_semantic(T2);
+			else if(NodeOp(T2) == RoutineCallOp)
 				{
 					//routinecallop_semantic part
-					if (variable_semantic(LeftChild(T)) == 0) 
+					if (variable_semantic(LeftChild(T2)) == 0) 
 						return;
 					else
-						arg_index = variable_semantic(LeftChild(T)) ;
+						arg_index = variable_semantic(LeftChild(T2)) ;
 					if (!strcmp(getname(GetAttr(arg_index, NAME_ATTR)), "println"))
 						output_check = 1;
 					if (GetAttr(arg_index, KIND_ATTR) != FUNC && GetAttr(arg_index, KIND_ATTR) != PROCE) 
@@ -310,24 +321,22 @@ void term_semantic(tree T) {
 						return;
 					}
 					if (IsAttr(arg_index, ARGNUM_ATTR)) 
-						if (countDimensions(RightChild(T)) != GetAttr(arg_index, ARGNUM_ATTR)) 
+						if (countDimensions(RightChild(T2)) != GetAttr(arg_index, ARGNUM_ATTR)) 
 						{
 							error_msg(ARGUMENTS_NUM2,CONTINUE,GetAttr(arg_index, NAME_ATTR),0);
 							return;
 						}
 					// Analyze the arguments
-					get_to_right(RightChild(T));
+					get_to_right(RightChild(T2));
 					output_check = 0;
 				}
 			else 
-				expression_semantic(T);
+				expression_semantic(T2);
 		}
-		if(!IsNull(T) && output_check == 0 && NodeKind(T) == STRINGNode)
+		if(!IsNull(T2) && output_check == 0 && NodeKind(T2) == STRINGNode)
 		{
-			error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
+			error_msg(STRING_ASSIGN,CONTINUE,IntVal(T2),0);
 		}
-		if(IsNull(T))
-			return;
 	}
 	if(!IsNull(T) && output_check == 0 && NodeKind(T) == STRINGNode)
 	{
@@ -416,8 +425,7 @@ void variable_init_semantic(tree T, int dimension, int arr) {
 			//array-semantic
 			if (check_dim(T) != dimension)
 				error_msg(INDX_MIS,CONTINUE,GetAttr(arr, NAME_ATTR),0);
-			else
-				get_to_left(T);
+			get_to_left(T);
 		}
 	}
 	else if (NodeKind(T) == EXPRNode && NodeOp(T) != ArrayTypeOp)
@@ -441,21 +449,26 @@ void array_init_semantic(tree T, int dimension, int arr) {
 }
 
 int check_dim(tree T) {
-	if (!IsNull(T))
-		return check_dim(LeftChild(T)) + 1;
-	return 0;
+	if (IsNull(T))
+		return 0;
+	return check_dim(LeftChild(T)) + 1;
 }
 
 void argument_semantic(tree T) {
-	int symbol_num = InsertEntry(IntVal(LeftChild(LeftChild(T))));
-	// Set it to a Value arg or reference arg
-	if (NodeOp(T) == RArgTypeOp)
-		SetAttr(symbol_num, KIND_ATTR, REF_ARG);
-	if (NodeOp(T) != RArgTypeOp)
-		SetAttr(symbol_num, KIND_ATTR, VALUE_ARG);
-	SetAttr(symbol_num, TYPE_ATTR, (uintptr_t)RightChild(LeftChild(T)));
-	SetNodeKind(LeftChild(LeftChild(T)), STNode);
-	SetIntVal(LeftChild(LeftChild(T)), symbol_num);
+	tree typeTree = RightChild(LeftChild(T));
+	tree treeName = LeftChild(LeftChild(T));
+	int nSymInd = InsertEntry(IntVal(treeName));
+
+	if (NodeOp(T) == RArgTypeOp) 
+	{
+		SetAttr(nSymInd, KIND_ATTR, REF_ARG);
+	} 
+	else {
+		SetAttr(nSymInd, KIND_ATTR, VALUE_ARG);
+	} 
+	SetAttr(nSymInd, TYPE_ATTR, (uintptr_t)typeTree);
+	SetNodeKind(treeName, STNode);
+	SetIntVal(treeName, nSymInd);
 }
 
 int countDimensions(tree T) {

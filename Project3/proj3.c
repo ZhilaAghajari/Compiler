@@ -130,7 +130,7 @@ STInit()
 void error_msg(type, action, id, seq)
 int type, action, id, seq;
 {
-	if(type==UNDECLARATION) return;
+	//if(type==UNDECLARATION) return;
 	printf("Semantic Error--line: %d, ", lineNumber);
 	switch (type)
 	{
@@ -144,7 +144,7 @@ int type, action, id, seq;
 			printf("symbol table overflow.\n");
 			break;
 		case UNDECLARATION:
-			//printf("symbol %s: undeclared.\n", getname(id));
+			printf("symbol %s: undeclared.\n", getname(id));
 			break;
 		case ATTR_OVERFLOW:
 			printf("attribute array overflowed.\n");
@@ -249,6 +249,13 @@ int id;
 		//}
 		error_msg(REDECLARATION, CONTINUE, id, 0);
 		return (0);
+	}
+	if (!strncmp(getname(id), "main", 4)) {
+		if (mainDef == 1) {
+			error_msg(MULTI_MAIN, CONTINUE, 0, 0);
+			return -1;
+		}
+		mainDef = 1;
 	}
 
 	if (st_top >= ST_SIZE-1)
