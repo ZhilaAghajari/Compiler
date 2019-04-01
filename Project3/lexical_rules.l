@@ -1,234 +1,341 @@
-%{
-#include <stdlib.h>
-#include "proj2.h"
+/*
+* Zhila Aghajari (zha6@pitt.edu)
+* token rules are written here to be give to the lex
+* As explaiend in the slides, the first part is for defining variable and importing libraries and other header that I need in this FILE
+* Tokens are also included to be used here 
+*in the second part rules are definied. I put them based on their priorities so that it won't misclassifies tokens
+*/
 
+%{ 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #ifdef lex
 #include "token.h"
 #endif
+#include <regex.h>
+extern int yylex();
 
-#define LIMIT1 5000
+#define errComment 		501 
+#define errIdentifier 	500 /*to identify malformed identifier*/
+#define errString 		502 /*to identify strings which are not closed using an '*/
+#define errIntzero 		503 /*to identify an integer starts with zero */
+#define errOther 		504
 
-extern int yycolumn, yylength, yyline;
-extern YYSTYPE yylval;
-extern char stringtable[LIMIT1];
-int st_index;
-int pos();
-char * tolowercase(char a[]);
-void report_error(char str[]);
-void print_stringtable();
-void add_to_stringtable(char str[]);
-int search(char str[]);
-int insert(char str[]);
+#define LIMIT1 4096
 
-char string_buf[LIMIT1];
-char *string_buf_ptr;
-int str_error = 0;
-%}
-%x comment
-%x str
-/* regular definitions */
-letter					[A-Za-z]
-digit					[0-9]
-delim					[ \t]
-ws						{delim}+
-newline					[\n(\r\n)]
-declarations				((D|d)(E|e)(C|c)(L|l)(A|a)(R|r)(A|a)(T|t)(I|i)(O|o)(N|n)(S|s))
-enddeclarations				((E|e)(N|n)(D|d)(D|d)(E|e)(C|c)(L|l)(A|a)(R|r)(A|a)(T|t)(I|i)(O|o)(N|n)(S|s))
-int					((I|i)(N|n)(T|t))
-method					((M|m)(E|e)(T|t)(H|h)(O|o)(D|d))
-program					((P|p)(R|r)(O|o)(G|g)(R|r)(A|a)(M|m))
-val					((V|v)(A|a)(L|l))
-while_def				((W|w)(H|h)(I|i)(L|l)(E|e))
-class					((C|c)(L|l)(A|a)(S|s)(S|s))
-else_def				((E|e)(L|l)(S|s)(E|e))
-if_def					((I|i)(F|f))
-return_def				((R|r)(E|e)(T|t)(U|u)(R|r)(N|n))
-void					((V|v)(O|o)(I|i)(D|d))
-ICONSTnum				([1-9]{digit}*|0)
-IDnum					{letter}({letter}|{digit})*
-BADIDnum				{digit}({letter}|{digit})*
+int current_pointer = 0;
 
-%%
 
-"/*"					{BEGIN(comment);}
-<comment>{
-	[^*\n]*				/* Discard any non '*' */
-	"*"+[^*/\n]			/* Discard any '*' not followed by '/' */
-	\n					{yyline++; yycolumn = 0;}
-	<<EOF>>				{report_error("Unterminated Comment"); 
-						 BEGIN(INITIAL);}
-	"*"+"/"				BEGIN(INITIAL);
-}
-"&&"					{pos(); return(ANDnum);}
-":="					{pos(); return(ASSGNnum);}
-{declarations}			{pos(); return(DECLARATIONSnum);}
-"." 					{pos(); return(DOTnum);}
-{enddeclarations}		{pos(); return(ENDDECLARATIONSnum);}
-"="						{pos(); return(EQUALnum);}
-">"						{pos(); return(GTnum);}
-{int} 					{pos(); return(INTnum);}
-"[" 					{pos(); return(LBRACnum);}
-"(" 					{pos(); return(LPARENnum);}
-{method} 				{pos(); return(METHODnum);}
-"!="					{pos(); return(NEnum);}
-"||"					{pos(); return(ORnum);}
-{program}				{pos(); return(PROGRAMnum);}
-"]"						{pos(); return(RBRACnum);}
-")"						{pos(); return(RPARENnum);}
-";"						{pos(); return(SEMInum);}
-{val}					{pos(); return(VALnum);}
-{while_def}					{pos(); return(WHILEnum);}
-{class}					{pos(); return(CLASSnum);}
-","						{pos(); return(COMMAnum);}
-"/"						{pos();	return(DIVIDEnum);}
-{else_def}					{pos(); return(ELSEnum);}
-"=="					{pos(); return(EQnum);}
-">="					{pos(); return(GEnum);}
-{if_def}					{pos(); return(IFnum);}
-"{"						{pos(); return(LBRACEnum);}
-"<="					{pos(); return(LEnum);}
-"<"						{pos(); return(LTnum);}
-"-"						{pos(); return(MINUSnum);}
-"!"						{pos(); return(NOTnum);}
-"+" 					{pos(); return(PLUSnum);}
-"}"						{pos(); return(RBRACEnum);}
-{return_def}				{pos(); return(RETURNnum);}
-"*"						{pos(); return(TIMESnum);}
-{void}					{pos(); return(VOIDnum);}
-
-{ICONSTnum}				{pos();
-						 yylval.intg = atoi(yytext); 
-						 return(ICONSTnum);}
-
-\'						{string_buf_ptr = string_buf;
-						 pos();
-						 *string_buf_ptr++ = '\'';						
-						 BEGIN(str);}
-<str>{
-	\'					{ /* Closing Quote, all done  */
-							
-							pos();
-							BEGIN(INITIAL);
-							*string_buf_ptr = '\0';
-							add_to_stringtable(string_buf);
-							return(SCONSTnum);
-						}
-	\n					pos();
-	\\n					pos(); *string_buf_ptr++ = '\n';
-	\\t					pos(); *string_buf_ptr++ = '\t';
-	\\\'				pos(); *string_buf_ptr++ = '\'';
-	<<EOF>>				{report_error("EOF Unterminated String"); BEGIN(INITIAL);}
-	.					{pos();
-						 *string_buf_ptr++ = *yytext;
-						}
-}
-
-{IDnum}					{pos();
-						 add_to_stringtable(yytext);
-						 return(IDnum);}
-
-{ws}					{pos();}
-{newline} 				{pos();}
-{BADIDnum}				{pos();
-						 report_error("Bad Identifier");}
-.						{pos();
-   						 report_error("Bad Lexeme");}
-
-%%
-YYSTYPE yylval;
+int lineNumber=1;
+int columnNumber=1;
 char stringtable[LIMIT1];
-int yyline = 1;
-int yycolumn = 1;
-int st_index = 0;
-
-extern int st_index;
-extern int yyleng;
-
-
-/* method to track the line and column */
-int pos() {
-	/* if this is a new line reset the line and column */
-	if (yytext[0] == '\n') {
-		yyline++;
-		yycolumn = 0;
-	} else {
-    	int i;
-    	for (i = 0; yytext[i] != '\0'; i++) {
-			/* if it is a tab move the column line 4 spaces */
-    		if (yytext[i] == '\t') {
-    			yycolumn += 4 - (yycolumn % 4);
-    		}
-			/* move column one space */
-    		else {
-    			yycolumn++;
-    		}
-    	}
-  	}
-}
-
-/* report an error */
-void report_error(char a[]) {
-	printf("ERROR: %s at Line: %d, Column: %d\n", a, yyline, yycolumn);
-}
+int location;
+int isStr = 0;
+void updatestrTable(char*);
+void errHandling(int);
+int stringindex;
 
 
-/* Print the symbol table for final output */
-void print_stringtable() {
-	int i;
-	printf("String Table: ");
-	for (i = 0; i < st_index; i++) {
-		while (stringtable[i] != '\0') {
-			printf("%c", stringtable[i]);
-			i++;
+%}
+
+%x comment 
+
+
+/* first I put comment, since it could be mis-find by "/" or "*" and etc */
+/* second I put all symbols, to make sure they are porioritized more than identifiers */
+/* Finnally I wrote all other Regular-Expression and EOF*/
+
+
+%%
+\/\* {BEGIN comment;}
+<comment>\*\/ {BEGIN 0;/*return COMMENT;*/}
+<comment>\n {lineNumber++;columnNumber=1;}
+<comment><<EOF>> {errHandling(errComment);return EOFnum;} /*test it for return error*/
+<comment>. /*observe anything between starting and ending of comment*/
+[\n] {lineNumber++; columnNumber=1;}
+[ ] {columnNumber++;}
+[\t] {columnNumber+=8;}
+"&&" {columnNumber+=yyleng; return ANDnum;}
+":=" {columnNumber+=yyleng;return ASSGNnum;}
+"declarations" {columnNumber+=yyleng;return DECLARATIONSnum;}
+"enddeclarations" {columnNumber+=yyleng;return ENDDECLARATIONSnum;}
+"." {columnNumber+=yyleng;return DOTnum;}
+"=" {columnNumber+=yyleng;return EQUALnum;}
+">" {columnNumber+=yyleng;return GTnum;}
+"int" {columnNumber+=yyleng;return INTnum;}
+"[" {columnNumber+=yyleng;return LBRACnum;}
+"(" {columnNumber+=yyleng;return LPARENnum;}
+"method" {columnNumber+=yyleng;return METHODnum;}
+"!=" {columnNumber+=yyleng;return NEnum;}
+"||" {columnNumber+=yyleng;return ORnum;}
+"program" {columnNumber+=yyleng;return PROGRAMnum;}
+"]" {columnNumber+=yyleng;return RBRACnum;}
+")" {columnNumber+=yyleng;return RPARENnum;}
+";" {columnNumber+=yyleng;return SEMInum;}
+"val" {columnNumber+=yyleng;return VALnum;}
+"while" {columnNumber+=yyleng;return WHILEnum;}
+"class" {columnNumber+=yyleng;return CLASSnum;}
+"," {columnNumber+=yyleng;return COMMAnum;}
+"/" {columnNumber+=yyleng;return DIVIDEnum;}
+"else" {columnNumber+=yyleng;return ELSEnum;}
+"==" {columnNumber+=yyleng;return EQnum;}
+">=" {columnNumber+=yyleng;return GEnum;}
+([1-9]([0-9])*)|0 {columnNumber+=yyleng;yylval.intg = atoi(yytext);return ICONSTnum;}
+"if" {columnNumber+=yyleng;return IFnum;}
+"{" {columnNumber+=yyleng;return LBRACEnum;}
+"<=" {columnNumber+=yyleng;return LEnum;}
+"<" {columnNumber+=yyleng;return LTnum;}
+"-" {columnNumber+=yyleng;return MINUSnum;}
+"!" {columnNumber+=yyleng;return NOTnum;}
+"+" {columnNumber+=yyleng;return PLUSnum;}
+"}" {columnNumber+=yyleng;return RBRACEnum;}
+"return" {columnNumber+=yyleng;return RETURNnum;}
+"*" {columnNumber+=yyleng;return TIMESnum;}
+"void" {columnNumber+=yyleng;return VOIDnum;}
+[a-zA-Z_][a-zA-Z_0-9]* {columnNumber+=yyleng; /*add_to_stringtable(yytext);*/updatestrTable(yytext);return IDnum;}
+\'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\' {columnNumber+=yyleng;isStr = 1;/*add_to_stringtable(yytext);*/updatestrTable(yytext);return SCONSTnum;} 
+\'([^\n\r\f\\']|\\(.|\n|\f|\r|\n\r))*\\? {columnNumber+=yyleng; errHandling(errString);}
+0+[0-9]+ {columnNumber+=yyleng; errHandling(errIntzero);}
+([0-9]+(([a-zA-Z_]|[0-9]))*) {columnNumber+=yyleng; errHandling(errIdentifier);}; /* identifier starts with number*/
+<<EOF>> {columnNumber+=yyleng-1;return EOFnum;}
+. {errHandling(errOther);}
+
+%%
+int stringindex = 0;
+
+void updatestrTable(char* yytext)
+{
+
+	if(isStr && strlen(yytext)==2)
+	{
+		//printf("print it ....%d----%s---",strlen(stringtable),stringtable);
+		location =strlen(stringtable);
+		//strcat(stringtable," ");
+		isStr = 0;
+		yylval.intg = location;
+		yylval.intg = current_pointer;
+		return;
+	}
+
+	//copy yytext to another char* if it is string
+	char temptable[4096];
+	if(isStr)//we want to cut off '' at the start and end of string
+	{
+		//for(int i=1;i<strlen(yytext)-1;i++)
+		int tempIndex = 0;//counter for temptable
+		int i=1; //counter of yytext
+		while(i<strlen(yytext)-1)
+		{
+			//if it is special character, replace the character and increase i twice
+			if(yytext[i] == '\\' && yytext[i+1]=='n')
+			{
+				temptable[tempIndex++] = '\n';
+				yyleng--;
+				i++;
+			}
+			else if(yytext[i] == '\\' && yytext[i+1]=='t')
+			{
+				temptable[tempIndex++] = '\t';
+				yyleng--;
+				i++;
+			}
+			else if(yytext[i] == '\\' && yytext[i+1]=='\'')
+			{
+				temptable[tempIndex++] = '\'';
+				yyleng--;
+				i++;
+			}
+			else if(yytext[i] == '\\' && yytext[i+1]=='\\')
+			{
+				temptable[tempIndex++] = '\\';
+				yyleng--;
+				i++;
+			}
+			else
+			{
+				temptable[tempIndex++] = yytext[i];
+
+			}
+
+			i++;//increase i by one
 		}
-		printf("%c", ' ');
+		temptable[tempIndex] = '\0';
+		strcpy(yytext,temptable);
+		isStr = 0;
 	}
-	printf("\n");
-}
+	
 
-char * tolowercase(char a[]) {
-/* transform an identifier to lower case representation */
-  int i;
-  for( i=0; i<yyleng; i++ )
-  {
-     if ( 'A'<=a[i] && a[i]<='Z' )
-        a[i] = a[i] - 'A' + 'a';
-  }
-  return a;
-}
+	//we devised a manual searching and did not use strstr for searching
+	//in the proposed method we start with the start of string and go a for-loop over all chars. if we see a similar patterns over a 
+	// seen set of chars we check 3-if to make sure this pattern is exactly the same with the variable we were looking for or not
+	int yc = 0;//counter of matching string
+	int newVar = 1; //if the searching variable is newVar=1 then we should add it to stringtable, otherwise we have to return location
 
-/* Method to handle addition to the stringtable */
-void add_to_stringtable(char a[]) {
-	/* Search for the string in the table */
-	int search_index = search(a);
-	/* if it was not found insert into table and return index where
-	   it was inserted */
-	if (search_index == -1) {
-		a = tolowercase(a);
-		yylval.intg = insert(a);
-	/* if found return index it was found at */
-	} else {
-		yylval.intg = search_index;
+	//searching string begins here
+	for (int i=0;i<strlen(stringtable);i++)
+	{
+		//if we see similar char we increased yc to check other chars of this variable
+		if(stringtable[i]==yytext[yc])
+		{
+			yc++;
+		}
+		//we set yc =0 everytime we can't see a similar char. The reason is, if we see "interest" and "interesting" respectively
+		// in stringtable and yytext we will increase yc 8 times (as interest in stringtable). then we have to reset yc since two
+		// words are different and we want to check other words, too.
+		else 
+			yc = 0;
+
+		//if yc counter == strlen(yytext) that means we extract and find a pattern...therefore we should check if it is and independant words
+		// or a word inside another word
+		if(yc==strlen(yytext)) 
+		{
+			//if i-yc>=0 that means the word is not at the start of stringtable, so there must be spaces one before and one after the word
+			// if everythings goes right, then we can say this variable is not new and we can return the location and searching is finished
+			if(i-yc>=0 && stringtable[i-yc]==' ' && (stringtable[i+1]==' '))
+			{
+				newVar = 0;
+				location = i-yc+1; //set the current location of variable
+				break;
+			}
+			//in other case if i-yc>=0 but the found variable is at the end of string there is no space afterward but instead we have 
+			// i+1 == strlen(stringtable), since there is end of string
+			if(i-yc>=0 && stringtable[i-yc]==' ' && i+1==strlen(stringtable))
+			{
+				newVar = 0;
+				location = i-yc+1; //set the current location of variable
+				break;
+			}
+			
+			//if i-yc<0 then it the word we found is at the start of string table so ther must be a space just aftewards not befor
+			if(i-yc<0 && stringtable[i+1]==' ')
+			{
+				newVar = 0;
+				location = i-yc+1;
+				break;
+			}
+
+			//if there is no break, that means the word we found wasn't an independant one or correct one, so we should search again
+			yc = 0;
+		}
+	}
+
+
+	//if it is a new variable add it to string table, otherwise just set the location
+	if(newVar)
+	{
+		/*location =strlen(stringtable)+1;
+		strcat(stringtable," ");
+		strcat(stringtable,yytext);*/
+
+		location = current_pointer+1;
+		for(int i=0;i<yyleng;i++)
+			stringtable[i+current_pointer] = yytext[i];
+		current_pointer += yyleng;
+		stringtable[current_pointer] = '\0';
+		current_pointer+=1;
+	}
+	//since we add " " each time we want to put a new variable into stringtable, then we decide to return location-1 instead of location
+	location--;
+	yylval.intg = location;
+		
+
+}
+void errHandling(int err)
+{
+	switch(err)
+	{
+		case errIntzero:
+			{
+				printf("ERROR : the integer %s starts with zero, at line %d, and collumn %d  \n", yytext, lineNumber, columnNumber);
+				break;
+			}
+		case errString:
+			{
+				printf("ERROR : Unmached String Constant %s , at line %d column %d \n", yytext, lineNumber, columnNumber-strlen(yytext));
+				//printf("the string %s in line %d and collumn %d has been detected which is malformed and not closed!'\n", yytext, lineNumber, columnNumber-strlen(yytext));	
+				break;
+			}
+		case errIdentifier:
+		{
+			printf("ERROR : Malformed identifier %s, at line %d and collumn %d \n", yytext, lineNumber, columnNumber-strlen(yytext));
+			break;
+		}
+		case errOther:
+		{
+			//printf("ERROR : The wrong typo %s happend at line %d and collumn %d \n",yytext, lineNumber, columnNumber);
+			break;
+		}
+		case errComment:
+		{
+			printf("Error: EOF found in comment, at line %d column %d \n", lineNumber, columnNumber);
+			break;	
+		}
+		default:
+			break;
 	}
 }
 
-/* insert into the stringtable */
-int insert(char a[]) {
-	/* Check if there is room for the string */
-	if (strlen(a) + st_index >= LIMIT1) {
-		printf("Lexeme too long.\n");
-		return -1;
+
+int search(char text[])
+{
+	if(strcasecmp(text, "system") || strcasecmp(text, "println"))
+		return search2(text);
+	int yc = 0;//counter of matching string
+	int newVar = 1; //if the searching variable is newVar=1 then we should add it to stringtable, otherwise we have to return location
+
+	//searching string begins here
+	for (int i=0;i<strlen(stringtable);i++)
+	{
+		//if we see similar char we increased yc to check other chars of this variable
+		if(stringtable[i]==text[yc])
+		{
+			yc++;
+		}
+		//we set yc =0 everytime we can't see a similar char. The reason is, if we see "interest" and "interesting" respectively
+		// in stringtable and text we will increase yc 8 times (as interest in stringtable). then we have to reset yc since two
+		// words are different and we want to check other words, too.
+		else 
+			yc = 0;
+
+		//if yc counter == strlen(text) that means we extract and find a pattern...therefore we should check if it is and independant words
+		// or a word inside another word
+		if(yc==strlen(text)) 
+		{
+			//if i-yc>=0 that means the word is not at the start of stringtable, so there must be spaces one before and one after the word
+			// if everythings goes right, then we can say this variable is not new and we can return the location and searching is finished
+			if(i-yc>=0 && stringtable[i-yc]==' ' && (stringtable[i+1]==' '))
+			{
+				return i-yc+1;
+			}
+			//in other case if i-yc>=0 but the found variable is at the end of string there is no space afterward but instead we have 
+			// i+1 == strlen(stringtable), since there is end of string
+			if(i-yc>=0 && stringtable[i-yc]==' ' && i+1==strlen(stringtable))
+			{
+				return i-yc+1;
+			}
+			
+			//if i-yc<0 then it the word we found is at the start of string table so ther must be a space just aftewards not befor
+			if(i-yc<0 && stringtable[i+1]==' ')
+			{
+				return i-yc+1;
+			}
+
+			//if there is no break, that means the word we found wasn't an independant one or correct one, so we should search again
+			yc = 0;
+		}
 	}
-	/* Copy the string into the table */
-	strcpy(&(stringtable[st_index]), a);
-	/* Set new end index and return there the string was inserted */
-	int temp = st_index;
-	st_index += strlen(a) + 1;
-	return temp;
+	return -1;
 }
 
-/* Search for the string in the table */
-int search(char a[]) {
+
+YYSTYPE yylval;
+
+extern int stringindex;
+//extern int yyleng;
+
+
+int search2(char a[]) {
 	int i = 0;
 	char word[LIMIT1];
 	stringtable[LIMIT1] = '\0';

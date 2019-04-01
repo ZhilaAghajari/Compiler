@@ -198,7 +198,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 202 "y.tab.c"
+#line 202 "Grammar.tab.c"
 
 #ifdef short
 # undef short
@@ -1599,21 +1599,21 @@ yyreduce:
     {
 	DisplayTree = MakeTree(ProgramOp,(yyvsp[(4) - (4)].tptr),MakeLeaf(IDNode,(yyvsp[(2) - (4)].intg)));
 	/*printtree(DisplayTree,0);*/
-}
+;}
     break;
 
   case 3:
 #line 36 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(ClassOp,(yyvsp[(1) - (2)].tptr),(yyvsp[(2) - (2)].tptr));	
-}
+;}
     break;
 
   case 4:
 #line 40 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(ClassOp,NullExp(),(yyvsp[(1) - (1)].tptr));
-}
+;}
     break;
 
   case 5:
@@ -1621,42 +1621,42 @@ yyreduce:
     {
 	(yyval.tptr) = MakeTree(ClassDefOp,(yyvsp[(3) - (3)].tptr),MakeLeaf(IDNode,(yyvsp[(2) - (3)].intg)));
 	/*$$ = MakeTree(ClassDefOp,$2,MakeLeaf(IDNode,$2));*/
-}
+;}
     break;
 
   case 6:
 #line 53 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(2) - (3)].tptr);
-}
+;}
     break;
 
   case 7:
 #line 57 "Grammar.y"
     {
 	(yyval.tptr) = NullExp();
-}
+;}
     break;
 
   case 8:
 #line 61 "Grammar.y"
     {
 	(yyval.tptr) = MkLeftC((yyvsp[(2) - (4)].tptr),(yyvsp[(3) - (4)].tptr));
-}
+;}
     break;
 
   case 9:
 #line 67 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(2) - (3)].tptr);
-}
+;}
     break;
 
   case 10:
 #line 71 "Grammar.y"
     {
 	(yyval.tptr) = NullExp();
-}
+;}
     break;
 
   case 11:
@@ -1665,28 +1665,28 @@ yyreduce:
 	(yyval.tptr) = NullExp();
 	/*in this condition we need to make a tree which has no children, but shows that this FieldDecl  can be a tree */
 	/*$$ = MakeTree(BodyOp,NullExp(),NullExp());*/
-}
+;}
     break;
 
   case 12:
 #line 83 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(BodyOp,(yyvsp[(1) - (2)].tptr),(yyvsp[(2) - (2)].tptr));	
-}
+;}
     break;
 
   case 13:
 #line 87 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(BodyOp,NullExp(),(yyvsp[(1) - (1)].tptr));	
-}
+;}
     break;
 
   case 14:
 #line 94 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(BodyOp,(yyvsp[(1) - (2)].tptr),(yyvsp[(2) - (2)].tptr));
-}
+;}
     break;
 
   case 15:
@@ -1694,21 +1694,21 @@ yyreduce:
     {
 	/*$$ = MakeTree(BodyOp,NullExp(),$1);	moved to method declloop2*/
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);
-}
+;}
     break;
 
   case 16:
 #line 105 "Grammar.y"
     {
 	(yyval.tptr) = NullExp();	
-}
+;}
     break;
 
   case 17:
 #line 109 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(BodyOp,NullExp(),(yyvsp[(1) - (1)].tptr));
-}
+;}
     break;
 
   case 18:
@@ -1717,7 +1717,7 @@ yyreduce:
 	/*left leaf is a tree of FormalParameterListNoType and right leaf is Block */
 	(yyval.tptr) = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,(yyvsp[(3) - (7)].intg)),(yyvsp[(5) - (7)].tptr)),(yyvsp[(7) - (7)].tptr));
 	/*$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$4),MakeTree(SpecOp,$6,type_tree)),$8);*/
-}
+;}
     break;
 
   case 19:
@@ -1726,7 +1726,7 @@ yyreduce:
 	/*left leaf is a tree of FormalParameterListWithType and right leaf is Block */
 	/*$$ = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,$3),MakeTree(SpecOp,$5,type_tree)),$7);	*/
 	(yyval.tptr) = MakeTree(MethodOp,MakeTree(HeadOp,MakeLeaf(IDNode,(yyvsp[(3) - (7)].intg)),(yyvsp[(5) - (7)].tptr)),(yyvsp[(7) - (7)].tptr));
-}
+;}
     break;
 
   case 20:
@@ -1734,7 +1734,7 @@ yyreduce:
     {
 	/* recall FieldDeclLoop many times */
 	(yyval.tptr) = (yyvsp[(2) - (3)].tptr);
-}
+;}
     break;
 
   case 21:
@@ -1742,126 +1742,126 @@ yyreduce:
     {
 	/*no leaf and end tree here*/
 	(yyval.tptr) = MakeTree(SpecOp, NullExp(),NullExp());	
-}
+;}
     break;
 
   case 22:
 #line 141 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(SpecOp, (yyvsp[(1) - (1)].tptr),NullExp());		
-}
+;}
     break;
 
   case 23:
 #line 145 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(SpecOp, (yyvsp[(1) - (1)].tptr),NullExp());		
-}
+;}
     break;
 
   case 24:
 #line 152 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(SpecOp, NullExp(),type_tree);	
-}
+;}
     break;
 
   case 25:
 #line 156 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(SpecOp, (yyvsp[(1) - (1)].tptr),type_tree);		
-}
+;}
     break;
 
   case 26:
 #line 160 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(SpecOp, (yyvsp[(1) - (1)].tptr),type_tree);		
-}
+;}
     break;
 
   case 27:
 #line 166 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[(3) - (3)].intg)), MakeLeaf(INTEGERTNode, INTnum)), NullExp());
-}
+;}
     break;
 
   case 28:
 #line 170 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[(3) - (5)].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[(5) - (5)].tptr));
-}
+;}
     break;
 
   case 29:
 #line 174 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[(3) - (5)].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[(5) - (5)].tptr));
-}
+;}
     break;
 
   case 30:
 #line 178 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[(3) - (5)].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[(5) - (5)].tptr));	
-}
+;}
     break;
 
   case 31:
 #line 182 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[(3) - (7)].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[(7) - (7)].tptr));
-}
+;}
     break;
 
   case 32:
 #line 186 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[(3) - (7)].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[(7) - (7)].tptr));
-}
+;}
     break;
 
   case 33:
 #line 192 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[(2) - (2)].intg)), MakeLeaf(INTEGERTNode, INTnum)), NullExp());	
-}
+;}
     break;
 
   case 34:
 #line 196 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[(2) - (4)].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[(4) - (4)].tptr));
-}
+;}
     break;
 
   case 35:
 #line 200 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[(2) - (4)].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[(4) - (4)].tptr));
-}
+;}
     break;
 
   case 36:
 #line 204 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(RArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode, (yyvsp[(2) - (4)].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[(4) - (4)].tptr));	
-}
+;}
     break;
 
   case 37:
 #line 208 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(VArgTypeOp, MakeTree(CommaOp, MakeLeaf(IDNode, (yyvsp[(2) - (6)].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[(4) - (6)].tptr)), (yyvsp[(6) - (6)].tptr));
-}
+;}
     break;
 
   case 38:
 #line 212 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(VArgTypeOp, MakeTree(CommaOp, MakeLeaf(IDNode, (yyvsp[(2) - (6)].intg)), MakeLeaf(INTEGERTNode, INTnum)), (yyvsp[(4) - (6)].tptr)), (yyvsp[(6) - (6)].tptr));
-}
+;}
     break;
 
   case 39:
@@ -1869,7 +1869,7 @@ yyreduce:
     {
 	type_tree = MakeTree(TypeIdOp, MakeLeaf(INTEGERTNode, (yyvsp[(1) - (2)].intg)), (yyvsp[(2) - (2)].tptr));
 	(yyval.tptr) = type_tree;
-}
+;}
     break;
 
   case 40:
@@ -1877,7 +1877,7 @@ yyreduce:
     {
 	type_tree = MakeTree(TypeIdOp, MakeLeaf(IDNode, (yyvsp[(1) - (2)].intg)), (yyvsp[(2) - (2)].tptr));
 	(yyval.tptr) = type_tree;
-}
+;}
     break;
 
   case 41:
@@ -1885,7 +1885,7 @@ yyreduce:
     {
 	type_tree = MakeTree(TypeIdOp,MakeLeaf(INTEGERTNode,(yyvsp[(1) - (2)].intg)),(yyvsp[(2) - (2)].tptr));
 	(yyval.tptr) = type_tree;
-}
+;}
     break;
 
   case 42:
@@ -1893,21 +1893,21 @@ yyreduce:
     {
 	type_tree = MakeTree(TypeIdOp,MakeLeaf(IDNode,(yyvsp[(1) - (2)].intg)),(yyvsp[(2) - (2)].tptr));
 	(yyval.tptr) = type_tree;
-}
+;}
     break;
 
   case 43:
 #line 239 "Grammar.y"
     {
 	(yyval.tptr) = type_tree = MkRightC((yyvsp[(4) - (4)].tptr), MakeTree(TypeIdOp, MakeLeaf(IDNode, (yyvsp[(1) - (4)].intg)), (yyvsp[(2) - (4)].tptr)));
-}
+;}
     break;
 
   case 44:
 #line 243 "Grammar.y"
     {
 	(yyval.tptr) = type_tree = MkRightC((yyvsp[(4) - (4)].tptr), MakeTree(TypeIdOp, MakeLeaf(INTEGERTNode, (yyvsp[(1) - (4)].intg)), (yyvsp[(2) - (4)].tptr)));
-}
+;}
     break;
 
   case 45:
@@ -1915,35 +1915,35 @@ yyreduce:
     {
 	type_tree = MakeTree(TypeIdOp, MakeLeaf(IDNode, (yyvsp[(1) - (1)].intg)), NullExp());
 	(yyval.tptr) = type_tree;
-}
+;}
     break;
 
   case 46:
 #line 252 "Grammar.y"
     {
 	(yyval.tptr) = type_tree = MakeTree(TypeIdOp, MakeLeaf(INTEGERTNode, (yyvsp[(1) - (1)].intg)), NullExp());
-}
+;}
     break;
 
   case 47:
 #line 258 "Grammar.y"
     {
 	(yyval.tptr) = type_tree = MakeTree(IndexOp, NullExp(), NullExp());
-}
+;}
     break;
 
   case 48:
 #line 262 "Grammar.y"
     {
 	(yyval.tptr) = type_tree = MakeTree(IndexOp, NullExp(), (yyvsp[(1) - (3)].tptr));
-}
+;}
     break;
 
   case 49:
 #line 266 "Grammar.y"
     {
 	(yyval.tptr) = type_tree = NullExp();
-}
+;}
     break;
 
   case 50:
@@ -1951,42 +1951,42 @@ yyreduce:
     {
 	/* make a loop to continue*/
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode,(yyvsp[(1) - (3)].intg)),MakeLeaf(INTEGERTNode,INTnum)),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 51:
 #line 277 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(VArgTypeOp,MakeTree(CommaOp,MakeLeaf(IDNode,(yyvsp[(1) - (1)].intg)),MakeLeaf(INTEGERTNode,INTnum)),NullExp());
-}
+;}
     break;
 
   case 52:
 #line 284 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(BodyOp,NullExp(),(yyvsp[(1) - (1)].tptr));
-}
+;}
     break;
 
   case 53:
 #line 288 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(BodyOp,(yyvsp[(1) - (2)].tptr),(yyvsp[(2) - (2)].tptr));
-}
+;}
     break;
 
   case 54:
 #line 294 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(2) - (3)].tptr);
-}
+;}
     break;
 
   case 55:
 #line 299 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(StmtOp,NullExp(),(yyvsp[(1) - (1)].tptr));
-}
+;}
     break;
 
   case 56:
@@ -1995,63 +1995,63 @@ yyreduce:
 	/*if there is nothing as for statment, then just return StatementLoop. Otherwise, return the whole tree*/
 	if((yyvsp[(3) - (3)].tptr) == NullExp()){(yyval.tptr) = (yyvsp[(1) - (3)].tptr);}
 	else {(yyval.tptr) = MakeTree(StmtOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));}
-}
+;}
     break;
 
   case 57:
 #line 311 "Grammar.y"
     {
 	(yyval.tptr) = NullExp();	
-}
+;}
     break;
 
   case 58:
 #line 315 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);
-}
+;}
     break;
 
   case 59:
 #line 319 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);
-}
+;}
     break;
 
   case 60:
 #line 323 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);
-}
+;}
     break;
 
   case 61:
 #line 327 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);
-}
+;}
     break;
 
   case 62:
 #line 331 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);
-}
+;}
     break;
 
   case 63:
 #line 337 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(DeclOp,NullExp(),(yyvsp[(1) - (1)].tptr));
-}
+;}
     break;
 
   case 64:
 #line 341 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(DeclOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 65:
@@ -2063,7 +2063,7 @@ yyreduce:
 	
 	tree CommaOpTree = MakeTree(CommaOp,(yyvsp[(1) - (1)].tptr),MakeTree(CommaOp, type_tree, NullExp()));
 	(yyval.tptr) = CommaOpTree;
-}
+;}
     break;
 
   case 66:
@@ -2074,336 +2074,336 @@ yyreduce:
 	tree CommaOpTree = MakeTree(CommaOp,(yyvsp[(1) - (3)].tptr),MakeTree(CommaOp, type_tree,(yyvsp[(3) - (3)].tptr)));
 	/*$$ = MakeTree(DeclOp,NullExp(),CommaOpTree);*/
 	(yyval.tptr) = CommaOpTree;
-}
+;}
     break;
 
   case 67:
 #line 366 "Grammar.y"
     {
 	(yyval.tptr) = MakeLeaf(IDNode,(yyvsp[(1) - (1)].intg));
-}
+;}
     break;
 
   case 68:
 #line 370 "Grammar.y"
     {
 	(yyval.tptr) = MakeLeaf(IDNode,(yyvsp[(1) - (2)].intg));
-}
+;}
     break;
 
   case 69:
 #line 376 "Grammar.y"
     {
 	(yyval.tptr) = (yyval.tptr);	
-}
+;}
     break;
 
   case 70:
 #line 380 "Grammar.y"
     {
 	(yyval.tptr) = (yyval.tptr);	
-}
+;}
     break;
 
   case 71:
 #line 385 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);	
-}
+;}
     break;
 
   case 72:
 #line 389 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);	
-}
+;}
     break;
 
   case 73:
 #line 392 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);	
-}
+;}
     break;
 
   case 74:
 #line 398 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(ArrayTypeOp,(yyvsp[(2) - (3)].tptr),type_tree);	
-}
+;}
     break;
 
   case 75:
 #line 403 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(CommaOp,NullExp(),(yyvsp[(1) - (1)].tptr));
-}
+;}
     break;
 
   case 76:
 #line 407 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(CommaOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 77:
 #line 414 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(ArrayTypeOp, (yyvsp[(2) - (2)].tptr), MakeLeaf(INTEGERTNode,(yyvsp[(1) - (2)].intg)));	
-}
+;}
     break;
 
   case 78:
 #line 419 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(BoundOp,(yyvsp[(1) - (2)].tptr),(yyvsp[(2) - (2)].tptr));
-}
+;}
     break;
 
   case 79:
 #line 423 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(BoundOp,NullExp(),(yyvsp[(1) - (1)].tptr));	
-}
+;}
     break;
 
   case 80:
 #line 429 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(2) - (3)].tptr);
-}
+;}
     break;
 
   case 81:
 #line 435 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(AssignOp,MakeTree(AssignOp,NullExp(),(yyvsp[(1) - (3)].tptr)),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 82:
 #line 440 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(RoutineCallOp,(yyvsp[(1) - (4)].tptr),(yyvsp[(3) - (4)].tptr));
-}
+;}
     break;
 
   case 83:
 #line 445 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(CommaOp,(yyvsp[(1) - (1)].tptr),NullExp());	
-}
+;}
     break;
 
   case 84:
 #line 449 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(CommaOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));		
-}
+;}
     break;
 
   case 85:
 #line 453 "Grammar.y"
     {
 	(yyval.tptr) = NullExp();		
-}
+;}
     break;
 
   case 86:
 #line 459 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);
-}
+;}
     break;
 
   case 87:
 #line 463 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(LTOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 88:
 #line 467 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(LEOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));	
-}
+;}
     break;
 
   case 89:
 #line 471 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(EQOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 90:
 #line 475 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(NEOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 91:
 #line 479 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(GTOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 92:
 #line 483 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(GEOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 93:
 #line 489 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);
-}
+;}
     break;
 
   case 94:
 #line 493 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);	
-}
+;}
     break;
 
   case 95:
 #line 497 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);
-}
+;}
     break;
 
   case 96:
 #line 501 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(2) - (3)].tptr);
-}
+;}
     break;
 
   case 97:
 #line 505 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(NotOp,(yyvsp[(2) - (2)].tptr),NullExp());
-}
+;}
     break;
 
   case 98:
 #line 511 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);	
-}
+;}
     break;
 
   case 99:
 #line 515 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(AndOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 100:
 #line 519 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(DivOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));	
-}
+;}
     break;
 
   case 101:
 #line 523 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(MultOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 102:
 #line 530 "Grammar.y"
     {
 	(yyval.tptr) = MakeLeaf(NUMNode,(yyvsp[(1) - (1)].intg));
-}
+;}
     break;
 
   case 103:
 #line 534 "Grammar.y"
     {
 	(yyval.tptr) = MakeLeaf(STRINGNode,(yyvsp[(1) - (1)].intg));
-}
+;}
     break;
 
   case 104:
 #line 540 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);
-}
+;}
     break;
 
   case 105:
 #line 544 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(2) - (2)].tptr);
-}
+;}
     break;
 
   case 106:
 #line 548 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(UnaryNegOp,(yyvsp[(2) - (2)].tptr),NullExp());
-}
+;}
     break;
 
   case 107:
 #line 554 "Grammar.y"
     {
 	(yyval.tptr) = (yyvsp[(1) - (1)].tptr);
-}
+;}
     break;
 
   case 108:
 #line 558 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(AddOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 109:
 #line 562 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(SubOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));	
-}
+;}
     break;
 
   case 110:
 #line 566 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(OrOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 111:
 #line 573 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(VarOp, MakeLeaf(IDNode, (yyvsp[(1) - (1)].intg)), NullExp());
-}
+;}
     break;
 
   case 112:
 #line 577 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(VarOp, MakeLeaf(IDNode, (yyvsp[(1) - (2)].intg)), (yyvsp[(2) - (2)].tptr));	
-}
+;}
     break;
 
   case 113:
 #line 583 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(SelectOp,MakeTree(FieldOp,MakeLeaf(IDNode, (yyvsp[(2) - (3)].intg)), NullExp()), (yyvsp[(1) - (3)].tptr));
-}
+;}
     break;
 
   case 114:
@@ -2411,68 +2411,68 @@ yyreduce:
     {
 	/*printf("point0");*/
 	(yyval.tptr) = MakeTree(SelectOp,MakeTree(FieldOp,MakeLeaf(IDNode, (yyvsp[(2) - (2)].intg)), NullExp()), NullExp());
-}
+;}
     break;
 
   case 115:
 #line 592 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(SelectOp, MakeTree(IndexOp, (yyvsp[(2) - (4)].tptr), (yyvsp[(3) - (4)].tptr)), NullExp());
-}
+;}
     break;
 
   case 116:
 #line 596 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(SelectOp, MakeTree(IndexOp, (yyvsp[(3) - (5)].tptr), (yyvsp[(4) - (5)].tptr)), (yyvsp[(1) - (5)].tptr));
-}
+;}
     break;
 
   case 117:
 #line 604 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(ReturnOp,NullExp(),NullExp());
-}
+;}
     break;
 
   case 118:
 #line 608 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(ReturnOp,(yyvsp[(2) - (2)].tptr),NullExp());	
-}
+;}
     break;
 
   case 119:
 #line 614 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(IfElseOp,NullExp(),MakeTree(CommaOp,(yyvsp[(2) - (3)].tptr),(yyvsp[(3) - (3)].tptr)));
-}
+;}
     break;
 
   case 120:
 #line 618 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(IfElseOp,(yyvsp[(1) - (5)].tptr),MakeTree(CommaOp,(yyvsp[(4) - (5)].tptr),(yyvsp[(5) - (5)].tptr)));
-}
+;}
     break;
 
   case 121:
 #line 622 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(IfElseOp,(yyvsp[(1) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
   case 122:
 #line 636 "Grammar.y"
     {
 	(yyval.tptr) = MakeTree(LoopOp,(yyvsp[(2) - (3)].tptr),(yyvsp[(3) - (3)].tptr));
-}
+;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 2476 "y.tab.c"
+#line 2476 "Grammar.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

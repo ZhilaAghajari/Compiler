@@ -1,23 +1,22 @@
 %{
 #include <stdlib.h>
-#include "table.h"
 #include "proj2.h"
 
 #ifdef lex
 #include "token.h"
 #endif
 
-//#define LIMIT1 5000
+#define LIMIT1 5000
 
 extern int yycolumn, yylength, yyline;
 extern YYSTYPE yylval;
-extern char string_table[LIMIT1];
+extern char stringtable[LIMIT1];
 int st_index;
 int pos();
 char * tolowercase(char a[]);
 void report_error(char str[]);
-void print_string_table();
-void add_to_string_table(char str[]);
+void print_stringtable();
+void add_to_stringtable(char str[]);
 int search(char str[]);
 int insert(char str[]);
 
@@ -111,7 +110,7 @@ BADIDnum				{digit}({letter}|{digit})*
 							pos();
 							BEGIN(INITIAL);
 							*string_buf_ptr = '\0';
-							add_to_string_table(string_buf);
+							add_to_stringtable(string_buf);
 							return(SCONSTnum);
 						}
 	\n					pos();
@@ -125,7 +124,7 @@ BADIDnum				{digit}({letter}|{digit})*
 }
 
 {IDnum}					{pos();
-						 add_to_string_table(yytext);
+						 add_to_stringtable(yytext);
 						 return(IDnum);}
 
 {ws}					{pos();}
@@ -136,11 +135,15 @@ BADIDnum				{digit}({letter}|{digit})*
    						 report_error("Bad Lexeme");}
 
 %%
-YYSTYPE yylval;
-char string_table[LIMIT1];
+ 
+//YYSTYPE yylval;
+char stringtable[LIMIT1];
 int yyline = 1;
 int yycolumn = 1;
 int st_index = 0;
+
+extern int st_index;
+//extern int yyleng;
 
 
 /* method to track the line and column */
@@ -167,4 +170,78 @@ int pos() {
 /* report an error */
 void report_error(char a[]) {
 	printf("ERROR: %s at Line: %d, Column: %d\n", a, yyline, yycolumn);
+}
+
+
+/* Print the symbol table for final output */
+void print_stringtable() {
+	int i;
+	printf("String Table: ");
+	for (i = 0; i < st_index; i++) {
+		while (stringtable[i] != '\0') {
+			printf("%c", stringtable[i]);
+			i++;
+		}
+		printf("%c", ' ');
+	}
+	printf("\n");
+}
+
+char * tolowercase(char a[]) {
+/* transform an identifier to lower case representation */
+  int i;
+  for( i=0; i<yyleng; i++ )
+  {
+     if ( 'A'<=a[i] && a[i]<='Z' )
+        a[i] = a[i] - 'A' + 'a';
+  }
+  return a;
+}
+
+/* Method to handle addition to the stringtable */
+void add_to_stringtable(char a[]) {
+	/* Search for the string in the table */
+	int search_index = search(a);
+	/* if it was not found insert into table and return index where
+	   it was inserted */
+	if (search_index == -1) {
+		a = tolowercase(a);
+		yylval.intg = insert(a);
+	/* if found return index it was found at */
+	} else {
+		yylval.intg = search_index;
+	}
+}
+
+/* insert into the stringtable */
+int insert(char a[]) {
+	/* Check if there is room for the string */
+	if (strlen(a) + st_index >= LIMIT1) {
+		printf("Lexeme too long.\n");
+		return -1;
+	}
+	/* Copy the string into the table */
+	strcpy(&(stringtable[st_index]), a);
+	/* Set new end index and return there the string was inserted */
+	int temp = st_index;
+	st_index += strlen(a) + 1;
+	return temp;
+}
+
+/* Search for the string in the table */
+int search(char a[]) {
+	int i = 0;
+	char word[LIMIT1];
+	stringtable[LIMIT1] = '\0';
+	while (i < LIMIT1) {
+		strcpy(&word[0], &(stringtable[i]));
+		if (!strcasecmp(word, a)) {
+			return i;
+		}
+		else {
+			i = i + strlen(word);
+		}
+		i++;
+	}
+	return -1;
 }

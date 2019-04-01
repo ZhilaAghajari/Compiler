@@ -9,7 +9,7 @@ SemanticCompiler: semantic_analysis.c y.tab.c lex.yy.c proj2.c proj3.c
 
 
 YACC : Grammar.y
-	yacc -v Grammar.y
+	yacc -d -v Grammar.y
 
 
 clean: 
