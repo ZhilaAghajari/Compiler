@@ -8,8 +8,8 @@ Semantic Error--line: 38, symbol println: is an undeclared field name.
   3    println          1                   yes  procedure                                                      1
   4         c3          0                            class                                                       
   5       main          1                        procedure                                                      0
-  6          x          2                         variable-1077009024                                            
-  7          y          2                         variable-1077008688                                            
+  6          x          2                         variable  676619648                                            
+  7          y          2                         variable  676619984                                            
 ************* SYNTAX TREE PRINTOUT ***********
 
   +-[IDNode,0,"ex3"]

@@ -30,7 +30,6 @@ Changes for Proj3.h/proj3.c
 
 
 ***
-2-remove some functions(extra points) for semantic_analysis.c to not be tablo!!! --> Look for Narges code
 3-treeNode & type in final print is missing
 
 
