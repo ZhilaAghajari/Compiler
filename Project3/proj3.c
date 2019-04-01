@@ -416,6 +416,12 @@ int st_ptr, attr_num;
 	i = st[st_ptr];
 	while (i)
 	{
+		printf("iii %d \n",i);
+		if(i>=ATTR_SIZE)
+		{
+			printf("in che kos sherie!");
+			break;
+		}
 		if (attrarray[i].attr_num == attr_num)
 			return (i);
 		if (attrarray[i].attr_num > attr_num)
