@@ -277,7 +277,7 @@ void errHandling(int err)
 }
 
 
-int search(char text[])
+int search2(char text[])
 {
 	if(strcasecmp(text, "system") || strcasecmp(text, "println"))
 		return search2(text);
@@ -335,7 +335,7 @@ extern int stringindex;
 //extern int yyleng;
 
 
-int search2(char a[]) {
+int search(char a[]) {
 	int i = 0;
 	char word[LIMIT1];
 	stringtable[LIMIT1] = '\0';
