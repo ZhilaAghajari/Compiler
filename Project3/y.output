@@ -1,6 +1,6 @@
-Rules never reduced
+Rules useless in parser due to conflicts
 
-   15 MethodDeclLoop2: /* empty */
+   15 MethodDeclLoop2: %empty
 
 
 State 11 conflicts: 1 shift/reduce
@@ -31,16 +31,16 @@ Grammar
     7          | LBRACEnum Decls MethodDeclLoop RBRACEnum
 
     8 Decls: DECLARATIONSnum DeclsLoop ENDDECLARATIONSnum
-    9      | /* empty */
+    9      | %empty
 
-   10 DeclsLoop: /* empty */
+   10 DeclsLoop: %empty
    11          | DeclsLoop FieldDecl
    12          | FieldDecl
 
    13 MethodDeclLoop: MethodDeclLoop MethodDecl
    14               | MethodDeclLoop2
 
-   15 MethodDeclLoop2: /* empty */
+   15 MethodDeclLoop2: %empty
    16                | MethodDecl
 
    17 MethodDecl: METHODnum VOIDnum IDnum LPARENnum FormalParameterListNoType RPARENnum Block
@@ -48,11 +48,11 @@ Grammar
 
    19 FieldDecl: Type FieldDeclInner SEMInum
 
-   20 FormalParameterListNoType: /* empty */
+   20 FormalParameterListNoType: %empty
    21                          | FormalParameterListLoopWithVal
    22                          | FormalParameterListLoopNoVal
 
-   23 FormalParameterListWithType: /* empty */
+   23 FormalParameterListWithType: %empty
    24                            | FormalParameterListLoopWithVal
    25                            | FormalParameterListLoopNoVal
 
@@ -81,7 +81,7 @@ Grammar
 
    46 TypeList: LBRACnum RBRACnum
    47         | TypeList LBRACnum RBRACnum
-   48         | /* empty */
+   48         | %empty
 
    49 ValLoop: IDnum COMMAnum ValLoop
    50        | IDnum
@@ -94,7 +94,7 @@ Grammar
    54 StatementLoop: Statement
    55              | StatementLoop SEMInum Statement
 
-   56 Statement: /* empty */
+   56 Statement: %empty
    57          | AssignmentStatement
    58          | MethodCallStatement
    59          | ReturnStatement
@@ -135,7 +135,7 @@ Grammar
 
    82 ExpressionLoop: Expression
    83               | Expression COMMAnum ExpressionLoop
-   84               | /* empty */
+   84               | %empty
 
    85 Expression: SimpleExpression
    86           | SimpleExpression LTnum SimpleExpression
@@ -329,7 +329,7 @@ WhileStatement (87)
     on left: 121, on right: 61
 
 
-state 0
+State 0
 
     0 $accept: . Program EOFnum
 
@@ -338,35 +338,35 @@ state 0
     Program  go to state 2
 
 
-state 1
+State 1
 
     1 Program: PROGRAMnum . IDnum SEMInum ClassDeclLoop
 
     IDnum  shift, and go to state 3
 
 
-state 2
+State 2
 
     0 $accept: Program . EOFnum
 
     EOFnum  shift, and go to state 4
 
 
-state 3
+State 3
 
     1 Program: PROGRAMnum IDnum . SEMInum ClassDeclLoop
 
     SEMInum  shift, and go to state 5
 
 
-state 4
+State 4
 
     0 $accept: Program EOFnum .
 
     $default  accept
 
 
-state 5
+State 5
 
     1 Program: PROGRAMnum IDnum SEMInum . ClassDeclLoop
 
@@ -376,14 +376,14 @@ state 5
     ClassDecl      go to state 8
 
 
-state 6
+State 6
 
     4 ClassDecl: CLASSnum . IDnum ClassBody
 
     IDnum  shift, and go to state 9
 
 
-state 7
+State 7
 
     1 Program: PROGRAMnum IDnum SEMInum ClassDeclLoop .
     2 ClassDeclLoop: ClassDeclLoop . ClassDecl
@@ -395,14 +395,14 @@ state 7
     ClassDecl  go to state 10
 
 
-state 8
+State 8
 
     3 ClassDeclLoop: ClassDecl .
 
     $default  reduce using rule 3 (ClassDeclLoop)
 
 
-state 9
+State 9
 
     4 ClassDecl: CLASSnum IDnum . ClassBody
 
@@ -411,14 +411,14 @@ state 9
     ClassBody  go to state 12
 
 
-state 10
+State 10
 
     2 ClassDeclLoop: ClassDeclLoop ClassDecl .
 
     $default  reduce using rule 2 (ClassDeclLoop)
 
 
-state 11
+State 11
 
     5 ClassBody: LBRACEnum . Decls RBRACEnum
     6          | LBRACEnum . RBRACEnum
@@ -433,14 +433,14 @@ state 11
     Decls  go to state 15
 
 
-state 12
+State 12
 
     4 ClassDecl: CLASSnum IDnum ClassBody .
 
     $default  reduce using rule 4 (ClassDecl)
 
 
-state 13
+State 13
 
     8 Decls: DECLARATIONSnum . DeclsLoop ENDDECLARATIONSnum
 
@@ -456,14 +456,14 @@ state 13
     Type       go to state 20
 
 
-state 14
+State 14
 
     6 ClassBody: LBRACEnum RBRACEnum .
 
     $default  reduce using rule 6 (ClassBody)
 
 
-state 15
+State 15
 
     5 ClassBody: LBRACEnum Decls . RBRACEnum
     7          | LBRACEnum Decls . MethodDeclLoop RBRACEnum
@@ -479,7 +479,7 @@ state 15
     MethodDecl       go to state 25
 
 
-state 16
+State 16
 
    39 Type: IDnum . BrackLoop
    41     | IDnum . TypeList
@@ -498,7 +498,7 @@ state 16
     BrackLoop  go to state 28
 
 
-state 17
+State 17
 
    38 Type: INTnum . BrackLoop
    40     | INTnum . TypeList
@@ -517,7 +517,7 @@ state 17
     BrackLoop  go to state 30
 
 
-state 18
+State 18
 
     8 Decls: DECLARATIONSnum DeclsLoop . ENDDECLARATIONSnum
    11 DeclsLoop: DeclsLoop . FieldDecl
@@ -530,14 +530,14 @@ state 18
     Type       go to state 20
 
 
-state 19
+State 19
 
    12 DeclsLoop: FieldDecl .
 
     $default  reduce using rule 12 (DeclsLoop)
 
 
-state 20
+State 20
 
    19 FieldDecl: Type . FieldDeclInner SEMInum
 
@@ -548,7 +548,7 @@ state 20
     VariableDeclId  go to state 36
 
 
-state 21
+State 21
 
    17 MethodDecl: METHODnum . VOIDnum IDnum LPARENnum FormalParameterListNoType RPARENnum Block
    18           | METHODnum . Type IDnum LPARENnum FormalParameterListWithType RPARENnum Block
@@ -560,14 +560,14 @@ state 21
     Type  go to state 38
 
 
-state 22
+State 22
 
     5 ClassBody: LBRACEnum Decls RBRACEnum .
 
     $default  reduce using rule 5 (ClassBody)
 
 
-state 23
+State 23
 
     7 ClassBody: LBRACEnum Decls MethodDeclLoop . RBRACEnum
    13 MethodDeclLoop: MethodDeclLoop . MethodDecl
@@ -578,21 +578,21 @@ state 23
     MethodDecl  go to state 40
 
 
-state 24
+State 24
 
    14 MethodDeclLoop: MethodDeclLoop2 .
 
     $default  reduce using rule 14 (MethodDeclLoop)
 
 
-state 25
+State 25
 
    16 MethodDeclLoop2: MethodDecl .
 
     $default  reduce using rule 16 (MethodDeclLoop2)
 
 
-state 26
+State 26
 
    46 TypeList: LBRACnum . RBRACnum
    68 BrackLoop: LBRACnum . RBRACnum
@@ -600,7 +600,7 @@ state 26
     RBRACnum  shift, and go to state 41
 
 
-state 27
+State 27
 
    41 Type: IDnum TypeList .
    42     | IDnum TypeList . DOTnum Type
@@ -612,7 +612,7 @@ state 27
     $default  reduce using rule 41 (Type)
 
 
-state 28
+State 28
 
    39 Type: IDnum BrackLoop .
    69 BrackLoop: BrackLoop . LBRACnum RBRACnum
@@ -622,7 +622,7 @@ state 28
     $default  reduce using rule 39 (Type)
 
 
-state 29
+State 29
 
    40 Type: INTnum TypeList .
    43     | INTnum TypeList . DOTnum Type
@@ -634,7 +634,7 @@ state 29
     $default  reduce using rule 40 (Type)
 
 
-state 30
+State 30
 
    38 Type: INTnum BrackLoop .
    69 BrackLoop: BrackLoop . LBRACnum RBRACnum
@@ -644,21 +644,21 @@ state 30
     $default  reduce using rule 38 (Type)
 
 
-state 31
+State 31
 
     8 Decls: DECLARATIONSnum DeclsLoop ENDDECLARATIONSnum .
 
     $default  reduce using rule 8 (Decls)
 
 
-state 32
+State 32
 
    11 DeclsLoop: DeclsLoop FieldDecl .
 
     $default  reduce using rule 11 (DeclsLoop)
 
 
-state 33
+State 33
 
    66 VariableDeclId: IDnum .
    67               | IDnum . BrackLoop
@@ -670,7 +670,7 @@ state 33
     BrackLoop  go to state 47
 
 
-state 34
+State 34
 
    19 FieldDecl: Type FieldDeclInner . SEMInum
    63 FieldDeclInner: FieldDeclInner . COMMAnum FieldDeclLoop2
@@ -679,14 +679,14 @@ state 34
     COMMAnum  shift, and go to state 49
 
 
-state 35
+State 35
 
    62 FieldDeclInner: FieldDeclLoop2 .
 
     $default  reduce using rule 62 (FieldDeclInner)
 
 
-state 36
+State 36
 
    64 FieldDeclLoop2: VariableDeclId .
    65               | VariableDeclId . EQUALnum VariableInitializer
@@ -696,35 +696,35 @@ state 36
     $default  reduce using rule 64 (FieldDeclLoop2)
 
 
-state 37
+State 37
 
    17 MethodDecl: METHODnum VOIDnum . IDnum LPARENnum FormalParameterListNoType RPARENnum Block
 
     IDnum  shift, and go to state 51
 
 
-state 38
+State 38
 
    18 MethodDecl: METHODnum Type . IDnum LPARENnum FormalParameterListWithType RPARENnum Block
 
     IDnum  shift, and go to state 52
 
 
-state 39
+State 39
 
     7 ClassBody: LBRACEnum Decls MethodDeclLoop RBRACEnum .
 
     $default  reduce using rule 7 (ClassBody)
 
 
-state 40
+State 40
 
    13 MethodDeclLoop: MethodDeclLoop MethodDecl .
 
     $default  reduce using rule 13 (MethodDeclLoop)
 
 
-state 41
+State 41
 
    46 TypeList: LBRACnum RBRACnum .
    68 BrackLoop: LBRACnum RBRACnum .
@@ -736,7 +736,7 @@ state 41
     $default  reduce using rule 46 (TypeList)
 
 
-state 42
+State 42
 
    42 Type: IDnum TypeList DOTnum . Type
 
@@ -746,21 +746,21 @@ state 42
     Type  go to state 53
 
 
-state 43
+State 43
 
    47 TypeList: TypeList LBRACnum . RBRACnum
 
     RBRACnum  shift, and go to state 54
 
 
-state 44
+State 44
 
    69 BrackLoop: BrackLoop LBRACnum . RBRACnum
 
     RBRACnum  shift, and go to state 55
 
 
-state 45
+State 45
 
    43 Type: INTnum TypeList DOTnum . Type
 
@@ -770,14 +770,14 @@ state 45
     Type  go to state 56
 
 
-state 46
+State 46
 
    68 BrackLoop: LBRACnum . RBRACnum
 
     RBRACnum  shift, and go to state 57
 
 
-state 47
+State 47
 
    67 VariableDeclId: IDnum BrackLoop .
    69 BrackLoop: BrackLoop . LBRACnum RBRACnum
@@ -787,14 +787,14 @@ state 47
     $default  reduce using rule 67 (VariableDeclId)
 
 
-state 48
+State 48
 
    19 FieldDecl: Type FieldDeclInner SEMInum .
 
     $default  reduce using rule 19 (FieldDecl)
 
 
-state 49
+State 49
 
    63 FieldDeclInner: FieldDeclInner COMMAnum . FieldDeclLoop2
 
@@ -804,7 +804,7 @@ state 49
     VariableDeclId  go to state 36
 
 
-state 50
+State 50
 
    65 FieldDeclLoop2: VariableDeclId EQUALnum . VariableInitializer
 
@@ -831,63 +831,63 @@ state 50
     Variable                 go to state 78
 
 
-state 51
+State 51
 
    17 MethodDecl: METHODnum VOIDnum IDnum . LPARENnum FormalParameterListNoType RPARENnum Block
 
     LPARENnum  shift, and go to state 79
 
 
-state 52
+State 52
 
    18 MethodDecl: METHODnum Type IDnum . LPARENnum FormalParameterListWithType RPARENnum Block
 
     LPARENnum  shift, and go to state 80
 
 
-state 53
+State 53
 
    42 Type: IDnum TypeList DOTnum Type .
 
     $default  reduce using rule 42 (Type)
 
 
-state 54
+State 54
 
    47 TypeList: TypeList LBRACnum RBRACnum .
 
     $default  reduce using rule 47 (TypeList)
 
 
-state 55
+State 55
 
    69 BrackLoop: BrackLoop LBRACnum RBRACnum .
 
     $default  reduce using rule 69 (BrackLoop)
 
 
-state 56
+State 56
 
    43 Type: INTnum TypeList DOTnum Type .
 
     $default  reduce using rule 43 (Type)
 
 
-state 57
+State 57
 
    68 BrackLoop: LBRACnum RBRACnum .
 
     $default  reduce using rule 68 (BrackLoop)
 
 
-state 58
+State 58
 
    63 FieldDeclInner: FieldDeclInner COMMAnum FieldDeclLoop2 .
 
     $default  reduce using rule 63 (FieldDeclInner)
 
 
-state 59
+State 59
 
   110 Variable: IDnum .
   111         | IDnum . VariableLoop
@@ -900,7 +900,7 @@ state 59
     VariableLoop  go to state 83
 
 
-state 60
+State 60
 
    76 ArrayCreationExpression: INTnum . ArrayCreationExpressionLoop
 
@@ -910,7 +910,7 @@ state 60
     ArrayCreationExpressionLoop2  go to state 86
 
 
-state 61
+State 61
 
    95 Factor: LPARENnum . Expression RPARENnum
 
@@ -932,14 +932,14 @@ state 61
     Variable              go to state 78
 
 
-state 62
+State 62
 
   101 UnsignedConstant: ICONSTnum .
 
     $default  reduce using rule 101 (UnsignedConstant)
 
 
-state 63
+State 63
 
    73 ArrayIntializer: LBRACEnum . VariableInitializerLoop RBRACEnum
 
@@ -967,7 +967,7 @@ state 63
     Variable                 go to state 78
 
 
-state 64
+State 64
 
   105 SimpleExpression: MINUSnum . SimpleExpressionList
 
@@ -985,7 +985,7 @@ state 64
     Variable              go to state 78
 
 
-state 65
+State 65
 
    96 Factor: NOTnum . Factor
 
@@ -1001,7 +1001,7 @@ state 65
     Variable             go to state 78
 
 
-state 66
+State 66
 
   104 SimpleExpression: PLUSnum . SimpleExpressionList
 
@@ -1019,49 +1019,49 @@ state 66
     Variable              go to state 78
 
 
-state 67
+State 67
 
   102 UnsignedConstant: SCONSTnum .
 
     $default  reduce using rule 102 (UnsignedConstant)
 
 
-state 68
+State 68
 
    65 FieldDeclLoop2: VariableDeclId EQUALnum VariableInitializer .
 
     $default  reduce using rule 65 (FieldDeclLoop2)
 
 
-state 69
+State 69
 
    71 VariableInitializer: ArrayIntializer .
 
     $default  reduce using rule 71 (VariableInitializer)
 
 
-state 70
+State 70
 
    72 VariableInitializer: ArrayCreationExpression .
 
     $default  reduce using rule 72 (VariableInitializer)
 
 
-state 71
+State 71
 
    94 Factor: MethodCallStatement .
 
     $default  reduce using rule 94 (Factor)
 
 
-state 72
+State 72
 
    70 VariableInitializer: Expression .
 
     $default  reduce using rule 70 (VariableInitializer)
 
 
-state 73
+State 73
 
    97 Term: Factor .
    98     | Factor . ANDnum Term
@@ -1075,21 +1075,21 @@ state 73
     $default  reduce using rule 97 (Term)
 
 
-state 74
+State 74
 
   106 SimpleExpressionList: Term .
 
     $default  reduce using rule 106 (SimpleExpressionList)
 
 
-state 75
+State 75
 
    92 Factor: UnsignedConstant .
 
     $default  reduce using rule 92 (Factor)
 
 
-state 76
+State 76
 
    85 Expression: SimpleExpression .
    86           | SimpleExpression . LTnum SimpleExpression
@@ -1109,7 +1109,7 @@ state 76
     $default  reduce using rule 85 (Expression)
 
 
-state 77
+State 77
 
   103 SimpleExpression: SimpleExpressionList .
   107 SimpleExpressionList: SimpleExpressionList . PLUSnum Term
@@ -1125,7 +1125,7 @@ state 77
     $default  reduce using rule 103 (SimpleExpression)
 
 
-state 78
+State 78
 
    81 MethodCallStatement: Variable . LPARENnum ExpressionLoop RPARENnum
    93 Factor: Variable .
@@ -1136,7 +1136,7 @@ state 78
     $default   reduce using rule 93 (Factor)
 
 
-state 79
+State 79
 
    17 MethodDecl: METHODnum VOIDnum IDnum LPARENnum . FormalParameterListNoType RPARENnum Block
 
@@ -1150,7 +1150,7 @@ state 79
     FormalParameterListLoopNoVal    go to state 110
 
 
-state 80
+State 80
 
    18 MethodDecl: METHODnum Type IDnum LPARENnum . FormalParameterListWithType RPARENnum Block
 
@@ -1164,14 +1164,14 @@ state 80
     FormalParameterListLoopNoVal    go to state 113
 
 
-state 81
+State 81
 
   113 VariableLoop: DOTnum . IDnum
 
     IDnum  shift, and go to state 114
 
 
-state 82
+State 82
 
   114 VariableLoop: LBRACnum . Expression ExpressionLoop RBRACnum
 
@@ -1193,7 +1193,7 @@ state 82
     Variable              go to state 78
 
 
-state 83
+State 83
 
   111 Variable: IDnum VariableLoop .
   112 VariableLoop: VariableLoop . DOTnum IDnum
@@ -1205,7 +1205,7 @@ state 83
     $default  reduce using rule 111 (Variable)
 
 
-state 84
+State 84
 
    79 ArrayCreationExpressionLoop2: LBRACnum . Expression RBRACnum
 
@@ -1227,7 +1227,7 @@ state 84
     Variable              go to state 78
 
 
-state 85
+State 85
 
    76 ArrayCreationExpression: INTnum ArrayCreationExpressionLoop .
    77 ArrayCreationExpressionLoop: ArrayCreationExpressionLoop . ArrayCreationExpressionLoop2
@@ -1239,28 +1239,28 @@ state 85
     ArrayCreationExpressionLoop2  go to state 119
 
 
-state 86
+State 86
 
    78 ArrayCreationExpressionLoop: ArrayCreationExpressionLoop2 .
 
     $default  reduce using rule 78 (ArrayCreationExpressionLoop)
 
 
-state 87
+State 87
 
    95 Factor: LPARENnum Expression . RPARENnum
 
     RPARENnum  shift, and go to state 120
 
 
-state 88
+State 88
 
    74 VariableInitializerLoop: VariableInitializer .
 
     $default  reduce using rule 74 (VariableInitializerLoop)
 
 
-state 89
+State 89
 
    73 ArrayIntializer: LBRACEnum VariableInitializerLoop . RBRACEnum
    75 VariableInitializerLoop: VariableInitializerLoop . COMMAnum VariableInitializer
@@ -1269,7 +1269,7 @@ state 89
     RBRACEnum  shift, and go to state 122
 
 
-state 90
+State 90
 
   105 SimpleExpression: MINUSnum SimpleExpressionList .
   107 SimpleExpressionList: SimpleExpressionList . PLUSnum Term
@@ -1281,14 +1281,14 @@ state 90
     $default  reduce using rule 105 (SimpleExpression)
 
 
-state 91
+State 91
 
    96 Factor: NOTnum Factor .
 
     $default  reduce using rule 96 (Factor)
 
 
-state 92
+State 92
 
   104 SimpleExpression: PLUSnum SimpleExpressionList .
   107 SimpleExpressionList: SimpleExpressionList . PLUSnum Term
@@ -1300,7 +1300,7 @@ state 92
     $default  reduce using rule 104 (SimpleExpression)
 
 
-state 93
+State 93
 
    98 Term: Factor ANDnum . Term
 
@@ -1317,7 +1317,7 @@ state 93
     Variable             go to state 78
 
 
-state 94
+State 94
 
    99 Term: Factor DIVIDEnum . Term
 
@@ -1334,7 +1334,7 @@ state 94
     Variable             go to state 78
 
 
-state 95
+State 95
 
   100 Term: Factor TIMESnum . Term
 
@@ -1351,7 +1351,7 @@ state 95
     Variable             go to state 78
 
 
-state 96
+State 96
 
    90 Expression: SimpleExpression GTnum . SimpleExpression
 
@@ -1372,7 +1372,7 @@ state 96
     Variable              go to state 78
 
 
-state 97
+State 97
 
    89 Expression: SimpleExpression NEnum . SimpleExpression
 
@@ -1393,7 +1393,7 @@ state 97
     Variable              go to state 78
 
 
-state 98
+State 98
 
    88 Expression: SimpleExpression EQnum . SimpleExpression
 
@@ -1414,7 +1414,7 @@ state 98
     Variable              go to state 78
 
 
-state 99
+State 99
 
    91 Expression: SimpleExpression GEnum . SimpleExpression
 
@@ -1435,7 +1435,7 @@ state 99
     Variable              go to state 78
 
 
-state 100
+State 100
 
    87 Expression: SimpleExpression LEnum . SimpleExpression
 
@@ -1456,7 +1456,7 @@ state 100
     Variable              go to state 78
 
 
-state 101
+State 101
 
    86 Expression: SimpleExpression LTnum . SimpleExpression
 
@@ -1477,7 +1477,7 @@ state 101
     Variable              go to state 78
 
 
-state 102
+State 102
 
   109 SimpleExpressionList: SimpleExpressionList ORnum . Term
 
@@ -1494,7 +1494,7 @@ state 102
     Variable             go to state 78
 
 
-state 103
+State 103
 
   108 SimpleExpressionList: SimpleExpressionList MINUSnum . Term
 
@@ -1511,7 +1511,7 @@ state 103
     Variable             go to state 78
 
 
-state 104
+State 104
 
   107 SimpleExpressionList: SimpleExpressionList PLUSnum . Term
 
@@ -1528,7 +1528,7 @@ state 104
     Variable             go to state 78
 
 
-state 105
+State 105
 
    81 MethodCallStatement: Variable LPARENnum . ExpressionLoop RPARENnum
 
@@ -1553,7 +1553,7 @@ state 105
     Variable              go to state 78
 
 
-state 106
+State 106
 
    32 FormalParameterListLoopNoVal: INTnum . IDnum
    33                             | INTnum . IDnum SEMInum FormalParameterListLoopWithVal
@@ -1565,7 +1565,7 @@ state 106
     IDnum  shift, and go to state 137
 
 
-state 107
+State 107
 
    26 FormalParameterListLoopWithVal: VALnum . INTnum IDnum
    27                               | VALnum . INTnum IDnum SEMInum FormalParameterListLoopWithVal
@@ -1577,56 +1577,56 @@ state 107
     INTnum  shift, and go to state 138
 
 
-state 108
+State 108
 
    17 MethodDecl: METHODnum VOIDnum IDnum LPARENnum FormalParameterListNoType . RPARENnum Block
 
     RPARENnum  shift, and go to state 139
 
 
-state 109
+State 109
 
    21 FormalParameterListNoType: FormalParameterListLoopWithVal .
 
     $default  reduce using rule 21 (FormalParameterListNoType)
 
 
-state 110
+State 110
 
    22 FormalParameterListNoType: FormalParameterListLoopNoVal .
 
     $default  reduce using rule 22 (FormalParameterListNoType)
 
 
-state 111
+State 111
 
    18 MethodDecl: METHODnum Type IDnum LPARENnum FormalParameterListWithType . RPARENnum Block
 
     RPARENnum  shift, and go to state 140
 
 
-state 112
+State 112
 
    24 FormalParameterListWithType: FormalParameterListLoopWithVal .
 
     $default  reduce using rule 24 (FormalParameterListWithType)
 
 
-state 113
+State 113
 
    25 FormalParameterListWithType: FormalParameterListLoopNoVal .
 
     $default  reduce using rule 25 (FormalParameterListWithType)
 
 
-state 114
+State 114
 
   113 VariableLoop: DOTnum IDnum .
 
     $default  reduce using rule 113 (VariableLoop)
 
 
-state 115
+State 115
 
   114 VariableLoop: LBRACnum Expression . ExpressionLoop RBRACnum
 
@@ -1651,14 +1651,14 @@ state 115
     Variable              go to state 78
 
 
-state 116
+State 116
 
   112 VariableLoop: VariableLoop DOTnum . IDnum
 
     IDnum  shift, and go to state 142
 
 
-state 117
+State 117
 
   115 VariableLoop: VariableLoop LBRACnum . Expression ExpressionLoop RBRACnum
 
@@ -1680,28 +1680,28 @@ state 117
     Variable              go to state 78
 
 
-state 118
+State 118
 
    79 ArrayCreationExpressionLoop2: LBRACnum Expression . RBRACnum
 
     RBRACnum  shift, and go to state 144
 
 
-state 119
+State 119
 
    77 ArrayCreationExpressionLoop: ArrayCreationExpressionLoop ArrayCreationExpressionLoop2 .
 
     $default  reduce using rule 77 (ArrayCreationExpressionLoop)
 
 
-state 120
+State 120
 
    95 Factor: LPARENnum Expression RPARENnum .
 
     $default  reduce using rule 95 (Factor)
 
 
-state 121
+State 121
 
    75 VariableInitializerLoop: VariableInitializerLoop COMMAnum . VariableInitializer
 
@@ -1728,105 +1728,105 @@ state 121
     Variable                 go to state 78
 
 
-state 122
+State 122
 
    73 ArrayIntializer: LBRACEnum VariableInitializerLoop RBRACEnum .
 
     $default  reduce using rule 73 (ArrayIntializer)
 
 
-state 123
+State 123
 
    98 Term: Factor ANDnum Term .
 
     $default  reduce using rule 98 (Term)
 
 
-state 124
+State 124
 
    99 Term: Factor DIVIDEnum Term .
 
     $default  reduce using rule 99 (Term)
 
 
-state 125
+State 125
 
   100 Term: Factor TIMESnum Term .
 
     $default  reduce using rule 100 (Term)
 
 
-state 126
+State 126
 
    90 Expression: SimpleExpression GTnum SimpleExpression .
 
     $default  reduce using rule 90 (Expression)
 
 
-state 127
+State 127
 
    89 Expression: SimpleExpression NEnum SimpleExpression .
 
     $default  reduce using rule 89 (Expression)
 
 
-state 128
+State 128
 
    88 Expression: SimpleExpression EQnum SimpleExpression .
 
     $default  reduce using rule 88 (Expression)
 
 
-state 129
+State 129
 
    91 Expression: SimpleExpression GEnum SimpleExpression .
 
     $default  reduce using rule 91 (Expression)
 
 
-state 130
+State 130
 
    87 Expression: SimpleExpression LEnum SimpleExpression .
 
     $default  reduce using rule 87 (Expression)
 
 
-state 131
+State 131
 
    86 Expression: SimpleExpression LTnum SimpleExpression .
 
     $default  reduce using rule 86 (Expression)
 
 
-state 132
+State 132
 
   109 SimpleExpressionList: SimpleExpressionList ORnum Term .
 
     $default  reduce using rule 109 (SimpleExpressionList)
 
 
-state 133
+State 133
 
   108 SimpleExpressionList: SimpleExpressionList MINUSnum Term .
 
     $default  reduce using rule 108 (SimpleExpressionList)
 
 
-state 134
+State 134
 
   107 SimpleExpressionList: SimpleExpressionList PLUSnum Term .
 
     $default  reduce using rule 107 (SimpleExpressionList)
 
 
-state 135
+State 135
 
    81 MethodCallStatement: Variable LPARENnum ExpressionLoop . RPARENnum
 
     RPARENnum  shift, and go to state 146
 
 
-state 136
+State 136
 
    82 ExpressionLoop: Expression .
    83               | Expression . COMMAnum ExpressionLoop
@@ -1836,7 +1836,7 @@ state 136
     $default  reduce using rule 82 (ExpressionLoop)
 
 
-state 137
+State 137
 
    32 FormalParameterListLoopNoVal: INTnum IDnum .
    33                             | INTnum IDnum . SEMInum FormalParameterListLoopWithVal
@@ -1851,7 +1851,7 @@ state 137
     $default  reduce using rule 32 (FormalParameterListLoopNoVal)
 
 
-state 138
+State 138
 
    26 FormalParameterListLoopWithVal: VALnum INTnum . IDnum
    27                               | VALnum INTnum . IDnum SEMInum FormalParameterListLoopWithVal
@@ -1863,7 +1863,7 @@ state 138
     IDnum  shift, and go to state 150
 
 
-state 139
+State 139
 
    17 MethodDecl: METHODnum VOIDnum IDnum LPARENnum FormalParameterListNoType RPARENnum . Block
 
@@ -1877,7 +1877,7 @@ state 139
     StatementList  go to state 154
 
 
-state 140
+State 140
 
    18 MethodDecl: METHODnum Type IDnum LPARENnum FormalParameterListWithType RPARENnum . Block
 
@@ -1891,21 +1891,21 @@ state 140
     StatementList  go to state 154
 
 
-state 141
+State 141
 
   114 VariableLoop: LBRACnum Expression ExpressionLoop . RBRACnum
 
     RBRACnum  shift, and go to state 156
 
 
-state 142
+State 142
 
   112 VariableLoop: VariableLoop DOTnum IDnum .
 
     $default  reduce using rule 112 (VariableLoop)
 
 
-state 143
+State 143
 
   115 VariableLoop: VariableLoop LBRACnum Expression . ExpressionLoop RBRACnum
 
@@ -1930,28 +1930,28 @@ state 143
     Variable              go to state 78
 
 
-state 144
+State 144
 
    79 ArrayCreationExpressionLoop2: LBRACnum Expression RBRACnum .
 
     $default  reduce using rule 79 (ArrayCreationExpressionLoop2)
 
 
-state 145
+State 145
 
    75 VariableInitializerLoop: VariableInitializerLoop COMMAnum VariableInitializer .
 
     $default  reduce using rule 75 (VariableInitializerLoop)
 
 
-state 146
+State 146
 
    81 MethodCallStatement: Variable LPARENnum ExpressionLoop RPARENnum .
 
     $default  reduce using rule 81 (MethodCallStatement)
 
 
-state 147
+State 147
 
    83 ExpressionLoop: Expression COMMAnum . ExpressionLoop
 
@@ -1976,7 +1976,7 @@ state 147
     Variable              go to state 78
 
 
-state 148
+State 148
 
    33 FormalParameterListLoopNoVal: INTnum IDnum SEMInum . FormalParameterListLoopWithVal
    34                             | INTnum IDnum SEMInum . FormalParameterListLoopNoVal
@@ -1988,7 +1988,7 @@ state 148
     FormalParameterListLoopNoVal    go to state 160
 
 
-state 149
+State 149
 
    35 FormalParameterListLoopNoVal: INTnum IDnum COMMAnum . ValLoop
    36                             | INTnum IDnum COMMAnum . ValLoop SEMInum FormalParameterListLoopNoVal
@@ -1999,7 +1999,7 @@ state 149
     ValLoop  go to state 162
 
 
-state 150
+State 150
 
    26 FormalParameterListLoopWithVal: VALnum INTnum IDnum .
    27                               | VALnum INTnum IDnum . SEMInum FormalParameterListLoopWithVal
@@ -2014,7 +2014,7 @@ state 150
     $default  reduce using rule 26 (FormalParameterListLoopWithVal)
 
 
-state 151
+State 151
 
    53 StatementList: LBRACEnum . StatementLoop RBRACEnum
 
@@ -2035,7 +2035,7 @@ state 151
     WhileStatement       go to state 175
 
 
-state 152
+State 152
 
    52 Block: Decls . StatementList
 
@@ -2044,63 +2044,63 @@ state 152
     StatementList  go to state 176
 
 
-state 153
+State 153
 
    17 MethodDecl: METHODnum VOIDnum IDnum LPARENnum FormalParameterListNoType RPARENnum Block .
 
     $default  reduce using rule 17 (MethodDecl)
 
 
-state 154
+State 154
 
    51 Block: StatementList .
 
     $default  reduce using rule 51 (Block)
 
 
-state 155
+State 155
 
    18 MethodDecl: METHODnum Type IDnum LPARENnum FormalParameterListWithType RPARENnum Block .
 
     $default  reduce using rule 18 (MethodDecl)
 
 
-state 156
+State 156
 
   114 VariableLoop: LBRACnum Expression ExpressionLoop RBRACnum .
 
     $default  reduce using rule 114 (VariableLoop)
 
 
-state 157
+State 157
 
   115 VariableLoop: VariableLoop LBRACnum Expression ExpressionLoop . RBRACnum
 
     RBRACnum  shift, and go to state 177
 
 
-state 158
+State 158
 
    83 ExpressionLoop: Expression COMMAnum ExpressionLoop .
 
     $default  reduce using rule 83 (ExpressionLoop)
 
 
-state 159
+State 159
 
    33 FormalParameterListLoopNoVal: INTnum IDnum SEMInum FormalParameterListLoopWithVal .
 
     $default  reduce using rule 33 (FormalParameterListLoopNoVal)
 
 
-state 160
+State 160
 
    34 FormalParameterListLoopNoVal: INTnum IDnum SEMInum FormalParameterListLoopNoVal .
 
     $default  reduce using rule 34 (FormalParameterListLoopNoVal)
 
 
-state 161
+State 161
 
    49 ValLoop: IDnum . COMMAnum ValLoop
    50        | IDnum .
@@ -2110,7 +2110,7 @@ state 161
     $default  reduce using rule 50 (ValLoop)
 
 
-state 162
+State 162
 
    35 FormalParameterListLoopNoVal: INTnum IDnum COMMAnum ValLoop .
    36                             | INTnum IDnum COMMAnum ValLoop . SEMInum FormalParameterListLoopNoVal
@@ -2121,7 +2121,7 @@ state 162
     $default  reduce using rule 35 (FormalParameterListLoopNoVal)
 
 
-state 163
+State 163
 
    27 FormalParameterListLoopWithVal: VALnum INTnum IDnum SEMInum . FormalParameterListLoopWithVal
    28                               | VALnum INTnum IDnum SEMInum . FormalParameterListLoopNoVal
@@ -2133,7 +2133,7 @@ state 163
     FormalParameterListLoopNoVal    go to state 181
 
 
-state 164
+State 164
 
    29 FormalParameterListLoopWithVal: VALnum INTnum IDnum COMMAnum . ValLoop
    30                               | VALnum INTnum IDnum COMMAnum . ValLoop SEMInum FormalParameterListLoopWithVal
@@ -2144,7 +2144,7 @@ state 164
     ValLoop  go to state 182
 
 
-state 165
+State 165
 
   121 WhileStatement: WHILEnum . Expression StatementList
 
@@ -2166,7 +2166,7 @@ state 165
     Variable              go to state 78
 
 
-state 166
+State 166
 
   118 IfStatement: IFnum . Expression StatementList
 
@@ -2188,7 +2188,7 @@ state 166
     Variable              go to state 78
 
 
-state 167
+State 167
 
   116 ReturnStatement: RETURNnum .
   117                | RETURNnum . Expression
@@ -2213,7 +2213,7 @@ state 167
     Variable              go to state 78
 
 
-state 168
+State 168
 
    53 StatementList: LBRACEnum StatementLoop . RBRACEnum
    55 StatementLoop: StatementLoop . SEMInum Statement
@@ -2222,28 +2222,28 @@ state 168
     RBRACEnum  shift, and go to state 187
 
 
-state 169
+State 169
 
    54 StatementLoop: Statement .
 
     $default  reduce using rule 54 (StatementLoop)
 
 
-state 170
+State 170
 
    57 Statement: AssignmentStatement .
 
     $default  reduce using rule 57 (Statement)
 
 
-state 171
+State 171
 
    58 Statement: MethodCallStatement .
 
     $default  reduce using rule 58 (Statement)
 
 
-state 172
+State 172
 
    80 AssignmentStatement: Variable . ASSGNnum Expression
    81 MethodCallStatement: Variable . LPARENnum ExpressionLoop RPARENnum
@@ -2252,14 +2252,14 @@ state 172
     LPARENnum  shift, and go to state 105
 
 
-state 173
+State 173
 
    59 Statement: ReturnStatement .
 
     $default  reduce using rule 59 (Statement)
 
 
-state 174
+State 174
 
    60 Statement: IfStatement .
   119 IfStatement: IfStatement . ELSEnum IFnum Expression StatementList
@@ -2270,28 +2270,28 @@ state 174
     $default  reduce using rule 60 (Statement)
 
 
-state 175
+State 175
 
    61 Statement: WhileStatement .
 
     $default  reduce using rule 61 (Statement)
 
 
-state 176
+State 176
 
    52 Block: Decls StatementList .
 
     $default  reduce using rule 52 (Block)
 
 
-state 177
+State 177
 
   115 VariableLoop: VariableLoop LBRACnum Expression ExpressionLoop RBRACnum .
 
     $default  reduce using rule 115 (VariableLoop)
 
 
-state 178
+State 178
 
    49 ValLoop: IDnum COMMAnum . ValLoop
 
@@ -2300,7 +2300,7 @@ state 178
     ValLoop  go to state 190
 
 
-state 179
+State 179
 
    36 FormalParameterListLoopNoVal: INTnum IDnum COMMAnum ValLoop SEMInum . FormalParameterListLoopNoVal
    37                             | INTnum IDnum COMMAnum ValLoop SEMInum . FormalParameterListLoopWithVal
@@ -2312,21 +2312,21 @@ state 179
     FormalParameterListLoopNoVal    go to state 192
 
 
-state 180
+State 180
 
    27 FormalParameterListLoopWithVal: VALnum INTnum IDnum SEMInum FormalParameterListLoopWithVal .
 
     $default  reduce using rule 27 (FormalParameterListLoopWithVal)
 
 
-state 181
+State 181
 
    28 FormalParameterListLoopWithVal: VALnum INTnum IDnum SEMInum FormalParameterListLoopNoVal .
 
     $default  reduce using rule 28 (FormalParameterListLoopWithVal)
 
 
-state 182
+State 182
 
    29 FormalParameterListLoopWithVal: VALnum INTnum IDnum COMMAnum ValLoop .
    30                               | VALnum INTnum IDnum COMMAnum ValLoop . SEMInum FormalParameterListLoopWithVal
@@ -2337,7 +2337,7 @@ state 182
     $default  reduce using rule 29 (FormalParameterListLoopWithVal)
 
 
-state 183
+State 183
 
   121 WhileStatement: WHILEnum Expression . StatementList
 
@@ -2346,7 +2346,7 @@ state 183
     StatementList  go to state 194
 
 
-state 184
+State 184
 
   118 IfStatement: IFnum Expression . StatementList
 
@@ -2355,14 +2355,14 @@ state 184
     StatementList  go to state 195
 
 
-state 185
+State 185
 
   117 ReturnStatement: RETURNnum Expression .
 
     $default  reduce using rule 117 (ReturnStatement)
 
 
-state 186
+State 186
 
    55 StatementLoop: StatementLoop SEMInum . Statement
 
@@ -2382,14 +2382,14 @@ state 186
     WhileStatement       go to state 175
 
 
-state 187
+State 187
 
    53 StatementList: LBRACEnum StatementLoop RBRACEnum .
 
     $default  reduce using rule 53 (StatementList)
 
 
-state 188
+State 188
 
    80 AssignmentStatement: Variable ASSGNnum . Expression
 
@@ -2411,7 +2411,7 @@ state 188
     Variable              go to state 78
 
 
-state 189
+State 189
 
   119 IfStatement: IfStatement ELSEnum . IFnum Expression StatementList
   120            | IfStatement ELSEnum . StatementList
@@ -2422,28 +2422,28 @@ state 189
     StatementList  go to state 199
 
 
-state 190
+State 190
 
    49 ValLoop: IDnum COMMAnum ValLoop .
 
     $default  reduce using rule 49 (ValLoop)
 
 
-state 191
+State 191
 
    37 FormalParameterListLoopNoVal: INTnum IDnum COMMAnum ValLoop SEMInum FormalParameterListLoopWithVal .
 
     $default  reduce using rule 37 (FormalParameterListLoopNoVal)
 
 
-state 192
+State 192
 
    36 FormalParameterListLoopNoVal: INTnum IDnum COMMAnum ValLoop SEMInum FormalParameterListLoopNoVal .
 
     $default  reduce using rule 36 (FormalParameterListLoopNoVal)
 
 
-state 193
+State 193
 
    30 FormalParameterListLoopWithVal: VALnum INTnum IDnum COMMAnum ValLoop SEMInum . FormalParameterListLoopWithVal
    31                               | VALnum INTnum IDnum COMMAnum ValLoop SEMInum . FormalParameterListLoopNoVal
@@ -2455,35 +2455,35 @@ state 193
     FormalParameterListLoopNoVal    go to state 201
 
 
-state 194
+State 194
 
   121 WhileStatement: WHILEnum Expression StatementList .
 
     $default  reduce using rule 121 (WhileStatement)
 
 
-state 195
+State 195
 
   118 IfStatement: IFnum Expression StatementList .
 
     $default  reduce using rule 118 (IfStatement)
 
 
-state 196
+State 196
 
    55 StatementLoop: StatementLoop SEMInum Statement .
 
     $default  reduce using rule 55 (StatementLoop)
 
 
-state 197
+State 197
 
    80 AssignmentStatement: Variable ASSGNnum Expression .
 
     $default  reduce using rule 80 (AssignmentStatement)
 
 
-state 198
+State 198
 
   119 IfStatement: IfStatement ELSEnum IFnum . Expression StatementList
 
@@ -2505,28 +2505,28 @@ state 198
     Variable              go to state 78
 
 
-state 199
+State 199
 
   120 IfStatement: IfStatement ELSEnum StatementList .
 
     $default  reduce using rule 120 (IfStatement)
 
 
-state 200
+State 200
 
    30 FormalParameterListLoopWithVal: VALnum INTnum IDnum COMMAnum ValLoop SEMInum FormalParameterListLoopWithVal .
 
     $default  reduce using rule 30 (FormalParameterListLoopWithVal)
 
 
-state 201
+State 201
 
    31 FormalParameterListLoopWithVal: VALnum INTnum IDnum COMMAnum ValLoop SEMInum FormalParameterListLoopNoVal .
 
     $default  reduce using rule 31 (FormalParameterListLoopWithVal)
 
 
-state 202
+State 202
 
   119 IfStatement: IfStatement ELSEnum IFnum Expression . StatementList
 
@@ -2535,7 +2535,7 @@ state 202
     StatementList  go to state 203
 
 
-state 203
+State 203
 
   119 IfStatement: IfStatement ELSEnum IFnum Expression StatementList .
 

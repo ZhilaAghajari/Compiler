@@ -10,13 +10,13 @@
 
 extern int yycolumn, yylength, yyline;
 extern YYSTYPE yylval;
-extern char stringtable[LIMIT1];
+extern char string_table[LIMIT1];
 int st_index;
 int pos();
 char * tolowercase(char a[]);
 void report_error(char str[]);
-void print_stringtable();
-void add_to_stringtable(char str[]);
+void print_string_table();
+void add_to_string_table(char str[]);
 int search(char str[]);
 int insert(char str[]);
 
@@ -110,7 +110,7 @@ BADIDnum				{digit}({letter}|{digit})*
 							pos();
 							BEGIN(INITIAL);
 							*string_buf_ptr = '\0';
-							add_to_stringtable(string_buf);
+							add_to_string_table(string_buf);
 							return(SCONSTnum);
 						}
 	\n					pos();
@@ -124,7 +124,7 @@ BADIDnum				{digit}({letter}|{digit})*
 }
 
 {IDnum}					{pos();
-						 add_to_stringtable(yytext);
+						 add_to_string_table(yytext);
 						 return(IDnum);}
 
 {ws}					{pos();}
@@ -136,7 +136,7 @@ BADIDnum				{digit}({letter}|{digit})*
 
 %%
 YYSTYPE yylval;
-char stringtable[LIMIT1];
+char string_table[LIMIT1];
 int yyline = 1;
 int yycolumn = 1;
 int st_index = 0;
@@ -173,12 +173,12 @@ void report_error(char a[]) {
 
 
 /* Print the symbol table for final output */
-void print_stringtable() {
+void print_string_table() {
 	int i;
 	printf("String Table: ");
 	for (i = 0; i < st_index; i++) {
-		while (stringtable[i] != '\0') {
-			printf("%c", stringtable[i]);
+		while (string_table[i] != '\0') {
+			printf("%c", string_table[i]);
 			i++;
 		}
 		printf("%c", ' ');
@@ -197,8 +197,8 @@ char * tolowercase(char a[]) {
   return a;
 }
 
-/* Method to handle addition to the stringtable */
-void add_to_stringtable(char a[]) {
+/* Method to handle addition to the string_table */
+void add_to_string_table(char a[]) {
 	/* Search for the string in the table */
 	int search_index = search(a);
 	/* if it was not found insert into table and return index where
@@ -212,7 +212,7 @@ void add_to_stringtable(char a[]) {
 	}
 }
 
-/* insert into the stringtable */
+/* insert into the string_table */
 int insert(char a[]) {
 	/* Check if there is room for the string */
 	if (strlen(a) + st_index >= LIMIT1) {
@@ -220,7 +220,7 @@ int insert(char a[]) {
 		return -1;
 	}
 	/* Copy the string into the table */
-	strcpy(&(stringtable[st_index]), a);
+	strcpy(&(string_table[st_index]), a);
 	/* Set new end index and return there the string was inserted */
 	int temp = st_index;
 	st_index += strlen(a) + 1;
@@ -231,9 +231,9 @@ int insert(char a[]) {
 int search(char a[]) {
 	int i = 0;
 	char word[LIMIT1];
-	stringtable[LIMIT1] = '\0';
+	string_table[LIMIT1] = '\0';
 	while (i < LIMIT1) {
-		strcpy(&word[0], &(stringtable[i]));
+		strcpy(&word[0], &(string_table[i]));
 		if (!strcasecmp(word, a)) {
 			return i;
 		}
