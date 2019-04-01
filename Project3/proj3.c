@@ -418,17 +418,17 @@ int st_ptr, attr_num;
 	{
 		if(i>=2000)
 		{
-			printf("in che kos sherie!");
+			//printf("Fault");
 			break;
 		}
-		printf("iii %d %d\n",i);
-		printf("i2 %d\n",attrarray[i].attr_num);
+		//printf("iii %d %d\n",i);
+		//printf("i2 %d\n",attrarray[i].attr_num);
 		
 		if (attrarray[i].attr_num == attr_num)
 			return (i);
 		if (attrarray[i].attr_num > attr_num)
 			break;
-		printf("i3 %d\n",attrarray[i].next_attr);
+		//printf("i3 %d\n",attrarray[i].next_attr);
 		i = attrarray[i].next_attr;
 	}
 	return (0);
