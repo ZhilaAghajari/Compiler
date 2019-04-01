@@ -7,6 +7,25 @@ extern FILE *treelst;
 extern tree DisplayTree;
 extern int error;
 
+void assignment_semantic(tree T);
+void argument_semantic(tree T);
+void array_init_semantic(tree T, int dimension, int arr);
+void variable_init_semantic(tree T, int dimension, int arr);
+void get_to_right(tree T);
+void method_semantic(tree T);
+void get_to_left2(tree T);
+void term_semantic(tree T) ;
+void si_expression_semantic(tree T);
+void expression_semantic(tree T);
+void condition_semantic(tree T);
+void return_semantic(tree T);
+void statement_semantic(tree T);
+void semantic_analyze(tree T);
+void get_to_left(tree T);
+void traverse();
+
+
+
 int output_check = 0;
 
 extern FILE *yyin;
@@ -446,7 +465,7 @@ int countDimensions(tree T) {
 }
 int variable_semantic(tree T) {
 	if (NodeKind(T) != EXPRNode)
-		return;
+		return 0;
 
 	
 	if (LookUp(IntVal(LeftChild(T))) == 0)

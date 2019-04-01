@@ -1,5 +1,4 @@
 #MAKEFILE
-
 all : LEXcompile YACC SemanticCompiler
 
 LEXcompile : lex.l

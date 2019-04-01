@@ -1,6 +1,4 @@
 #MAKEFILE
-#last step I was in, cannot run YACC completely, since there is
-#no yac.tab.y for us!
 all : LEXcompile YACC GccCompiler
 
 LEXcompile : lexical_rules.l
