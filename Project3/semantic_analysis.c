@@ -123,7 +123,7 @@ void semantic_analyze(tree T) {
 		}
 		if (NodeOp(T) == DeclOp)
 		{
-			//analyze_DeclOp(T);
+			//DeclOp
 			//return;
 			//Declrataions_semantic
 			int symbol_num;	
@@ -296,7 +296,7 @@ void term_semantic(tree T) {
 		if(NodeOp(T) == MultOp || NodeOp(T) == DivOp || NodeOp(T) == AndOp)
 		{
 				term_semantic(LeftChild(T));
-				T2 = RightChild(T2); //get rught child for expanding as factor_semantic
+				T2 = RightChild(T); //get rught child for expanding as factor_semantic
 		}
 		else
 			T2 = T;
@@ -359,7 +359,7 @@ void get_to_left2(tree T) {
 	else
 	{
 		semantic_analyze(T);
-		get_to_left(LeftChild(T)); 
+		get_to_left2(LeftChild(T)); 
 	}
 }
 
@@ -428,9 +428,9 @@ void variable_init_semantic(tree T, int dimension, int arr) {
 			get_to_left(LeftChild(T));
 		}
 	}
-	else if (NodeKind(T) == EXPRNode && NodeOp(T) != ArrayTypeOp)
+	if (NodeKind(T) == EXPRNode && NodeOp(T) != ArrayTypeOp)
 		expression_semantic(T);
-	else if (NodeKind(T) != EXPRNode && output_check == 0 && NodeKind(T) == STRINGNode) 
+	if (NodeKind(T) != EXPRNode && output_check == 0 && NodeKind(T) == STRINGNode) 
 	{
 		error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
 	}
@@ -473,7 +473,7 @@ void argument_semantic(tree T) {
 
 int countDimensions(tree T) {
 	if (!IsNull(T))
-		return countDimensions(LeftChild(T)) + 1;
+		return countDimensions(RightChild(T)) + 1;
 	return 0;
 }
 int variable_semantic(tree T) {
@@ -487,8 +487,9 @@ int variable_semantic(tree T) {
 	int symbol_num = LookUp(IntVal(LeftChild(T)));
 	int class_symbol_num = findClass(symbol_num);
 	int dimension = 0;
-	SetNodeKind(LeftChild(T), STNode);
-	SetIntVal(LeftChild(T), symbol_num);
+	tree T2 = LeftChild(T);
+	SetNodeKind( T2,STNode);
+	SetIntVal(T2, symbol_num);
 	
 	tree subtree = RightChild(T);
 	// Iterate through the subtree sub tree
@@ -529,8 +530,6 @@ int variable_semantic(tree T) {
 }
 
 void assignment_semantic(tree T) {
-	tree var = RightChild(LeftChild(T));
-	variable_semantic(var);
-	tree exp = RightChild(T);
-	expression_semantic(exp);
+	variable_semantic(RightChild(LeftChild(T)));
+	expression_semantic(RightChild(T));
 }
