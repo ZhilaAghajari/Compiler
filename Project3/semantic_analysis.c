@@ -423,16 +423,16 @@ void variable_init_semantic(tree T, int dimension, int arr) {
 		else 
 		{
 			//array-semantic
-			if (check_dim(T) != dimension)
+			if (check_dim(LeftChild(T)) != dimension)
 				error_msg(INDX_MIS,CONTINUE,GetAttr(arr, NAME_ATTR),0);
-			get_to_left(T);
+			get_to_left(LeftChild(T));
 		}
 	}
 	else if (NodeKind(T) == EXPRNode && NodeOp(T) != ArrayTypeOp)
 		expression_semantic(T);
 	else if (NodeKind(T) != EXPRNode && output_check == 0 && NodeKind(T) == STRINGNode) 
 	{
-		error_msg(INDX_MIS,CONTINUE,IntVal(T),0);
+		error_msg(STRING_ASSIGN,CONTINUE,IntVal(T),0);
 	}
 }
 
